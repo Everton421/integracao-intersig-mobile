@@ -8,10 +8,10 @@ import mysql from 'mysql';
         const username = process.env.USER;
         const dbpassword = process.env.PASSWORD;
         
-        export const db_publico = process.env.DB_PUBLICO;
-        export const db_vendas = process.env.DB_VENDAS;
-        export const db_estoque = process.env.DB_ESTOQUE;
-        export const db_financeiro = process.env.DB_FINANCEIRO;
+      //  export const db_publico = process.env.DB_PUBLICO;
+      //  export const db_vendas = process.env.DB_VENDAS;
+      //  export const db_estoque = process.env.DB_ESTOQUE;
+      //  export const db_financeiro = process.env.DB_FINANCEIRO;
 
         let port:any | undefined;
 
