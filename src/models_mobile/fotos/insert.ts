@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 
 export class Insert_fotos{
 
@@ -27,7 +27,7 @@ let sql =
     )
         `
 
-            await conn.query(sql,(err, result)=>{
+            await conn_mobie.query(sql,(err, result)=>{
                     if(err){
                         console.log(err);
                         reject(err);

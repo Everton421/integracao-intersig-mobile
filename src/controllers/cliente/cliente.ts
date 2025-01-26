@@ -1,144 +1,27 @@
 import {   Request, Response    } from "express";
-import { conn, db_publico } from "../../database/databaseConfig";
+import { Select_clientes_sistema } from "../../models_sistema/cliente/select";
+  import { Select_clientes_mobile } from "../../models_mobile/cliente/select";
+import { databaseMobile, db_publico, db_vendas } from "../../database/databaseConfig";
 
-    export class Cliente{
+    export class ClienteController{
 
-        async busca(req: Request, res: Response) {
-            return new Promise(async (resolve, reject) => {
-                let queryVendedor: any = req.query.vendedor;
-                const queryClient = req.query.cliente;
-        
-                // Se queryVendedor não estiver definido ou for null, definir como 0
-                if (!queryVendedor || queryVendedor === undefined) {
-                    queryVendedor = 0;
-                }
-        
-           
-             let sql = `
-            SELECT 
-                CODIGO AS codigo,
-                NOME AS nome,
-                CPF AS cnpj,
-                RG AS ie,
-                CELULAR AS celular,
-                CEP AS cep,
-                ENDERECO AS endereco,
-                CIDADE AS cidade,
-                NUMERO AS numero ,
-                DATA_CADASTRO as data_cadastro,
-                DATA_RECAD  as data_recadastro,
-                VENDEDOR as vendedor
-            FROM ${db_publico}.cad_clie c
-            WHERE
-                (c.CODIGO LIKE ? OR c.NOME LIKE ? OR c.CPF LIKE ?)
-                AND c.ATIVO = 'S'
-                AND (c.VENDEDOR = ? OR c.VENDEDOR = 0)
-            LIMIT 15;
-        `;
+        async main(req:Request , res:Response ){   
+            let select_clientes_mobile =  new Select_clientes_mobile();
+            let select_clientes_sistema = new Select_clientes_sistema();
+                let database = databaseMobile
+            try{
+                let aux = await select_clientes_sistema.buscaTodos(db_publico );
+                console.log(aux);
+                return res.status(200).json(aux)
+            }catch(e){
 
-        
-                // Preparar os parâmetros para a consulta
-                const param = `%${queryClient}%`;
-        
-                try {
-                    const result = await new Promise((resolve, reject) => {
-                        conn.query(sql, [param, param, param, queryVendedor], (err, result) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(result);
-                            }
-                        });
-                    });
-        
-                    // Enviar a resposta com os resultados
-                    resolve(res.json(result));
-                } catch (err) {
-                    // Tratar erros
-                    console.error(err);
-                    reject(err);
-                }
-            });
+                console.log('erro ao consultar clientes' ,e)
+            }
+       
+       
+       
         }
-        
-        async buscaCompleta(req: Request, res:Response){
 
-            return new Promise( async (resolve,reject)=>{
 
-                const reqParam = req.params.cliente;
-                    
-                const queryVendedor = req.query.vendedor;
 
-            let sql = `
-                   SELECT 
-                  CODIGO AS codigo,
-                    NOME AS nome,
-                    CPF AS cnpj,
-                    RG AS ie,
-                    CELULAR AS celular,
-                    CEP AS cep,
-                    ENDERECO AS endereco,
-                    CIDADE AS cidade,
-                    NUMERO AS numero ,
-                    DATA_CADASTRO as data_cadastro,
-                    DATA_RECAD  as data_recadastro,
-                    VENDEDOR as vendedor
-   
-                   FROM ${db_publico}.cad_clie c
-                     WHERE c.ATIVO = 'S' and 
-                       ( VENDEDOR = ${queryVendedor} OR VENDEDOR = 0 or VENDEDOR = null)
-                       order by VENDEDOR
-                     
-                    ;
-                ` ;
-        
-                    const param = `%${queryVendedor}%`
-                await conn.query(sql ,(err, result)=>{
-                        if(err){
-                            console.log(err)
-                        }else{
-                         resolve( res.json(result));
-                        }
-                })
-            })
-        }
-        async buscaPorDescricao(req: Request, res:Response){
-
-            return new Promise( async (resolve,reject)=>{
-
-                const reqParam = req.params.cliente;
-
-            let sql = `
-                   SELECT 
-                  CODIGO AS codigo,
-                    NOME AS nome,
-                    CPF AS cnpj,
-                    RG AS ie,
-                    CELULAR AS celular,
-                    CEP AS cep,
-                    ENDERECO AS endereco,
-                    CIDADE AS cidade,
-                    NUMERO AS numero ,
-                    DATA_CADASTRO as data_cadastro,
-                    DATA_RECAD  as data_recadastro,
-                    VENDEDOR as vendedor
-   
-                   FROM ${db_publico}.cad_clie c
-                     WHERE c.ATIVO = 'S' and 
-                    ( nome like ? or codigo like ? or cpf like ? )
-                       order by VENDEDOR
-                     
-                    ;
-                ` ;
-        
-                    const param = `%${reqParam}%`
-                await conn.query(sql ,[param,param,param ],(err, result)=>{
-                        if(err){
-                            console.log(err)
-                        }else{
-                         resolve( res.json(result));
-                        }
-                })
-            })
-        }
     } 

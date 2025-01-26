@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 import { fpgt } from "./typeFpgt";
 
 
@@ -25,7 +25,7 @@ export class Insert_formaPagamento{
             let arr  = [  forma_pagamento.id, forma_pagamento.descricao, forma_pagamento.desc_maximo, forma_pagamento.parcelas,
                 forma_pagamento.intervalo, forma_pagamento.recebimento, forma_pagamento.data_cadastro, forma_pagamento.data_recadastro
              ]
-            await conn.query(sql, arr,(err:any, result:any)=>{
+            await conn_mobie.query(sql, arr,(err:any, result:any)=>{
                 if(err) reject(err);
                 else resolve(result)
             })

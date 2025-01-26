@@ -1,4 +1,4 @@
-import { conn, db_publico, db_estoque, db_vendas } from "../../database/databaseConfig";
+import { conn_mobie, db_publico, db_estoque, db_vendas } from "../../database/databaseConfig";
 import {   Request, Response  } from "express";
 
 export class controllerProduto {
@@ -174,7 +174,7 @@ let unidades = auxUnidades[0];
     async function queryProd() {
       let sql2 = `SELECT codigo from ${db_publico}.cad_prod where codigo=${codigo};`;
       return new Promise(async (resolve, reject) => {
-        await conn.query(sql2, (err, result) => {
+        await conn_mobie.query(sql2, (err, result) => {
           if (err) {
             console.log(err);
             reject(err);
@@ -195,7 +195,7 @@ let unidades = auxUnidades[0];
                                      WHERE
                                      produto = ${codigo};`;
 
-        await conn.query(sql, (err: any, result: any) => {
+        await conn_mobie.query(sql, (err: any, result: any) => {
           if (err) {
             res.status(500).json({ err: "erro ao atualizar" });
           } else {
@@ -266,7 +266,7 @@ let unidades = auxUnidades[0];
       and p.ativo = 'S'
       ;
       `;
-     await  conn.query(sql, (err:any, result:any) => {
+     await  conn_mobie.query(sql, (err:any, result:any) => {
         if (err) {
           throw err;
         } else {

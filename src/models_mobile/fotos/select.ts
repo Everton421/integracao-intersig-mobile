@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 
 
 export class Select_fotos{
@@ -11,7 +11,7 @@ export class Select_fotos{
                DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro
             FROM ${empresa}.fotos_produtos   `
 
-           await conn.query( sql  ,(err:any, result:any )=>{
+           await conn_mobie.query( sql  ,(err:any, result:any )=>{
                if(err){
                    reject(err);
                }else{
@@ -27,7 +27,7 @@ export class Select_fotos{
                            DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
                DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro
             from ${empresa}.fotos_produtos where produto = ${codigoProduto}`;
-            await conn.query( sql  ,(err:any, result:any )=>{
+            await conn_mobie.query( sql  ,(err:any, result:any )=>{
                 if(err){
                     reject(err);
                 }else{

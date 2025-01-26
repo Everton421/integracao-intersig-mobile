@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 
 export class SelectOrcamento{
 
@@ -6,7 +6,7 @@ export class SelectOrcamento{
         return new Promise(async (resolve, reject) => {
             const code =  codigo 
             const sql = ` select * from ${empresa}.pedidos where codigo =  ?  `;
-            conn.query(sql, [ code ],(err:any, result:any) => {
+            conn_mobie.query(sql, [ code ],(err:any, result:any) => {
                 if (err) {
                     console.log(err)
                     reject(err)
@@ -39,7 +39,7 @@ export class SelectOrcamento{
             const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
                 where   co.data_recadastro >= '${param_data}' and co.vendedor = ${vendedor}
             `;
-            await conn.query(sql,   async (err:any, result:any) => {
+            await conn_mobie.query(sql,   async (err:any, result:any) => {
                 if (err) {
                     console.log(err);
                     reject(err)

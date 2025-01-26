@@ -9,7 +9,7 @@ import 'dotenv/config';
 import swaggerDocs from './swagger.json';
 
 import { router, versao } from './routes';
-import { conn } from './database/databaseConfig';
+import { conn_mobie } from './database/databaseConfig';
 
         const app = express();
 

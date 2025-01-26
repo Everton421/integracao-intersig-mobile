@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 import { Produto } from "./interface_produto"
 
 export class Select_produtos{
@@ -15,7 +15,7 @@ export class Select_produtos{
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
         from ${empresa}.produtos where codigo = ? `
-            await conn.query(sql, [    codigo], (err:any, result:Produto[] )=>{
+            await conn_mobie.query(sql, [    codigo], (err:any, result:Produto[] )=>{
                 if (err)  reject(err); 
                   resolve(result)
             })
@@ -38,7 +38,7 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
             FROM ${empresa}.produtos 
             WHERE  codigo like ? OR descricao = ?    `;
     return new Promise<Produto[]>( async (resolve,reject)=>{
-        await conn.query( sql,[ codigo, descricao ], (err:any, result:any)=>{
+        await conn_mobie.query( sql,[ codigo, descricao ], (err:any, result:any)=>{
             if(err){ 
                   reject(err)
             }else{
@@ -60,7 +60,7 @@ async buscaPorCodigoOuDescricao(empresa:any, parametro:string){
             FROM ${empresa}.produtos 
             WHERE  codigo like ? OR descricao = ?    `;
     return new Promise<Produto[]>( async (resolve,reject)=>{
-        await conn.query( sql,[  parametro , parametro], (err:any, result:any)=>{
+        await conn_mobie.query( sql,[  parametro , parametro], (err:any, result:any)=>{
             if(err){ 
                   reject(err)
             }else{
@@ -80,7 +80,7 @@ async   buscaGeral(empresa:any )   {
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
         from ${empresa}.produtos  `
-        await conn.query(sql,  (err:any, result:Produto[] )=>{
+        await conn_mobie.query(sql,  (err:any, result:Produto[] )=>{
             if (err)  reject(err); 
               resolve(result)
         })
@@ -91,7 +91,7 @@ async   buscaUltimoCodigoInserido(empresa:any )   {
     return new Promise <any> ( async ( resolve , reject ) =>{
 
     let sql = ` select MAX(codigo) as codigo  from ${empresa}.produtos `
-        await conn.query(sql,   (err:any, result:any[] )=>{
+        await conn_mobie.query(sql,   (err:any, result:any[] )=>{
             if (err)  reject(err); 
               resolve(result[0])
         })

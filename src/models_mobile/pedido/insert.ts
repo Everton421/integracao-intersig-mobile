@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig";
+import { conn_mobie } from "../../database/databaseConfig";
 
 export class CreateOrcamento {
 
@@ -81,7 +81,7 @@ export class CreateOrcamento {
       ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `
-        conn.query(
+        conn_mobie.query(
           sql,
           [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente.codigo,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
           async    (err: any, result: any) => {
@@ -152,7 +152,7 @@ export class CreateOrcamento {
 
            const sql =  ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
               let dados = [ codigoPedido, codigo, desconto, quantidade, preco, total ]
-            await conn.query( sql,dados ,(error:any, resultado:any)=>{
+            await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
                  if(error){
                          reject(" erro ao inserir produto do orcamento "+ error);
                  }else{
@@ -182,7 +182,7 @@ export class CreateOrcamento {
         let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
 
 
-          await   conn.query( sql,  dados , (err: any, resultParcelas:any) => {
+          await   conn_mobie.query( sql,  dados , (err: any, resultParcelas:any) => {
                   if (err) {
                       console.log("erro ao inserir parcelas !" + err)
                       //  return response.status(500).json({ err: "erro ao as parcelas" });
@@ -221,7 +221,7 @@ export class CreateOrcamento {
               const sql =  ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
 
                 let dados = [ codigoPedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total  ]
-              await conn.query( sql,dados ,(error:any, resultado:any)=>{
+              await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
                    if(error){
                            reject(" erro ao inserir servico do orcamento "+ error);
                    }else{

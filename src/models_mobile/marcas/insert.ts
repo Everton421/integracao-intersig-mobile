@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 
 export class Insert_Marcas{
 
@@ -10,7 +10,7 @@ export class Insert_Marcas{
                                                       ( ? , ? , ? , ? ); `;
             const values = [ marca.id , marca.data_cadastro, marca.data_recadastro, marca.descricao]
 
-            await conn.query( sql , values,(err:any, result:any )=>{
+            await conn_mobie.query( sql , values,(err:any, result:any )=>{
                 if(err){
                     reject(err);
                 }else{

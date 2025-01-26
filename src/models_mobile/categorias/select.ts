@@ -1,4 +1,4 @@
-import { conn } from "../../database/databaseConfig"
+import { conn_mobie } from "../../database/databaseConfig"
 
 
 export class Select_Categorias{
@@ -14,7 +14,7 @@ export class Select_Categorias{
              FROM ${empresa}.categorias 
                WHERE descricao = '${descricao}' `
  
-            await conn.query( sql  ,(err, result )=>{
+            await conn_mobie.query( sql  ,(err, result )=>{
                 if(err){
                     reject(err);
                 }else{
@@ -33,7 +33,7 @@ export class Select_Categorias{
                 DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro
              FROM ${empresa}.categorias `
  
-            await conn.query( sql  ,(err, result )=>{
+            await conn_mobie.query( sql  ,(err, result )=>{
                 if(err){
                     reject(err);
                 }else{
