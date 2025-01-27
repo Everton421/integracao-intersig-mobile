@@ -5,6 +5,7 @@ import { Select_clientes_mobile } from "./models_mobile/cliente/select";
 import 'dotenv/config';
 import { ClienteController } from "./controllers/cliente/clienteController";
 import { categoriasController } from "./controllers/categorias/categoriasController";
+import { formaPagamentoController } from "./controllers/formaDePagamamento/formaDePagamamento";
 
   const crypt = require('crypt');
   const router = Router();
@@ -29,7 +30,7 @@ import { categoriasController } from "./controllers/categorias/categoriasControl
  
     router.get(`/teste`,  
  
-  new categoriasController().main
+  new formaPagamentoController().main
       
        
      

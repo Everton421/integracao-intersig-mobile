@@ -1,4 +1,4 @@
-export interface IForma_pagamento { 
+export interface IFormaPagamentoMobile { 
     id:number,
     descricao:string,
     desc_maximo:number,
