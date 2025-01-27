@@ -1,8 +1,9 @@
 import { conn_mobie } from "../../database/databaseConfig"
+import { ICategoriaMobile } from "./types/ICategoriaMobile";
 
 export class Insert_Categorias{
 
-    async cadastrar( empresa:string, categoria:any ){
+    async cadastrar( empresa:string, categoria:ICategoriaMobile ){
         return new Promise( async (resolve, reject )=>{
             
             let sql = `

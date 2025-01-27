@@ -1,10 +1,10 @@
 import { conn_mobie } from "../../database/databaseConfig"
-import { fpgt } from "./typeFpgt";
+import { IForma_pagamento } from "./types/IFormas_pagamento";
 
 
-export class Insert_formaPagamento{
+export class InsertFormaPagamentoMobile{
 
-    async cadastrar(empresa:string, forma_pagamento:fpgt){
+    async cadastrar(empresa:string, forma_pagamento:IForma_pagamento){
         return new Promise( async (resolve, reject)=>{
 
             let sql =

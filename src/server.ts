@@ -24,7 +24,7 @@ import { conn_mobie } from './database/databaseConfig';
 
             app.use(cors( corsOptions));
         
-        app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+  //      app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
         
         app.use(express.json());    
         app.use(router)

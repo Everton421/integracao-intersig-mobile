@@ -1,6 +1,4 @@
  
-import { Cliente } from "./interface_cliente";
-import {conn_mobie} from '../../database/databaseConfig'
 
 export class Insert_clientes{
 /**  
