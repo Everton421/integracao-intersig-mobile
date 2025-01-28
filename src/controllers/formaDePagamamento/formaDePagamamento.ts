@@ -25,7 +25,9 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
 
                                     let validFpgtMobile = fpgtMobile[0];
                                
-                               
+                                    if(i.DATA_RECAD === null ){
+                                        i.DATA_RECAD = '0000-00-00 00:00:00';
+                                    } 
                                let objInsert:IFormaPagamentoMobile = {
                                 id:i.CODIGO,
                                 descricao:i.DESCRICAO,
@@ -39,17 +41,24 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
 
                                 if( fpgtMobile.length > 0 ){
 
+                                  
                                     if( i.DATA_RECAD >  validFpgtMobile.data_recadastro){
+                                        try{ 
                                         //update
-                                        console.log('atualizando ',i.CODIGO )
-                                       await  updateFormaPagamentoSistema.update(databaseMobile, objInsert)
+                                                console.log('atualizando ',i.CODIGO )
+                                             await  updateFormaPagamentoSistema.update(databaseMobile, objInsert)
+                                       }catch(e){ console.log(e)}
+
                                     }else{
+                                        console.log(i.DATA_RECAD ,' > ',  validFpgtMobile.data_recadastro)
                                         continue;
                                     }
                                }else{
+                                try{ 
                                         console.log('cadastrando ',i.CODIGO )
-                                        //cadastrar
+                               //cadastrar
                                 await insertFormaPagamentoMobile.cadastrar(databaseMobile, objInsert)
+                            }catch(e){ console.log(e)}
 
                                } 
 

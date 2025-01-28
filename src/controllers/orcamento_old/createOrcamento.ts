@@ -1,5 +1,5 @@
 import { Request, Response, request, response } from "express";
-import { conn, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
 
 export class CreateOrcamento {
 
@@ -112,7 +112,7 @@ export class CreateOrcamento {
         }
          
 
-          conn.query(
+        conn_sistema.query(
             `INSERT INTO ${db_vendas}.cad_orca ` +
             `(cliente, cod_site, total_produtos,total_servicos, forma_pagamento, tipo,  DESC_PROD, TOTAL_GERAL, DATA_CADASTRO, SITUACAO,VENDEDOR,CONTATO , DATA_INICIO,DATA_PEDIDO, DATA_APROV, QTDE_PARCELAS, OBSERVACOES,OBSERVACOES2, DATA_RECAD)  
                 VALUES ( ? ,?, ?, ?, ?, ?, ?, ? , ? , ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -202,7 +202,7 @@ export class CreateOrcamento {
                     '${preco}'  
                 ) `;
 
-			  await conn.query( sql, (error, resultado)=>{
+			  await conn_sistema.query( sql, (error:any, resultado:any)=>{
 				   if(error){
 						   reject(" erro ao inserir produto do orcamento "+ error);
 				   }else{
@@ -224,10 +224,10 @@ export class CreateOrcamento {
 
         parcelas.forEach( async (p: any) => {
             let vencimento = this.converterData(p.vencimento);
-        await    conn.query(
+        await    conn_sistema.query(
                 ` INSERT INTO ${db_vendas}.par_orca ( ORCAMENTO, PARCELA, VALOR , VENCIMENTO, TIPO_RECEB)
                                                      VALUES ( ?,?,?,?,?)`,
-                [codigoPedido, p.parcela, p.valor, p.vencimento, 1], (err: any, resultParcelas) => {
+                [codigoPedido, p.parcela, p.valor, p.vencimento, 1], (err: any, resultParcelas:any) => {
                     if (err) {
                         console.log("erro ao inserir parcelas !" + err)
                         //  return response.status(500).json({ err: "erro ao as parcelas" });
@@ -250,10 +250,10 @@ export class CreateOrcamento {
                     }
 
                     let j = i + 1;
-                    await conn.query(
+                    await conn_sistema.query(
                         ` INSERT INTO ${db_vendas}.ser_orca ( ORCAMENTO , SEQUENCIA, SERVICO, QUANTIDADE, UNITARIO, DESCONTO, PRECO_TABELA )
                             VALUES ( ?, ?, ?, ?, ?, ?, ?  ) `,
-                        [codigoPedido, j, servicos[i].codigo, servicos[i].quantidade, servicos[i].valor, servicos[i].desconto, servicos[i].valor], (err: any, resultServicos) => {
+                        [codigoPedido, j, servicos[i].codigo, servicos[i].quantidade, servicos[i].valor, servicos[i].desconto, servicos[i].valor], (err: any, resultServicos:any) => {
                             if (err) {
                                 console.log(`ocorreu um erro ao inserir os servicos`, err)
                             } else {

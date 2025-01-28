@@ -1,12 +1,12 @@
-import { conn_mobie } from "../../database/databaseConfig"
+import { conn_sistema } from "../../database/databaseConfig"
 
-export class SelectOrcamento{
+export class SelectOrcamentosMobile{
 
     async validaExistencia(empresa:any,codigo:number   ){
         return new Promise(async (resolve, reject) => {
             const code =  codigo 
             const sql = ` select * from ${empresa}.pedidos where codigo =  ?  `;
-            conn_mobie.query(sql, [ code ],(err:any, result:any) => {
+            conn_sistema.query(sql, [ code ],(err:any, result:any) => {
                 if (err) {
                     console.log(err)
                     reject(err)
@@ -24,7 +24,7 @@ export class SelectOrcamento{
     async buscaPordata(empresa:any ,queryData:any, vendedor:number){
 
 
-        let objSelect = new  SelectOrcamento();
+        let objSelect = new  SelectOrcamentosMobile();
         let param_data:any;
          if (!queryData) {
             param_data = objSelect.obterDataAtualSemHoras();
@@ -39,7 +39,7 @@ export class SelectOrcamento{
             const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
                 where   co.data_recadastro >= '${param_data}' and co.vendedor = ${vendedor}
             `;
-            await conn_mobie.query(sql,   async (err:any, result:any) => {
+            await conn_sistema.query(sql,   async (err:any, result:any) => {
                 if (err) {
                     console.log(err);
                     reject(err)
@@ -69,9 +69,22 @@ export class SelectOrcamento{
          }
 
 
-    async buscaCompleta(){
+    async buscaCompleta(empresa:any){
 
+        return new Promise(async (resolve, reject) => {
+            const sql = ` select * from ${empresa}.pedidos  `;
+            conn_sistema.query(sql ,(err:any, result:any) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    // console.log(result)
+              
+                    resolve(result);
+                }
+            })
 
+        })
 
     }
 

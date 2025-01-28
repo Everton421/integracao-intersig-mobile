@@ -1,7 +1,8 @@
-import { conn } from "../../database/databaseConfig";
+import { conn_mobie } from "../../database/databaseConfig";
+import { IServicosMobile } from "./types/IServicosMobile";
 
 
-export class Select_servicos{
+export class SelectServicosMobile{
 
     async   buscaPorCodigo(empresa:any, codigo:number)   {
         return new Promise  ( async ( resolve , reject ) =>{
@@ -10,12 +11,27 @@ export class Select_servicos{
           DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
             DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
         from ${empresa}.servicos where codigo = ? `
-            await conn.query(sql, [ codigo], (err:any, result:any  )=>{
+            await conn_mobie.query(sql, [ codigo], (err:any, result:any  )=>{
                 if (err)  reject(err); 
                   resolve(result)
             })
          })
     }
+
+    async   buscaPorId(empresa:any, id:number)   {
+        return new Promise  <IServicosMobile[]>( async ( resolve , reject ) =>{
+ 
+        let sql = ` select *,
+          DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+            DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
+        from ${empresa}.servicos where id = ? `
+            await conn_mobie.query(sql, [ id], (err:any, result:IServicosMobile[]  )=>{
+                if (err)  reject(err); 
+                  resolve(result)
+            })
+         })
+    }
+
 
 async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
 
@@ -29,7 +45,7 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
     FROM ${empresa}.servicos
     WHERE  codigo like ? OR aplicacao = ?    `;
     return new Promise ( async (resolve,reject)=>{
-        await conn.query( sql,[ codigo, descricao ], (err:any, result:any)=>{
+        await conn_mobie.query( sql,[ codigo, descricao ], (err:any, result:any)=>{
             if(err){ 
                   reject(err)
             }else{
@@ -46,7 +62,7 @@ async   buscaGeral(empresa:any )   {
       DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
             DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
     from ${empresa}.servicos  `
-        await conn.query(sql,  (err:any, result:any )=>{
+        await conn_mobie.query(sql,  (err:any, result:any )=>{
             if (err)  reject(err); 
               resolve(result)
         })

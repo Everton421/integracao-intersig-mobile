@@ -1,4 +1,4 @@
-import { conn_mobie } from "../../database/databaseConfig";
+import { conn } from "../../database/databaseConfig";
 
 export class CreateOrcamento {
 
@@ -17,11 +17,13 @@ export class CreateOrcamento {
 
 
   async create ( empresa:any, orcamento:any) {
-      return new Promise((resolve, reject)=>{
+      return new Promise( async(resolve, reject)=>{
 
       const dataAtual = this.obterDataAtual();
 
-      let codigo_pedido;
+    let obj = new CreateOrcamento();
+      
+    let codigo_pedido;
       let {
           codigo,
           forma_pagamento,
@@ -81,7 +83,7 @@ export class CreateOrcamento {
       ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `
-        conn_mobie.query(
+        await conn.query(
           sql,
           [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente.codigo,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
           async    (err: any, result: any) => {
@@ -92,10 +94,16 @@ export class CreateOrcamento {
 
                  
                   let status = null;
-
+                  if(servicos.length > 0 ){
+                    try{
+                        await obj.cadastraServicosDoPedido(servicos, codigo, empresa);
+                        status == true   
+                    
+                      }catch(e){console.log(e)}
+                       }
                      if (produtos.length > 0) {
                      try{
-                         await this.cadastraProdutosDoPedido(produtos,empresa, codigo, );
+                         await obj.cadastraProdutosDoPedido(produtos,empresa, codigo, );
                          status = true
                       }catch(e){ console.log(e)} 
                      }
@@ -103,21 +111,13 @@ export class CreateOrcamento {
             
                      if(parcelas.length > 0  ){
                           try{
-                           await this.cadastraParcelasDoPeidido( parcelas, empresa, codigo );
+                           await obj.cadastraParcelasDoPedido( parcelas, empresa, codigo );
                            status == true   
                         }catch(e) {
                               console.log(e)
                           }    
                      }
-                     if(servicos.length > 0 ){
-                          try{
-                              await this.cadastraServicosDoPedido(servicos, codigo, empresa);
-                              status == true   
-                          
-                            }catch(e){console.log(e)}
-                     }
-                     
-                      
+                    
 
                       resolve({ codigo:codigo, status:status} ) ;
                   }
@@ -152,7 +152,7 @@ export class CreateOrcamento {
 
            const sql =  ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
               let dados = [ codigoPedido, codigo, desconto, quantidade, preco, total ]
-            await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
+            await conn.query( sql,dados ,(error:any, resultado:any)=>{
                  if(error){
                          reject(" erro ao inserir produto do orcamento "+ error);
                  }else{
@@ -170,8 +170,9 @@ export class CreateOrcamento {
   }
  
 
-  async cadastraParcelasDoPeidido(parcelas:any,empresa:any, codigoPedido:any){
+  async cadastraParcelasDoPedido(parcelas:any,empresa:any, codigoPedido:any){
     let obj  = new CreateOrcamento();
+    return new Promise( async (resolve, reject )=>{
     parcelas.forEach( async (p: any) => {
         
     let {
@@ -182,16 +183,18 @@ export class CreateOrcamento {
         let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
 
 
-          await   conn_mobie.query( sql,  dados , (err: any, resultParcelas:any) => {
+          await   conn.query( sql,  dados , (err: any, resultParcelas:any) => {
                   if (err) {
                       console.log("erro ao inserir parcelas !" + err)
-                      //  return response.status(500).json({ err: "erro ao as parcelas" });
+                      
                   } else {
                       console.log('  Parcela inserida com sucesso '    )
+                      resolve(codigoPedido)
                   }
               }
           )
       })
+    })
 
   }
  
@@ -221,8 +224,9 @@ export class CreateOrcamento {
               const sql =  ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
 
                 let dados = [ codigoPedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total  ]
-              await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
+              await conn.query( sql,dados ,(error:any, resultado:any)=>{
                    if(error){
+                    console.log(" erro ao inserir servico do orcamento "+ error)
                            reject(" erro ao inserir servico do orcamento "+ error);
                    }else{
                     resolve(resultado)

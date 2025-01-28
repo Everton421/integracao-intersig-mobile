@@ -1,8 +1,9 @@
 import { conn_mobie } from "../../database/databaseConfig"
+import { IMarcasMobile } from "./types/IMarcasMobile";
 
-export class Insert_Marcas{
+export class Insert_MarcasMobile{
 
-    async cadastrar( empresa:string, marca:any ){
+    async cadastrar( empresa:string, marca:IMarcasMobile ){
         return new Promise( async (resolve, reject )=>{
             
             let sql = `

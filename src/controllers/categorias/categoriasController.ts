@@ -53,8 +53,11 @@ export class categoriasController{
                                             }
 
                                                if(  i.DATA_RECAD > categoriaV.data_recadastro ){
-                                               console.log(' atualizando ',i.DATA_RECAD ,'>', categoriaV.data_recadastro )
-                                                  await update_categorias_Mobile.update(databaseMobile, objInsertMobile)
+                                          
+                                                try{ 
+                                                      console.log(' atualizando ',i.DATA_RECAD ,'>', categoriaV.data_recadastro )
+                                                        await update_categorias_Mobile.update(databaseMobile, objInsertMobile)
+                                                }catch(e){ console.log(e)}
                                                  
                                              }else{
                                                  console.log('continuando categoria ',i.CODIGO,' ' , i.DATA_RECAD,' > ', categoriaV.data_recadastro)
@@ -62,8 +65,12 @@ export class categoriasController{
                                              }
 
                                         }else{
-                                                 console.log('cadastrando categoria ', i.CODIGO)
+
+                                     try{ 
+                                            console.log('cadastrando categoria ', i.CODIGO)
                                            let aux =  await insertCategoriasMobile.cadastrar(databaseMobile, objInsertMobile)
+                                    }catch(e){ console.log(e)}
+
                                         }
                                         
                          }

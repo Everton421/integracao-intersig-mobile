@@ -48,17 +48,22 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
 
                                         if( validClienteMobile.length > 0 ){
                                             if( clienteV.data_recadastro !== null &&  i.DATA_RECAD !== null &&  i.DATA_RECAD > clienteV.data_recadastro ){
-                                              console.log(' atualizando ',i.DATA_RECAD ,'>', clienteV.data_recadastro )
-                                                await update_clientes_mobile.update(databaseMobile, objInsertMobile)
+                                             try{ 
+                                                console.log(' atualizando ',i.DATA_RECAD ,'>', clienteV.data_recadastro )
+                                             
+                                                   await update_clientes_mobile.update(databaseMobile, objInsertMobile)
+                                              }catch(e){ console.log(e)}
                                                 
                                             }else{
                                                 console.log('continuando ', i.DATA_RECAD > clienteV.data_recadastro)
                                                 continue
                                             }
                                         }else{
+                                            try{ 
+                                              let aux =  await insert_clientes_mobile.cadastrar(databaseMobile, objInsertMobile)
+                                               console.log(aux)
+                                        }catch(e){ console.log(e)}
 
-                                          let aux =  await insert_clientes_mobile.cadastrar(databaseMobile, objInsertMobile)
-                                           console.log(aux)
                                         }
                          }
                  }

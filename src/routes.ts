@@ -6,6 +6,12 @@ import 'dotenv/config';
 import { ClienteController } from "./controllers/cliente/clienteController";
 import { categoriasController } from "./controllers/categorias/categoriasController";
 import { formaPagamentoController } from "./controllers/formaDePagamamento/formaDePagamamento";
+import { marcasController } from "./controllers/marcas/marcasController";
+import { ProdutoController } from "./controllers/produtos/produtos";
+import { ServicoController } from "./controllers/servicos/servicosController";
+import { Tipos_osController } from "./controllers/tipos_os/tipos_osController";
+import { VeiculosController } from "./controllers/veiculo/VeiculosController";
+import { pedidosController } from "./controllers/pedidos/pedidosController";
 
   const crypt = require('crypt');
   const router = Router();
@@ -30,7 +36,7 @@ import { formaPagamentoController } from "./controllers/formaDePagamamento/forma
  
     router.get(`/teste`,  
  
-  new formaPagamentoController().main
+  new pedidosController().select
       
        
      

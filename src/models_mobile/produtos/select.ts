@@ -1,10 +1,11 @@
 import { conn_mobie } from "../../database/databaseConfig"
 import { Produto } from "./interface_produto"
+import { IProdutoMobile } from "./types/IProdutoMobile"
 
-export class Select_produtos{
+export class SelectProdutosMobile{
 
     async   buscaPorCodigo(empresa:any, codigo:number)   {
-        return new Promise <Produto[]> ( async ( resolve , reject ) =>{
+        return new Promise <IProdutoMobile[]> ( async ( resolve , reject ) =>{
  
         let sql = `
          select 
@@ -15,13 +16,30 @@ export class Select_produtos{
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
         from ${empresa}.produtos where codigo = ? `
-            await conn_mobie.query(sql, [    codigo], (err:any, result:Produto[] )=>{
+            await conn_mobie.query(sql, [    codigo], (err:any, result:IProdutoMobile[] )=>{
                 if (err)  reject(err); 
                   resolve(result)
             })
          })
     }
-
+    async   buscaPorId(empresa:any, id:any)   {
+        return new Promise <IProdutoMobile[]> ( async ( resolve , reject ) =>{
+ 
+        let sql = `
+         select 
+            *,
+                 DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+        DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro,
+             CONVERT(observacoes1 USING utf8) as observacoes1,
+             CONVERT(observacoes2 USING utf8) as observacoes2,
+             CONVERT(observacoes3 USING utf8) as observacoes3
+        from ${empresa}.produtos where id = ? `
+            await conn_mobie.query(sql, [ id ], (err:any, result:IProdutoMobile[] )=>{
+                if (err)  reject(err); 
+                  resolve(result)
+            })
+         })
+    }
 async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
 
     if(!codigo) codigo = 0; 
@@ -37,7 +55,7 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
 
             FROM ${empresa}.produtos 
             WHERE  codigo like ? OR descricao = ?    `;
-    return new Promise<Produto[]>( async (resolve,reject)=>{
+    return new Promise<IProdutoMobile[]>( async (resolve,reject)=>{
         await conn_mobie.query( sql,[ codigo, descricao ], (err:any, result:any)=>{
             if(err){ 
                   reject(err)
@@ -59,7 +77,7 @@ async buscaPorCodigoOuDescricao(empresa:any, parametro:string){
 
             FROM ${empresa}.produtos 
             WHERE  codigo like ? OR descricao = ?    `;
-    return new Promise<Produto[]>( async (resolve,reject)=>{
+    return new Promise<IProdutoMobile[]>( async (resolve,reject)=>{
         await conn_mobie.query( sql,[  parametro , parametro], (err:any, result:any)=>{
             if(err){ 
                   reject(err)
@@ -71,7 +89,7 @@ async buscaPorCodigoOuDescricao(empresa:any, parametro:string){
 }
 
 async   buscaGeral(empresa:any )   {
-    return new Promise <Produto[]> ( async ( resolve , reject ) =>{
+    return new Promise <IProdutoMobile[]> ( async ( resolve , reject ) =>{
         let sql = ` select 
         *,
         DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
@@ -80,7 +98,7 @@ async   buscaGeral(empresa:any )   {
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
         from ${empresa}.produtos  `
-        await conn_mobie.query(sql,  (err:any, result:Produto[] )=>{
+        await conn_mobie.query(sql,  (err:any, result:IProdutoMobile[] )=>{
             if (err)  reject(err); 
               resolve(result)
         })

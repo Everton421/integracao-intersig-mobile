@@ -1,5 +1,5 @@
 import { Request, Response, request, response } from "express";
-import { conn, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
 import { SelectOrcamento } from "./selectOrcamento";
 
 
@@ -20,7 +20,7 @@ export class UpdateOrcamento{
         async function buscaOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
                 const sql = ` select *  from ${db_vendas}.cad_orca where codigo = ? `
-                conn.query(sql, [codigo], async (err, result) => {
+                conn_sistema.query(sql, [codigo], async (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                         reject(err);
@@ -52,7 +52,7 @@ export class UpdateOrcamento{
                 `
                 console.log( sql )
 
-                conn.query(sql, (err, result) => {
+                conn_sistema.query(sql, (err:any, result:any) => {
                     if (err) {
                         reject(err);
                     } else {
@@ -68,7 +68,7 @@ export class UpdateOrcamento{
                 let sql2 = ` delete from ${db_vendas}.pro_orca
                                         where orcamento = ${codigo}
                                     `
-                conn.query(sql2, (err, result) => {
+                conn_sistema.query(sql2, (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                     } else {
@@ -90,7 +90,7 @@ export class UpdateOrcamento{
                 }
 
                 let j = i + 1;
-                await conn.query(
+                await conn_sistema.query(
                     `INSERT INTO ${db_vendas}.pro_orca
                      (orcamento,
                       sequencia,
@@ -163,7 +163,7 @@ export class UpdateOrcamento{
                       ${servicos[i].valor}  ) `)
 
 
-                conn.query(
+                conn_sistema.query(
                     ` INSERT INTO ${db_vendas}.ser_orca 
                     (
                       ORCAMENTO ,
@@ -189,7 +189,7 @@ export class UpdateOrcamento{
                          servicos[i].valor, 
                          servicos[i].desconto,
                          servicos[i].valor
-                        ], (err: any, resultServicos) => {
+                        ], (err: any, resultServicos:any) => {
                             if (err) {
                                 console.log(`ocorreu um erro ao inserir os servicos`, err)
                             } else {
@@ -208,7 +208,7 @@ export class UpdateOrcamento{
                 let sql2 = ` delete from ${db_vendas}.ser_orca
                                         where orcamento = ${codigo}
                                     `
-                conn.query(sql2, (err, result) => {
+                conn_sistema.query(sql2, (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                     } else {
@@ -227,7 +227,7 @@ export class UpdateOrcamento{
                 let sql2 = ` delete from ${db_vendas}.par_orca
                                         where orcamento = ${codigo}
                                     `
-                conn.query(sql2, (err, result) => {
+                conn_sistema.query(sql2, (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                     } else {
@@ -244,10 +244,10 @@ export class UpdateOrcamento{
             parcelas.forEach((p: any) => {
 
                 let vencimento = converterData(p.vencimento);
-                conn.query(
+                conn_sistema.query(
                     ` INSERT INTO ${db_vendas}.par_orca ( ORCAMENTO, PARCELA, VALOR , VENCIMENTO, TIPO_RECEB)
                                                  VALUES ( ?,?,?,?,?)`,
-                    [codigo, p.parcela, p.valor,  p.vencimento , 1], (err: any, resultParcelas) => {
+                    [codigo, p.parcela, p.valor,  p.vencimento , 1], (err: any, resultParcelas:any) => {
                         if (err) {
                             console.log("erro ao inserir parcelas !" + err)
                            // return response.status(500).json({ err: "erro ao as parcelas" });
@@ -266,7 +266,7 @@ export class UpdateOrcamento{
         async function buscaProdutosDoOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
                 const sql = ` select *  from ${db_vendas}.pro_orca where orcamento = ? `
-                conn.query(sql, [codigo], async (err, result) => {
+                conn_sistema.query(sql, [codigo], async (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                         reject(err);
@@ -279,7 +279,7 @@ export class UpdateOrcamento{
         async function buscaServicosDoOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
                 const sql = ` select *  from ${db_vendas}.ser_orca where orcamento = ? `
-                conn.query(sql, [codigo], async (err, result) => {
+                conn_sistema.query(sql, [codigo], async (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                         reject(err);
@@ -292,7 +292,7 @@ export class UpdateOrcamento{
         async function buscaParcelasDoOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
                 const sql = ` select *  from ${db_vendas}.par_orca where orcamento = ? `
-                conn.query(sql, [codigo], async (err, result) => {
+                conn_sistema.query(sql, [codigo], async (err:any, result:any) => {
                     if (err) {
                         console.log(err);
                         reject(err);
