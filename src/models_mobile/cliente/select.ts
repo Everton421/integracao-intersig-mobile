@@ -56,10 +56,12 @@ export class Select_clientes_mobile{
 
     async   buscaPorcodigo(empresa:any, codigo:number )   {
         return new Promise <IClienteMobile[]> ( async ( resolve , reject ) =>{
-        let sql = ` SELECT  codigo, nome, cnpj, celular ,
+        let sql = ` SELECT  c.codigo,c.id,  c.nome, c.cnpj, c.celular ,
           DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
             DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
-        FROM ${empresa}.clientes WHERE codigo = ?  `
+        FROM ${empresa}.clientes as c 
+         
+        WHERE c.codigo = ?  `
             await conn_mobie.query(sql, [ codigo], (err:any, result:IClienteMobile[] )=>{
                 if (err)  reject(err); 
                   resolve(result)

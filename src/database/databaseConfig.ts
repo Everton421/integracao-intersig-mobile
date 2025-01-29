@@ -48,7 +48,7 @@ import mysql from 'mysql';
            export const db_estoque:string    | undefined = process.env.DB_ESTOQUE;
            export const db_vendas:string     | undefined = process.env.DB_VENDAS;
            export const db_publico:string    | undefined = process.env.DB_PUBLICO;
-
+          export const db_integracao_mobile:string | undefined = process.env.DB_INTEGRACAO;
             
 
            if(port_sistema !== undefined){

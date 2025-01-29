@@ -1,12 +1,16 @@
 import { Request, Response, request, response } from "express";
-import { conn  } from "../../database/databaseConfig";
+import { conn_mobie  } from "../../database/databaseConfig";
 import { CreateOrcamento } from "./insert";
+import { IProdutoPedidoMobile } from "./types/IProdutoPedidoMobile";
+import { IServicosMobile } from "../servicos/types/IServicosMobile";
+import {    IParcelasPedidoMobile } from "./types/IParcelasPedido";
+import { IPedidoMobile } from "./types/IPedidoMobile";
 
 
-export class UpdateOrcamento{
+export class UpdateOrcamentoMobile{
     
     
-    async  updateTabelaPedido( empresa:any ,orcamento:any, codigo:number ) {
+    async  updateTabelaPedido( empresa:any ,orcamento:any, codigo:number ):Promise<number> {
         return new Promise(async (resolve, reject) => {
             let sql = `
                 UPDATE ${empresa}.pedidos  
@@ -29,7 +33,7 @@ export class UpdateOrcamento{
                 situacao            = '${orcamento.situacao}'
                 where codigo = ${codigo}
             `
-            conn.query(sql, (err:any, result:any) => {
+          await  conn_mobie.query(sql, (err:any, result:any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -40,12 +44,12 @@ export class UpdateOrcamento{
     }
 
     async   deleteProdutosPedido( empresa:any, codigo: number) {
-        return new Promise((resolve, reject) => {
+        return new Promise( async(resolve, reject) => {
 
             let sql2 = ` delete from ${empresa}.produtos_pedido
                                     where pedido = ${codigo}
                                 `
-            conn.query(sql2, (err:any, result:any) => {
+             await   conn_mobie.query(sql2, (err:any, result:any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -57,12 +61,12 @@ export class UpdateOrcamento{
     }
 
     async   deleteServicosPedido(empresa:any ,codigo: number) {
-        return new Promise((resolve, reject) => {
+        return new Promise( async(resolve, reject) => {
 
             let sql2 = ` delete from ${empresa}.servicos_pedido
                                     where pedido = ${codigo}
                                 `
-            conn.query(sql2, (err:any, result:any) => {
+         await   conn_mobie.query(sql2, (err:any, result:any) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -74,12 +78,12 @@ export class UpdateOrcamento{
     }
 
     async   deleteParcelasPedido(empresa:any,codigo: number) {
-        return new Promise((resolve, reject) => {
+        return new Promise( async(resolve, reject) => {
 
             let sql2 = ` delete from ${empresa}.parcelas
                                     where pedido = ${codigo}
                                 `
-            conn.query(sql2, (err:any, result:any) => {
+             await  conn_mobie.query(sql2, (err:any, result:any) => {
                 if (err) {
                    reject(err);
                 } else {
@@ -90,10 +94,42 @@ export class UpdateOrcamento{
 
     }
 
-    async   buscaProdutosDoOrcamento(empresa:any, codigo: number) {
-        return new Promise((resolve, reject) => {
-            const sql = ` select *  from ${empresa}.produtos_pedido where pedido = ? `
-            conn.query(sql, [codigo], async (err:any, result:any) => {
+    async   buscaProdutosDoOrcamento(empresa:any, codigo: number):Promise<IProdutoPedidoMobile[]> {
+        return new Promise( async (resolve, reject) => {
+         const sql = ` select 
+                        pp.pedido,
+                       -- pp.codigo,
+                        pp.desconto,
+                        pp.quantidade,
+                        pp.preco,
+                        pp.total,
+                            p.id
+                        from ${empresa}.produtos_pedido pp 
+                            join ${empresa}.produtos p on p.codigo = pp.codigo 
+                        where pp.pedido = ? `
+          await  conn_mobie.query(sql, [codigo], async (err:any, result:IProdutoPedidoMobile[]) => {
+                if (err) {
+                    console.log(err)
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            })
+        })
+    }
+    async   buscaServicosDoOrcamento( empresa:any,codigo: number): Promise<IServicosMobile[]>{
+        return new Promise( async (resolve, reject) => {
+            const sql = ` select
+                sp.pedido,
+                s.id,
+                sp.desconto,
+                sp.quantidade,
+                sp.valor,
+                sp.total
+              from ${empresa}.servicos_pedido sp
+              join ${empresa}.servicos s  on sp.codigo = s.codigo
+              where sp.pedido = ? `
+      await      conn_mobie.query(sql, [codigo], async (err:any, result:IServicosMobile[]) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -102,22 +138,10 @@ export class UpdateOrcamento{
             })
         })
     }
-    async   buscaServicosDoOrcamento( empresa:any,codigo: number) {
-        return new Promise((resolve, reject) => {
-            const sql = ` select *  from ${empresa}.servicos_pedido where pedido = ? `
-            conn.query(sql, [codigo], async (err:any, result:any) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            })
-        })
-    }
-    async   buscaParcelasDoOrcamento(empresa:any,codigo: number) {
-        return new Promise((resolve, reject) => {
+    async   buscaParcelasDoOrcamento(empresa:any,codigo: number):Promise<IParcelasPedidoMobile[]>{
+        return new Promise( async (resolve, reject) => {
             const sql = ` select *,  DATE_FORMAT(vencimento, '%Y-%m-%d') AS vencimento   from ${empresa}.parcelas where pedido = ? `
-            conn.query(sql, [codigo], async (err:any, result:any) => {
+    await    conn_mobie.query(sql, [codigo], async (err:any, result:IParcelasPedidoMobile[]) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -128,51 +152,16 @@ export class UpdateOrcamento{
     }
 
    
-    async update(empresa:any,orcamento:any, codigoOrcamento:number ) {
+    async update(empresa:any,orcamento:IPedidoMobile, codigoOrcamento:number ):Promise<number> {
       return new Promise ( async (resolve, reject )=>{
  
-      
-        let objUpdate = new UpdateOrcamento();
+        let objUpdate = new UpdateOrcamentoMobile();
         let objInsert = new CreateOrcamento();
-        function converterData(data: string): string {
-            const [dia, mes, ano] = data.split('/');
-            return `${ano}/${mes}/${dia}`;
-        }
+   
 
-        function obterDataAtual() {
-            const dataAtual = new Date();
-            const dia = String(dataAtual.getDate()).padStart(2, '0');
-            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-            const ano = dataAtual.getFullYear();
-            return `${ano}-${mes}-${dia}`;
-        }
-
-
-        function formatarData(data:any) {
-            const dia = String(data.getDate()).padStart(2, '0');
-            const mes = String(data.getMonth() + 1).padStart(2, '0');
-            const ano = data.getFullYear();
-            return `${ano}-${mes}-${dia}`;
-        }
-        
-
-        function formatarDataHora(data:any) {
-            const dia = String(data.getDate()).padStart(2, '0');
-            const mes = String(data.getMonth() + 1).padStart(2, '0');
-            const ano = data.getFullYear();
-            const hora = String(data.getHours()).padStart(2, '0');
-            const minuto = String(data.getMinutes()).padStart(2, '0');
-            const segundo = String(data.getSeconds()).padStart(2, '0');
-            return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
-        }
-        
-
-        const dataAtual = obterDataAtual();
-
-
-        const servicos = orcamento.servicos;
-        const parcelas = orcamento.parcelas;
-        const produtos = orcamento.produtos;
+        const servicos:IServicosMobile[] = orcamento.servicos;
+        const parcelas:IParcelasPedidoMobile[] = orcamento.parcelas;
+        const produtos:IProdutoPedidoMobile[] = orcamento.produtos;
 
         let statusAtualizacao: any;
         let statusDeletePro_orca: any;

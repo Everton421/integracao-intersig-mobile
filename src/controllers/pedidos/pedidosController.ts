@@ -1,71 +1,96 @@
 import { Request, Response } from "express";
-import { databaseMobile, db_mobile } from "../../database/databaseConfig";
+import { databaseMobile,db_integracao_mobile } from "../../database/databaseConfig";
 import { SelectOrcamentosMobile } from "../../models_mobile/pedido/select";
-import { UpdateOrcamento } from "../../models_mobile/pedido/update";
+import { UpdateOrcamentoMobile } from "../../models_mobile/pedido/update";
 import { Select_clientes_sistema } from "../../models_sistema/cliente/select";
 import { DateService } from "../../services/date";
-
+import { CreateOrcamentoSistema } from "../../models_sistema/pedido/createOrcamento";
+import { Select_clientes_mobile } from "../../models_mobile/cliente/select";
+import { SelectIntegracao } from "../../models_integracao/pedidos/select";
+import { SelectOrcamentoSistema } from "../../models_sistema/pedido/selectOrcamento";
+import { UpdateOrcamentoSistema } from "../../models_sistema/pedido/updataOrcamento";
+import { IPedidoMobile } from "../../models_mobile/pedido/types/IPedidoMobile";
+import { InsertParamPedidosMobile } from "../../models_integracao/pedidos/insert";
 export class pedidosController{
 
 
     async select( req:Request,res:Response){
 
-        let obj = new DateService();
+        let objDate = new DateService();
 
-    let selectOrcamentoSistema = new SelectOrcamentosMobile();
-    let updateOrcamento = new UpdateOrcamento();
-    let select_clientes = new Select_clientes_sistema();
+    let selectOrcamentoMobile = new SelectOrcamentosMobile();
+    let updateOrcamentoMobile = new UpdateOrcamentoMobile();
+    let select_clientesSistema = new Select_clientes_sistema();
 
-    let dataAtual = '2025-01-28 00:00:00'
-        let vendedor = 1
-    try{
+    let insertParamPedido  = new InsertParamPedidosMobile();
 
-        const dados_orcamentos:any  = await selectOrcamentoSistema.buscaPordata(  databaseMobile, dataAtual, vendedor  );
+    let updatePedidoSistema = new UpdateOrcamentoSistema();
+
+    let selectPedidosIntegracao = new  SelectIntegracao();
+
+    let selectPedidoSistema = new SelectOrcamentoSistema();
+
+    let selectClientesMobile = new Select_clientes_mobile();
+
+    let createOrcamentoSistema = new CreateOrcamentoSistema()
+
+    let orcamentos_registrados:any;
+
+    //let dataAtual = objDate.obterDataAtual()+' 00:00:00'
+    let dataAtual = '2025-01-09 00:00:00'
+     
+    let vendedor = 1
        
-        const orcamentos_registrados = await Promise.all(dados_orcamentos.map( async (i:any) =>{
-                let produtos: any = [];
-                let servicos: any = [];
-                let parcelas: any = [];
-                let cliente:any;
-                
-                i.data_recadastro = obj.formatarData(new Date(i.data_recadastro));
-                i.data_cadastro = obj.formatarData(new Date(i.data_cadastro));
+        orcamentos_registrados  = await selectOrcamentoMobile.buscaCompleta(dataAtual, vendedor)
+        console.log(orcamentos_registrados )
 
-                try{
-                  const resultCliente = await select_clientes.buscaPorcodigo(databaseMobile, i.cliente);
-                  cliente = resultCliente.length > 0 ? resultCliente[0] : {};
-                }catch(e){ console.log(`erro ao buscar os produtos do pedido ${i.codigo}`)}
+     
+          if(orcamentos_registrados?.length > 0 ){
 
-                try{
-                   produtos = await updateOrcamento.buscaProdutosDoOrcamento(databaseMobile, i.codigo);
-                }catch(e){ console.log(`erro ao buscar os produtos do pedido ${i.codigo}`)}
-                
-                try{
-                   servicos = await updateOrcamento.buscaServicosDoOrcamento(databaseMobile, i.codigo);
-                }catch(e){ console.log(`erro ao buscar os servicos do pedido ${i.codigo}`)}
-                
-                try{
-                  parcelas = await updateOrcamento.buscaParcelasDoOrcamento(databaseMobile, i.codigo);
-                }catch(e){ console.log(`erro ao buscar as parcelas do pedido ${i.codigo}`)}
-            
-                    return {
-                        ...i,
-                        produtos,
-                        servicos,
-                        parcelas,
-                        cliente
-                    }
-                }))
-        console.log(orcamentos_registrados)
+                 for(let i of orcamentos_registrados){
+                    let validPedidoIntegracao:any 
 
-                
-        return res.status(200).json(orcamentos_registrados);
+                    
+                     try{    
+                            validPedidoIntegracao  = await selectPedidosIntegracao.validaPedido(i.codigo)
+                        }catch(e){ console.log('erro ao consultar a tabela de controle de pedidos ', e )}
 
-        } catch (error) {
-             console.error("Erro ao buscar orcamentos:", error);
-             return res.status(500).json({ error: "Erro interno ao buscar orcamentos." });
-        }
+                       
+                        if(validPedidoIntegracao.length > 0 ){
+                            let validPedidoSistema:any = await selectPedidoSistema.buscaOrcamentoCod_site(i.codigo, i.vendedor);
+                                if(validPedidoSistema.length){
 
+                                     if(  i.data_recadastro  > validPedidoSistema[0].data_recadastro  ){
+                                        console.log('atualizando')
+                                         await updatePedidoSistema.update(i, validPedidoIntegracao[0].codigo_sistema)
+                                     }else{
+
+                                        if(   validPedidoSistema[0].data_recadastro > i.data_recadastro   ){
+
+                                        }
+                                     } 
+
+                                } 
+                                
+                               
+                        }else{
+                             try{
+                               let aux =  await createOrcamentoSistema.create(i);
+                                 if(aux){
+                                    let data = {codigo_sistema: i, codigo_mobile: i.codigo , excluido: 'N'}
+                                        await insertParamPedido.cadastrar(data)
+                                 }
+                                 console.log('resposta insert pedido', aux )
+                             } catch(e){
+                                     console.log('erro ao tentar cadastrar orcamento', e)
+                                 } 
+                        }
+                       
+                 
+                } 
+         }   
+   
+    
     }
 
 

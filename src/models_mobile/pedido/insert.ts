@@ -1,4 +1,5 @@
-import { conn } from "../../database/databaseConfig";
+import { conn_sistema } from "../../database/databaseConfig";
+import { IPedidoMobile } from "./types/IPedidoMobile";
 
 export class CreateOrcamento {
 
@@ -16,7 +17,7 @@ export class CreateOrcamento {
   }
 
 
-  async create ( empresa:any, orcamento:any) {
+  async create ( empresa:any, orcamento:IPedidoMobile) {
       return new Promise( async(resolve, reject)=>{
 
       const dataAtual = this.obterDataAtual();
@@ -34,7 +35,6 @@ export class CreateOrcamento {
           total_geral,
           total_produtos,
           total_servicos,
-          totalSemDesconto,
           situacao,
           tipo,
           vendedor,
@@ -56,6 +56,7 @@ export class CreateOrcamento {
       const parcelas = orcamento.parcelas;
       const produtos = orcamento.produtos;
        const cliente = orcamento.cliente;
+        
 
       if (!id)   id = 0;
 
@@ -83,9 +84,9 @@ export class CreateOrcamento {
       ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `
-        await conn.query(
+        await conn_sistema.query(
           sql,
-          [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente.codigo,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
+          [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
           async    (err: any, result: any) => {
               if (err) {
                   console.log(err)
@@ -152,7 +153,7 @@ export class CreateOrcamento {
 
            const sql =  ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
               let dados = [ codigoPedido, codigo, desconto, quantidade, preco, total ]
-            await conn.query( sql,dados ,(error:any, resultado:any)=>{
+            await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
                  if(error){
                          reject(" erro ao inserir produto do orcamento "+ error);
                  }else{
@@ -183,7 +184,7 @@ export class CreateOrcamento {
         let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
 
 
-          await   conn.query( sql,  dados , (err: any, resultParcelas:any) => {
+          await   conn_sistema.query( sql,  dados , (err: any, resultParcelas:any) => {
                   if (err) {
                       console.log("erro ao inserir parcelas !" + err)
                       
@@ -224,7 +225,7 @@ export class CreateOrcamento {
               const sql =  ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
 
                 let dados = [ codigoPedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total  ]
-              await conn.query( sql,dados ,(error:any, resultado:any)=>{
+              await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
                    if(error){
                     console.log(" erro ao inserir servico do orcamento "+ error)
                            reject(" erro ao inserir servico do orcamento "+ error);
