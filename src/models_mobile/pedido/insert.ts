@@ -140,6 +140,7 @@ export class CreateOrcamento {
                   quantidade,
                   desconto,
                   total,
+                  id,
               } = p
 
                if( !preco) preco = 0;

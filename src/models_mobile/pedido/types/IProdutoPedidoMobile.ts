@@ -9,4 +9,5 @@ export interface IProdutoPedidoMobile
     preco: number 
     total: number
     id: number
+    codigo:number
   }

@@ -30,9 +30,7 @@ export class Select_clientes_mobile{
           DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
           from ${empresa}.clientes c
           WHERE c.ativo = 'S'`
- 
- 
- 
+   
           await conn_mobie.query(sql,  (err:any, result:IClienteMobile[] )=>{
               if (err)  reject(err); 
                 resolve(result)

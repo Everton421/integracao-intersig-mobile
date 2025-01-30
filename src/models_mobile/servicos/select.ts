@@ -4,7 +4,7 @@ import { IServicosMobile } from "./types/IServicosMobile";
 
 export class SelectServicosMobile{
 
-    async   buscaPorCodigo(empresa:any, codigo:number)   {
+    async   buscaPorCodigo(empresa:any, codigo:number):Promise<IServicosMobile[]>   {
         return new Promise  ( async ( resolve , reject ) =>{
  
         let sql = ` select *,

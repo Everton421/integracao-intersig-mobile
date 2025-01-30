@@ -1,5 +1,6 @@
  
 import { conn_sistema, db_integracao_mobile } from "../../database/databaseConfig"   
+import { paramPedido } from "./types/paramPedido"
 
 
  
@@ -10,15 +11,14 @@ export class InsertParamPedidosMobile{
         let sql =
          `  
             insert into ${db_integracao_mobile}.pedidos
-            set
             (
             codigo_sistema,
             codigo_mobile,
             excluido
             )values(
-            ${paramPedido.codigo_sistema},
-            ${paramPedido.codigo_mobile},
-            ${paramPedido.excluido}
+            '${paramPedido.codigo_sistema}',
+            '${paramPedido.codigo_mobile}',
+            '${paramPedido.excluido}'
             )
             `   
              
@@ -38,7 +38,6 @@ export class InsertParamPedidosMobile{
       let sql =
        `  
           insert into ${db_integracao_mobile}.pedidos
-          set
           (
           codigo_sistema,
           codigo_mobile,

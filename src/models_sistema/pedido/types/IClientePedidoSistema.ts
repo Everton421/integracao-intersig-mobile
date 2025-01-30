@@ -1,6 +1,7 @@
 export interface IClientePedidoSistema
 {
         codigo: number
+        id:number
         nome: string
         cnpj: string
         celular: string

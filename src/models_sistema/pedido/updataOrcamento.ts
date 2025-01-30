@@ -12,7 +12,7 @@ export class UpdateOrcamentoSistema{
     async update(orcamento:any, codigoOrcamento:number ) {
 
  
-        let codigoCliente = orcamento.cliente.id;
+        let codigoCliente = orcamento.cliente;
 
         
         async function updateCad_orca( orcamento:any, codigo:number ) {

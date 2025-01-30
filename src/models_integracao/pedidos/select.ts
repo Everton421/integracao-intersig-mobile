@@ -1,8 +1,10 @@
 
 import { conn_sistema,  db_integracao_mobile } from "../../database/databaseConfig"   
+import { IPedidoMobile } from "../../models_mobile/pedido/types/IPedidoMobile"
+import { paramPedido } from "./types/paramPedido"
 
 export class SelectIntegracao{
-    async validaPedido(codigoPedidoMobile:any){
+    async validaPedido(codigoPedidoMobile:number):Promise<paramPedido>{
                   return new Promise ( async (resolve, reject)=>{
           
                        let sql = ` SELECT * 

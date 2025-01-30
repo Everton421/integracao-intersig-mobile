@@ -1,5 +1,7 @@
 import { Request, Response, request, response } from "express";
 import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { PedidoSimples } from "./types/IPedidoSistema";
+import { DateService } from "../../services/date";
 
 
 
@@ -127,15 +129,15 @@ export class SelectOrcamentoSistema{
     }
      
 
-    async buscaOrcamentoCod_site( codigo: any, vendedor:number ) {
+    async buscaOrcamentoCod_site( codigo: any  ) :Promise< PedidoSimples[]>{
         return new Promise(async (resolve, reject) => {
 
             const code = parseInt(codigo)
 
-            const sql = ` select CODIGO ,
+            const sql = ` select CODIGO codigo ,COD_SITE cod_site,
                  DATE_FORMAT( DATA_CADASTRO, '%Y-%m-%d') AS data_cadastro,
         DATE_FORMAT( DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
-              from ${db_vendas}.cad_orca where COD_SITE = ${code} and vendedor = ${vendedor} `
+              from ${db_vendas}.cad_orca where COD_SITE = ${code} `
             conn_sistema.query(sql, (err:any, result:any) => {
                 if (err) {
                     console.log(err)
@@ -317,10 +319,10 @@ export class SelectOrcamentoSistema{
     }
 
 
-    async buscaTodos(  ) {
+    async buscaTodos(codigo:number  ) {
 
         const sql = ` SELECT 
-               co.codigo as orcamento,
+               co.codigo as codigo,
                co.cod_site,
                co.total_geral,
                cli.codigo as codigo_cliente,
@@ -345,6 +347,7 @@ export class SelectOrcamentoSistema{
                co.tipo
              from ${db_vendas}.cad_orca co
                            left join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
+                           where co.COD_SITE = ${codigo}
                             ;
                         `;
 
@@ -409,11 +412,15 @@ export class SelectOrcamentoSistema{
 
     }
 
-     async buscaOrcamentosCompleto( id:number,queryData:any ,vendedor:any ){
+
+
+
+     async buscaOrcamentosCompleto( codigo:number ){
             const select = new SelectOrcamentoSistema();
            
-    
-            const dados_orcamentos:any  = await select.buscaOrcamentoCod_siteVendedorData(id, queryData, vendedor);
+            const dateService = new DateService(); 
+
+            const dados_orcamentos:any  = await select.buscaTodos(codigo );
     
             let orcamentos_registrados:any=[];
     
@@ -425,29 +432,30 @@ export class SelectOrcamentoSistema{
                 let parcelas: any = [];
                     
                         try {
-                            servicos = await select.buscaServicosDoOrcamento(i.orcamento);
+                            servicos = await select.buscaServicosDoOrcamento(i.codigo);
                             if (servicos.length === 0 ) servicos = [];
                         } catch (error) {
-                            console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
+                            console.log('erro ao buscar os servicos do orcamento ', i.codigo);
                         }
                         try {
-                            parcelas = await select.buscaParcelasDoOrcamento(i.orcamento);
+                            parcelas = await select.buscaParcelasDoOrcamento(i.codigo);
                             if (parcelas.length === 0 ) parcelas = [];
                         } catch (error) {
-                            console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
+                            console.log('erro ao buscar os servicos do orcamento ', i.codigo);
                         }
                         try {
-                            produtos = await  select.buscaProdutosDoOrcamento(i.orcamento);   
-                           //if(produtos.length === 0 ) produtos = [];
+                            produtos = await  select.buscaProdutosDoOrcamento(i.codigo);   
+                            if(produtos.length === 0 ) produtos = [];
      
                          } catch (error) {
-                                 console.log('erro ao buscar os produtos do orcamento ', i.orcamento );
+                                 console.log('erro ao buscar os produtos do orcamento ', i.codigo );
                          }
     
     
                     const descontos = ( i.desc_prod + i.desc_serv);
-                    const data_cadastro =  select.formatadataAtual(i.data_cadastro);
-                    const data_recadastro = select.dataHora(i.data_recadastro);
+                    const data_cadastro =  dateService.formatarData(i.data_cadastro);
+                    const data_recadastro = dateService.formatarDataHora(i.data_recadastro) 
+                    
     
                     let  data = {
                         "cliente": {
@@ -456,7 +464,7 @@ export class SelectOrcamentoSistema{
                             "cnpj": i.cnpj,
                             "celular": i.celular,
                                  },
-                        "codigo"               : i.orcamento,
+                        "codigo"               : i.codigo,
                         "codigo_site"          : i.cod_site, 
                         "situacao"             : i.situacao,
                         "total_geral"          : i.total_geral,
@@ -486,6 +494,8 @@ export class SelectOrcamentoSistema{
     //        console.log(produtos)
          
                 return orcamentos_registrados 
+ 
+                return dados_orcamentos
         }
     
 

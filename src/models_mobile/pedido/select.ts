@@ -31,16 +31,16 @@ export class SelectOrcamentosMobile {
           let produtos: IProdutoPedidoMobile[] = [];
           let servicos: IServicosMobile[] = [];
           let parcelas: IParcelasPedidoMobile[] = [];
-          let cliente: IClienteMobile | any  = {}  ;
+          let cliente: number =0 ;
 
           i.data_recadastro = obj.formatarDataHora( i.data_recadastro );
           i.data_cadastro = obj.formatarData(new Date(i.data_cadastro));
 
           try {
-            const resultCliente = await selectClientesMobile.buscaPorcodigo(  databaseMobile,  i.cliente );
+            const resultCliente:IClienteMobile[] = await selectClientesMobile.buscaPorcodigo(  databaseMobile,  i.cliente);
 
             if(resultCliente.length > 0   ){
-                cliente =   resultCliente[0] 
+                cliente =   resultCliente[0].id
             }
             
           } catch (e) {

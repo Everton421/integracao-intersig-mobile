@@ -6,5 +6,6 @@ export interface IServicosPedidoSistema
     preco: number 
     total: number
     id: number,
-    valor:number
+    valor:number,
+    codigo:number
   }

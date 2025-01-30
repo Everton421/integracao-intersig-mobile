@@ -2,6 +2,7 @@
 import { IServicosPedidoSistema } from "./IServicosPedidoSistema"    
 import { IParcelasPedidoSistema } from "./IParcelasPedidoSistema"  
 import { IProdutoPedidoSistema } from "./IProdutoPedidoSistema"   
+import { IClientePedidoSistema } from "./IClientePedidoSistema"
 
 export interface IPedidoSistema
 {
@@ -18,7 +19,7 @@ export interface IPedidoSistema
     total_geral: number
     total_produtos: number
     total_servicos: number
-    cliente:  number
+    cliente:  IClientePedidoSistema
     veiculo:number
     data_cadastro:string
     data_recadastro:string
@@ -34,3 +35,9 @@ export interface IPedidoSistema
     parcelas:  IParcelasPedidoSistema[]  
   }
 
+export type PedidoSimples = {
+ codigo:number,
+  cod_site:number ,
+   data_cadastro:string,
+    data_recadastro:string,
+}

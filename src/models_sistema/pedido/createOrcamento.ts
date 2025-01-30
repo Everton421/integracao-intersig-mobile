@@ -23,9 +23,9 @@ export class CreateOrcamentoSistema{
 
 
 
-    async create(orcamento:IPedidoSistema) {
+    async create(orcamento:IPedidoSistema):Promise<number> {
 
-        return new Promise((resolve, reject)=>{
+        return new Promise( async(resolve, reject)=>{
 
         const dataAtual = this.obterDataAtual();
 
@@ -78,7 +78,7 @@ export class CreateOrcamentoSistema{
         if (!quantidade_parcelas)   quantidade_parcelas = 0
        
 
-        conn_sistema.query(
+       await conn_sistema.query(
             `INSERT INTO ${db_vendas}.cad_orca ` +
             `(cliente, cod_site, total_produtos,total_servicos, forma_pagamento, tipo,  DESC_PROD, TOTAL_GERAL, DATA_CADASTRO, SITUACAO,VENDEDOR,CONTATO , DATA_INICIO,DATA_PEDIDO, DATA_APROV, QTDE_PARCELAS, OBSERVACOES,OBSERVACOES2, DATA_RECAD)  
                 VALUES ( ? ,?, ?, ?, ?, ?, ?, ? , ? , ? ,?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -187,6 +187,7 @@ export class CreateOrcamentoSistema{
 
 
     async cadastraParcelasDoPeidido(parcelas:IParcelasPedidoMobile[], codigoPedido:any){
+        return new Promise( async (resolve, reject )=>{
 
         parcelas.forEach( async (p: any) => {
             let vencimento = this.converterData(p.vencimento);
@@ -196,17 +197,21 @@ export class CreateOrcamentoSistema{
                 [codigoPedido, p.parcela, p.valor, p.vencimento, 1], (err: any, resultParcelas:any) => {
                     if (err) {
                         console.log("erro ao inserir parcelas !" + err)
-                        //  return response.status(500).json({ err: "erro ao as parcelas" });
+                        reject(err)
                     } else {
                         console.log('  Parcela inserida com sucesso ', resultParcelas)
+                        resolve(resultParcelas)
                     }
                 }
             )
         })
+    })
 
     }
 
         async cadastraServicosDoPedido( servicos:IServicosPedidoSistema[], codigoPedido:any ){
+            return new Promise( async (resolve, reject )=>{
+
             if (servicos.length > 0) {
 
                 let j=1;
@@ -217,11 +222,13 @@ export class CreateOrcamentoSistema{
                     await conn_sistema.query(
                         ` INSERT INTO ${db_vendas}.ser_orca ( ORCAMENTO , SEQUENCIA, SERVICO, QUANTIDADE, UNITARIO, DESCONTO, PRECO_TABELA )
                             VALUES ( ?, ?, ?, ?, ?, ?, ?  ) `,
-                        [codigoPedido, j, i.id, i.quantidade, i.valor, i.desconto, i.valor ], (err: any, resultServicos:any) => {
+                        [codigoPedido, j, i.codigo, i.quantidade, i.valor, i.desconto, i.valor ], (err: any, resultServicos:any) => {
                             if (err) {
                                 console.log(`ocorreu um erro ao inserir os servicos`, err)
+                                reject(err)
                             } else {
                                 console.log(" Servico inserido com sucesso ", resultServicos);
+                                resolve(resultServicos)
                             }
                         }
                     )
@@ -231,6 +238,7 @@ export class CreateOrcamentoSistema{
                     j++;
                 }
             } 
-        }
+        })
+    }
 
 }

@@ -1,10 +1,13 @@
 import { Request, Response, request, response } from "express";
-import { conn_mobie  } from "../../database/databaseConfig";
+import { conn_mobie, databaseMobile  } from "../../database/databaseConfig";
 import { CreateOrcamento } from "./insert";
 import { IProdutoPedidoMobile } from "./types/IProdutoPedidoMobile";
 import { IServicosMobile } from "../servicos/types/IServicosMobile";
 import {    IParcelasPedidoMobile } from "./types/IParcelasPedido";
 import { IPedidoMobile } from "./types/IPedidoMobile";
+import { SelectServicosMobile } from "../servicos/select";
+import { SelectProdutosMobile } from "../produtos/select";
+import { Select_clientes_mobile } from "../cliente/select";
 
 
 export class UpdateOrcamentoMobile{
@@ -15,7 +18,7 @@ export class UpdateOrcamentoMobile{
             let sql = `
                 UPDATE ${empresa}.pedidos  
                 set 
-                cliente             =  ${orcamento.codigo_cliente},
+                cliente             =  ${orcamento.cliente.codigo},
                 total_geral         =  ${orcamento.total_geral} ,
                 total_produtos      =  ${orcamento.total_produtos} ,
                 total_servicos      =  ${orcamento.total_servicos} ,
@@ -121,7 +124,7 @@ export class UpdateOrcamentoMobile{
         return new Promise( async (resolve, reject) => {
             const sql = ` select
                 sp.pedido,
-                s.id,
+                s.codigo,
                 sp.desconto,
                 sp.quantidade,
                 sp.valor,
@@ -150,11 +153,16 @@ export class UpdateOrcamentoMobile{
             })
         })
     }
+ 
 
    
-    async update(empresa:any,orcamento:IPedidoMobile, codigoOrcamento:number ):Promise<number> {
-      return new Promise ( async (resolve, reject )=>{
- 
+    async update(empresa:any,orcamento:any, codigoOrcamento:number )  {
+       return new Promise ( async (resolve, reject )=>{
+            
+    let selectServicosMobile = new SelectServicosMobile()
+    let selectProdutosMobile = new SelectProdutosMobile()
+        let selectClientesMobile = new Select_clientes_mobile();
+
         let objUpdate = new UpdateOrcamentoMobile();
         let objInsert = new CreateOrcamento();
    
@@ -166,46 +174,70 @@ export class UpdateOrcamentoMobile{
         let statusAtualizacao: any;
         let statusDeletePro_orca: any;
         let statusDeletePar_orca: any;
+        
+        const validCliente = await selectClientesMobile.buscaPorId(databaseMobile, orcamento.cliente.codigo)
       
+            if( validCliente.length > 0 ){
+                orcamento.cliente = validCliente[0]
+            }
+
             try {
                 statusAtualizacao = await objUpdate.updateTabelaPedido(empresa,orcamento,codigoOrcamento );
             } catch (err) {
                 reject(err)
                 return;
             }
-            const validaServicos:any = await objUpdate.buscaServicosDoOrcamento( empresa,codigoOrcamento )
+
+          const validaServicos:any = await objUpdate.buscaServicosDoOrcamento( empresa,codigoOrcamento )
               
-            if( validaServicos.length > 0 ){
-             
-              try {
-                  await  objUpdate.deleteServicosPedido( empresa,codigoOrcamento )
-              } catch (e) {
-                 reject(e);
-                  return;
+           if( validaServicos.length > 0 ){
+                try {
+                    await  objUpdate.deleteServicosPedido( empresa,codigoOrcamento )
+                } catch (e) {
+                    reject(e);
+                    return;
+                }
+            }
+           
+          
+               if (servicos.length > 0) {
+
+                // função para buscar o codigo interno do servico mobile
+                        for( let i of servicos ){
+                               let result = await selectServicosMobile.buscaPorId(empresa, i.codigo)
+                               i.codigo = result[0].codigo
+                        }
+
+                 try {
+                     await objInsert.cadastraServicosDoPedido(   servicos,codigoOrcamento, empresa )
+                 } catch (e) { 
+                     reject(e);
+                      return;
+                 }
               }
 
-              if (servicos.length > 0) {
+ 
 
-                  try {
-                      await objInsert.cadastraServicosDoPedido(   servicos,codigoOrcamento, empresa )
-                  } catch (e) { 
-                      reject(e);
-                       return;
-                  }
-
-              }
-            if (statusAtualizacao) {
+            
                 const validaProdutos:any = await objUpdate.buscaProdutosDoOrcamento( empresa,codigoOrcamento )
+                
                 if( validaProdutos.length > 0 ){
+                    
                     try {
                         statusDeletePro_orca = await objUpdate.deleteProdutosPedido(empresa,codigoOrcamento);
                     } catch (err) {
                         reject(err)
                          return;
                     }
+                    }
                     
                     if (produtos.length > 0) {
-                        if (statusDeletePro_orca) {
+                       // if (statusDeletePro_orca) {
+                         for( let i of produtos ){
+                                let result = await selectProdutosMobile.buscaPorId(empresa, i.codigo)
+                                i.codigo = result[0].codigo
+                        }
+
                             try {
                                 await objInsert.cadastraProdutosDoPedido(produtos,empresa,codigoOrcamento);
                             } catch (err) {
@@ -213,39 +245,40 @@ export class UpdateOrcamentoMobile{
                                   return;
                             }
                         }
-                    }
-                }
+          
            
-            }
-
+     
               const validaParcelas:any = await objUpdate.buscaParcelasDoOrcamento(empresa, codigoOrcamento )
 
                 if( validaParcelas.length > 0 ){
-                      //  if(statusAtualizacao ){
+                         if(statusAtualizacao ){
                             try{
                                 statusDeletePar_orca = await objUpdate.deleteParcelasPedido(empresa,codigoOrcamento);
                                 }catch(err){
                                     reject(err)
                                     return;
                                 }   
-                       //     } 
+                          } 
 
-                        //if(statusDeletePar_orca){
+                       if(statusDeletePar_orca){
                         try{
                             await objInsert.cadastraParcelasDoPedido (parcelas,empresa, codigoOrcamento );
                         }catch(err){
                              reject(err)
                               return;
                         }
-                  //  } 
+                   } 
                     } 
-                    resolve(codigoOrcamento)
-        }else {
+
+
+                 
+      
             
             resolve(codigoOrcamento)
-        }
+          
+    
     })
-
+ 
     }
 
 
