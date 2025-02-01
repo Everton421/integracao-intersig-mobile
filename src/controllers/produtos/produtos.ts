@@ -31,6 +31,7 @@ export class ProdutoController {
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
+                                           
                                           id :i.codigo,
                                           estoque :i.estoque,
                                           preco :i.preco,
@@ -73,7 +74,7 @@ export class ProdutoController {
 
                                                   console.log('cadastrando ',i.codigo )
                                          //cadastrar
-                                          await insertProdutosMobile.insert(databaseMobile, objInsert)
+                                          await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
                                                 
                                              }catch(e){ console.log(e)
 

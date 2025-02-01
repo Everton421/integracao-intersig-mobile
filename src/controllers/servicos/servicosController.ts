@@ -49,7 +49,7 @@ export class ServicoController{
                                                    //update
                                                   try{
                                                        console.log('atualizando ',i.CODIGO )
-                                                      await  updateServicoMobile.update(databaseMobile, objInsert)
+                                                      await  updateServicoMobile.updateCodigoSistema(databaseMobile, objInsert)
                                                     }catch(e){ console.log(e)}
                                                 }else{
                                                    console.log(i.DATA_RECADASTRO ,' > ',  validServicoMobile.data_recadastro)
@@ -59,7 +59,7 @@ export class ServicoController{
                                                    console.log('cadastrando ',i.CODIGO )
                                           //cadastrar
                                           try{
-                                           await insertServicoMobile.insert(databaseMobile, objInsert)
+                                           await insertServicoMobile.insertCodigoSistema(databaseMobile, objInsert)
                                         }catch(e){ console.log(e)}
            
                                           } 

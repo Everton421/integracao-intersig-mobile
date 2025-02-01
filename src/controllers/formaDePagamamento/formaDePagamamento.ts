@@ -21,7 +21,7 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
 
                         for( let i of fpgtSistema){
 
-                                let fpgtMobile = await selectFormaPagamentoMobile.buscaPorId(databaseMobile, i.CODIGO) 
+                                let fpgtMobile = await selectFormaPagamentoMobile.buscaPorCodigo(databaseMobile, i.CODIGO) 
 
                                     let validFpgtMobile = fpgtMobile[0];
                                
@@ -29,6 +29,7 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
                                         i.DATA_RECAD = '0000-00-00 00:00:00';
                                     } 
                                let objInsert:IFormaPagamentoMobile = {
+                                codigo:i.CODIGO,
                                 id:i.CODIGO,
                                 descricao:i.DESCRICAO,
                                 desc_maximo:i.DESC_MAXIMO,
@@ -46,7 +47,7 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
                                         try{ 
                                         //update
                                                 console.log('atualizando ',i.CODIGO )
-                                             await  updateFormaPagamentoSistema.update(databaseMobile, objInsert)
+                                             await  updateFormaPagamentoSistema.updateCodigoSistema(databaseMobile, objInsert)
                                        }catch(e){ console.log(e)}
 
                                     }else{
@@ -57,7 +58,7 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
                                 try{ 
                                         console.log('cadastrando ',i.CODIGO )
                                //cadastrar
-                                await insertFormaPagamentoMobile.cadastrar(databaseMobile, objInsert)
+                                await insertFormaPagamentoMobile.cadastrarCodigoSistema(databaseMobile, objInsert)
                             }catch(e){ console.log(e)}
 
                                } 

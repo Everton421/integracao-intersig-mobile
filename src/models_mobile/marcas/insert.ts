@@ -20,4 +20,21 @@ export class Insert_MarcasMobile{
             })  
         })
     }
+    async cadastrarCodigoSistema( empresa:string, marca:IMarcasMobile ){
+        return new Promise( async (resolve, reject )=>{
+            
+            let sql = `
+                    INSERT INTO ${empresa}.marcas (  codigo, id, data_cadastro, data_recadastro, descricao ) VALUES
+                                                      (? ,? , ? , ? , ? ); `;
+            const values = [marca.codigo, marca.id , marca.data_cadastro, marca.data_recadastro, marca.descricao]
+
+            await conn_mobie.query( sql , values,(err:any, result:any )=>{
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(result);
+                }
+            })  
+        })
+    }
 }

@@ -1,30 +1,32 @@
+
 import { conn_sistema, databaseMobile } from "../../database/databaseConfig";
 import { DateService } from "../../services/date";
 import { Select_clientes_mobile } from "../cliente/select";
-import { UpdateOrcamentoMobile } from "./update";
 import { IPedidoMobile } from "./types/IPedidoMobile";
 import { IProdutoPedidoMobile } from "./types/IProdutoPedidoMobile";
 import { IServicosMobile } from "../servicos/types/IServicosMobile";
 import { IParcelasPedidoMobile } from "./types/IParcelasPedido";
 import { IClienteMobile } from "../cliente/types/IClienteMobile";
-import { IClientePedidoMobile } from "./types/IClientePedidoMobile";
-export class SelectOrcamentosMobile {
+import { SelectItemsPedidoMobile } from "./selectItemsPedidoMobile";
 
+
+export class SelectPedidoMobile {
 
     
-  async buscaCompleta( dataAtual: string, vendedor: number  ): Promise<IPedidoMobile[]> {
+  async buscaCompleta( dataAtual: string   ): Promise<IPedidoMobile[]> {
     let obj = new DateService();
 
-    let selectOrcamentoMobile = new SelectOrcamentosMobile();
-    let updateOrcamentoMobile = new UpdateOrcamentoMobile();
+    let selectOrcamentoMobile = new SelectPedidoMobile();
 
     let selectClientesMobile = new Select_clientes_mobile();
+
+    let selectItemsPedidoMobile = new SelectItemsPedidoMobile();
 
     let orcamentos_registrados: IPedidoMobile[] = []; // Inicializar como um array vazio
 
 
     try {
-        let  dados_orcamentos:any  = await selectOrcamentoMobile.buscaPordata( databaseMobile, dataAtual, vendedor );
+        let  dados_orcamentos:any  = await selectOrcamentoMobile.buscaPordata( databaseMobile, dataAtual   );
 
       orcamentos_registrados = await Promise.all(
         dados_orcamentos.map(async (i:IPedidoMobile) => {
@@ -48,14 +50,14 @@ export class SelectOrcamentosMobile {
           }
 
           try {
-            produtos = await updateOrcamentoMobile.buscaProdutosDoOrcamento( databaseMobile,  i.codigo  );
+            produtos = await selectItemsPedidoMobile.buscaProdutosDoOrcamento( databaseMobile,  i.codigo  );
 
           } catch (e) {
             console.log(`erro ao buscar os produtos do pedido ${i.codigo}`);
           }
 
           try {
-            servicos = await updateOrcamentoMobile.buscaServicosDoOrcamento(
+            servicos = await selectItemsPedidoMobile.buscaServicosDoOrcamento(
               databaseMobile,
               i.codigo
             );
@@ -64,7 +66,7 @@ export class SelectOrcamentosMobile {
           }
 
           try {
-            parcelas = await updateOrcamentoMobile.buscaParcelasDoOrcamento(
+            parcelas = await selectItemsPedidoMobile.buscaParcelasDoOrcamento(
               databaseMobile,
               i.codigo
             );
@@ -105,7 +107,7 @@ export class SelectOrcamentosMobile {
     });
   }
 
-  async buscaPordata(empresa: any, queryData: any, vendedor: number) {
+  async buscaPordata(empresa: any, queryData: any ) {
     let date = new DateService();
 
     let param_data: any;
@@ -115,7 +117,7 @@ export class SelectOrcamentosMobile {
 
     return new Promise<IPedidoMobile[]>(async (resolve, reject) => {
       const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
-                where   co.data_recadastro >= '${param_data}' and co.vendedor = ${vendedor}
+                where   co.data_recadastro >= '${param_data}'  
             `;
       await conn_sistema.query(sql, async (err: any, result: any) => {
         if (err) {

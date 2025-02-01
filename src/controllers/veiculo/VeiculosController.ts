@@ -24,7 +24,7 @@ export class VeiculosController{
 
                         for(let i of veicSistema){
            
-                                    let veicMobile = await selectVeiculosMobile.buscaPorId(databaseMobile, i.CODIGO)
+                                    let veicMobile = await selectVeiculosMobile.buscaPorCodigo(databaseMobile, i.CODIGO)
                                     let validVeicMobile = veicMobile[0]
 
                                                if(!i.DATA_RECAD  || i.DATA_RECAD === null ){
@@ -35,6 +35,7 @@ export class VeiculosController{
                                             } 
                                                
                                           let objInsert:any = {
+                                            codigo:i.CODIGO,
                                             id: i.CODIGO,
                                             cliente: i.CLIENTE,
                                             placa: i.PLACA,
@@ -53,7 +54,7 @@ export class VeiculosController{
                                                    //update
                                                     try{
                                                     console.log('atualizando ',i.CODIGO )
-                                                      await  updateVeiculosMobile.update(databaseMobile, objInsert)
+                                                      await  updateVeiculosMobile.updateCodigoSistema(databaseMobile, objInsert)
                                                         return
                                                     }catch(e){ console.log(e)}
                                                // }else{
@@ -64,8 +65,8 @@ export class VeiculosController{
                                             try{ 
                                                    console.log('cadastrando ',i.CODIGO )
                                               //cadastrar
-                                               await inserVeiculosMobile.insert(databaseMobile, objInsert)
-                                             }catch(e){ console.log(e)}
+                                               await inserVeiculosMobile.insertCodigoSistema(databaseMobile, objInsert)
+                                             }catch(e){ console.log(e)} 
            
                                           } 
                         }

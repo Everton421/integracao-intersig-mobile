@@ -29,6 +29,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
 
                              let objInsertMobile:any =
                              {
+                                 codigo:i.CODIGO, 
                                  id: i.CODIGO,
                                  celular : i.CELULAR, 
                                  nome: i.NOME ,
@@ -51,7 +52,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                              try{ 
                                                 console.log(' atualizando ',i.DATA_RECAD ,'>', clienteV.data_recadastro )
                                              
-                                                   await update_clientes_mobile.update(databaseMobile, objInsertMobile)
+                                                   await update_clientes_mobile.updateCodigoSistema(databaseMobile, objInsertMobile)
                                               }catch(e){ console.log(e)}
                                                 
                                             }else{
@@ -60,7 +61,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                             }
                                         }else{
                                             try{ 
-                                              let aux =  await insert_clientes_mobile.cadastrar(databaseMobile, objInsertMobile)
+                                              let aux =  await insert_clientes_mobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
                                                console.log(aux)
                                         }catch(e){ console.log(e)}
 

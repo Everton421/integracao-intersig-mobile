@@ -1,4 +1,100 @@
 import { Request, Response } from "express";
+import { SelectPedidoMobile } from "../../models_mobile/pedido/selectPedidoMobile";
+import { UpdatePedidoMobile } from "../../models_mobile/pedido/updatePedidoMobile";
+import { DateService } from "../../services/date";
+
+import { SelectOrcamentoSistema } from "../../models_sistema/pedido/selectOrcamento";
+import { InsertParamPedidosMobile } from "../../models_integracao/pedidos/insert";
+import { paramPedido } from "../../models_integracao/pedidos/types/paramPedido";
+import { InsertPedidoSistema } from "../../models_sistema/pedido/insertPedidoSistema";
+import { UpdatePedidoSistema } from "../../models_sistema/pedido/updatePedidoSistema";
+import { databaseMobile } from "../../database/databaseConfig";
+
+
+export class pedidosController{
+
+    async select( req:Request,res:Response){
+
+        let objDate = new DateService();
+
+    let selectPedidoMobile = new SelectPedidoMobile();
+    let updatePedidoMobile = new UpdatePedidoMobile();
+
+    let insertParamPedido  = new InsertParamPedidosMobile();
+
+    let selectPedidoSistema = new SelectOrcamentoSistema();
+    let createPedidoSistema = new InsertPedidoSistema()
+    let updatePedidoSistema = new UpdatePedidoSistema();    
+
+
+    let orcamentos_registrados:any[] =[];
+
+   let dataAtual = objDate.obterDataAtual()+' 00:00:00'
+     
+       try{
+        orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(dataAtual  )
+    }catch(e){ console.log('erro ao Consultar os orcamentos Mobile')}
+     
+          if(orcamentos_registrados?.length > 0 ){
+
+                for(let i of orcamentos_registrados){
+                        
+                                
+                        let validPedidoSistema:any = await selectPedidoSistema.buscaOrcamentosCompleto(i.codigo );
+                                
+                                if(validPedidoSistema.length){
+                                    
+                                        let pedidoSistema = validPedidoSistema[0];
+
+                                    // se data de recadastro do pedido mobile for maior atualiza o pedido no sistema 
+                                        if(  i.data_recadastro  > pedidoSistema.data_recadastro   ){
+                                            console.log(`atualizando pedido ${pedidoSistema.codigo } no sistema ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
+                                                  await updatePedidoSistema.update(i, pedidoSistema.codigo);
+                                        }else {
+                                           if( pedidoSistema.data_recadastro > i.data_recadastro  || i.situacao !== pedidoSistema.situacao  ){
+                                            console.log(`atualizando pedido ${pedidoSistema.codigo } no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
+                                            ///
+                                             await updatePedidoMobile.update(databaseMobile, pedidoSistema, i.codigo )
+                                          }else{
+                                        ///     console.log(`o pedido ${i.codigo} se encontra atualizado`)
+                                           }
+                                            }
+
+                                    }else{
+                                        try{
+    
+                                            let aux:number =  await createPedidoSistema.create(i);
+                                                if(aux > 0 ){
+            
+                                                let data:paramPedido = {codigo_sistema: aux, codigo_mobile: i.codigo , excluido: 'N'}
+                                                await insertParamPedido.cadastrar(data)
+                                        }
+                                            console.log('resposta insert pedido', aux )
+                                        } catch(e){
+                                                console.log('erro ao tentar cadastrar orcamento', e)
+                                            }
+                                    } 
+                                        
+            
+                    }  
+                
+         }   
+   
+    
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/*import { Request, Response } from "express";
 import { databaseMobile,db_integracao_mobile } from "../../database/databaseConfig";
 import { SelectOrcamentosMobile } from "../../models_mobile/pedido/select";
 import { UpdateOrcamentoMobile } from "../../models_mobile/pedido/update";
@@ -60,28 +156,28 @@ export class pedidosController{
                                            console.log(`atualizando pedido ${pedidoSistema.codigo } no sistema ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
                                             await updatePedidoSistema.update(i, pedidoSistema.codigo);
                                         }else {
-                                          if( pedidoSistema.data_recadastro > i.data_recadastro  || i.situacao !== pedidoSistema.situacao  ){
-                                           console.log(`atualizando pedido ${pedidoSistema.codigo } no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
-
-                                            await updateOrcamentoMobile.update(databaseMobile, pedidoSistema, i.codigo )
-                                           }else{
-                                            console.log(`o pedido ${i.codigo} se encontra atualizado`)
-                                           }
+                                        //  if( pedidoSistema.data_recadastro > i.data_recadastro  || i.situacao !== pedidoSistema.situacao  ){
+                                        //   console.log(`atualizando pedido ${pedidoSistema.codigo } no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
+//
+                                        //    await updateOrcamentoMobile.update(databaseMobile, pedidoSistema, i.codigo )
+                                        //   }else{
+                                        //    console.log(`o pedido ${i.codigo} se encontra atualizado`)
+                                        //   }
                                           }
 
                                 }else{
-                                     try{
- 
-                                         let aux:number =  await createOrcamentoSistema.create(i);
-                                            if(aux > 0 ){
-          
-                                             let data:paramPedido = {codigo_sistema: aux, codigo_mobile: i.codigo , excluido: 'N'}
-                                            await insertParamPedido.cadastrar(data)
-                                     }
-                                           console.log('resposta insert pedido', aux )
-                                      } catch(e){
-                                              console.log('erro ao tentar cadastrar orcamento', e)
-                                          }
+                                  //   try{
+ //
+                                  //       let aux:number =  await createOrcamentoSistema.create(i);
+                                  //          if(aux > 0 ){
+          //
+                                  //           let data:paramPedido = {codigo_sistema: aux, codigo_mobile: i.codigo , excluido: 'N'}
+                                  //          await insertParamPedido.cadastrar(data)
+                                  //   }
+                                  //         console.log('resposta insert pedido', aux )
+                                  //    } catch(e){
+                                  //            console.log('erro ao tentar cadastrar orcamento', e)
+                                  //        }
                                 } 
                                  
                             
@@ -95,4 +191,4 @@ export class pedidosController{
     }
 
 
-}
+}*/

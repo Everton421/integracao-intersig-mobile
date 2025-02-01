@@ -2,11 +2,14 @@ import { Request, Response, request, response } from "express";
 import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
 import { SelectOrcamentoSistema } from "./selectOrcamento";
 import { DateService } from "../../services/date";
-import { DeleteOrcamentoSistema } from "./deleteOrcamentoSistema";
-import { CreateOrcamentoSistema } from "./createOrcamento";
+ 
+import { SelectItemsPedidoSistema } from "./selectItensPedidoSistema";
+import { DeleteItensPedidoMobile } from "../../models_mobile/pedido/deleteItensPedidoMobile";
+import { DeleteItensPedidoSistema } from "./deleteItensPedidoSistema";
+import { InsertItensPedidoSistema } from "./insertItensPedidoSistema";
 
 
-export class UpdateOrcamentoSistema{
+export class UpdatePedidoSistema{
    
    
     async update(orcamento:any, codigoOrcamento:number ) {
@@ -49,10 +52,11 @@ export class UpdateOrcamentoSistema{
 
         
          const selectOrcamentoSistema = new SelectOrcamentoSistema();
-         const deleteOrcamentoSistema = new DeleteOrcamentoSistema();
-        const insertOrcamentoSistema = new CreateOrcamentoSistema()
+         const deleteItensPedidoSistema = new DeleteItensPedidoSistema();
+         const selectItensPedidoSistema = new SelectItemsPedidoSistema();
+         const insertItensPedidoSistema = new InsertItensPedidoSistema();
 
-     const objDate = new DateService();
+        const objDate = new DateService();
 
         let objData = new DateService()
 
@@ -82,8 +86,6 @@ export class UpdateOrcamentoSistema{
             codigo_cliente,
             descontos_produto
         } = orcamento;
-
-        
 
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
@@ -121,10 +123,10 @@ export class UpdateOrcamentoSistema{
 
             if (statusAtualizacao) {
                 
-                const validaProdutos:any = await selectOrcamentoSistema.buscaProdutosDoOrcamento( codigoOrcamento )
+                const validaProdutos:any = await selectItensPedidoSistema.buscaProdutosDoOrcamento( codigoOrcamento )
                 if( validaProdutos.length > 0 ){
                     try {
-                        statusDeletePro_orca = await deleteOrcamentoSistema.deletePro_orca(codigoOrcamento);
+                        statusDeletePro_orca = await deleteItensPedidoSistema.deletePro_orca(codigoOrcamento);
                     } catch (err) {
                         console.log(err);
                     //  return response.status(500).json({ "msg": err });
@@ -133,7 +135,7 @@ export class UpdateOrcamentoSistema{
                     if (produtos.length > 0) {
                         if (statusDeletePro_orca) {
                             try {
-                                await insertOrcamentoSistema.cadastraProdutosDoPedido(produtos ,codigoOrcamento);
+                                await insertItensPedidoSistema.cadastraProdutosDoPedido(produtos ,codigoOrcamento);
                             } catch (err) {
                                 console.log(err)
                             }
@@ -143,12 +145,12 @@ export class UpdateOrcamentoSistema{
 
 
 
-              const validaServicos:any = await selectOrcamentoSistema.buscaServicosDoOrcamento( codigoOrcamento )
+              const validaServicos:any = await selectItensPedidoSistema.buscaServicosDoOrcamento( codigoOrcamento )
               
               if( validaServicos.length > 0 ){
                
                 try {
-                    await deleteOrcamentoSistema.deleteSer_orca(codigoOrcamento)
+                    await deleteItensPedidoSistema.deleteSer_orca(codigoOrcamento)
                 } catch (e) {
                     console.log(e);
                 }
@@ -156,19 +158,19 @@ export class UpdateOrcamentoSistema{
                 if (servicos.length > 0) {
 
                     try {
-                        await insertOrcamentoSistema.cadastraServicosDoPedido( servicos, codigoOrcamento);
+                        await insertItensPedidoSistema.cadastraServicosDoPedido( servicos, codigoOrcamento);
                     } catch (e) { console.log(` erro ao inserir os servicos`, e) }
 
                 }
             }
 
-              const validaParcelas:any = await selectOrcamentoSistema.buscaParcelasDoOrcamento( codigoOrcamento )
+              const validaParcelas:any = await selectItensPedidoSistema.buscaParcelasDoOrcamento( codigoOrcamento )
 
            if( validaParcelas.length > 0 ){
 
                 if(statusAtualizacao ){
                     try{
-                        statusDeletePar_orca = await deleteOrcamentoSistema.deletePar_orca(codigoOrcamento);
+                        statusDeletePar_orca = await deleteItensPedidoSistema.deletePar_orca(codigoOrcamento);
                         }catch(err){
                             console.log(err);
                             return response.status(500).json({"msg":err});
@@ -177,7 +179,7 @@ export class UpdateOrcamentoSistema{
 
                 if(statusDeletePar_orca){
                   try{
-                     await insertOrcamentoSistema.cadastraParcelasDoPeidido( parcelas, codigoOrcamento);
+                     await insertItensPedidoSistema.cadastraParcelasDoPeidido( parcelas, codigoOrcamento);
                   }catch(err){
                       console.log(err)
                       return response.status(500).json({"msg":err});

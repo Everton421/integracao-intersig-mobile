@@ -21,7 +21,7 @@ import { IMarcasSistema } from "../../models_sistema/marcas/types/IMarcasSistema
 
                         for( let i of marcasSistema){
 
-                                let marcasMobile = await selectMarcasMobile.buscaPorId(databaseMobile, i.CODIGO) 
+                                let marcasMobile = await selectMarcasMobile.buscaPorCodigo(databaseMobile, i.CODIGO) 
 
                                     let validMarcaMobile = marcasMobile[0];
                                
@@ -43,7 +43,7 @@ import { IMarcasSistema } from "../../models_sistema/marcas/types/IMarcasSistema
                                         try{
                                             //update
                                             console.log('atualizando ',i.CODIGO )
-                                        await  updateMarcasMobile.update(databaseMobile, objInsert)
+                                        await  updateMarcasMobile.updateCodigoSistema(databaseMobile, objInsert)
                                     }catch(e){ console.log(e)}
 
                                     }else{
@@ -54,7 +54,7 @@ import { IMarcasSistema } from "../../models_sistema/marcas/types/IMarcasSistema
                            try{
                                 console.log('cadastrando ',i.CODIGO )
                                //cadastrar
-                                await insert_MarcasMobile.cadastrar(databaseMobile, objInsert)
+                                await insert_MarcasMobile.cadastrarCodigoSistema(databaseMobile, objInsert)
                             }catch(e){ console.log(e)}
 
                                } 

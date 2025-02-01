@@ -29,7 +29,7 @@ export class Tipos_osController{
 
                         for(let i of tiposOSsistema){
            
-                                    let tipoOsMobile = await selectTiposOsMobile.buscaPorId(databaseMobile, i.CODIGO)
+                                    let tipoOsMobile = await selectTiposOsMobile.buscaPorCodigo(databaseMobile, i.CODIGO)
                                     let validTipoOSMobile = tipoOsMobile[0]
 
                                                if(!i.DATA_RECAD  || i.DATA_RECAD === null ){
@@ -54,7 +54,7 @@ export class Tipos_osController{
                                                    //update
                                                     try{
                                                     console.log('atualizando ',i.CODIGO )
-                                                      await  updateTipoOsMobile.update(databaseMobile, objInsert)
+                                                      await  updateTipoOsMobile.updateCodigoSistema(databaseMobile, objInsert)
                                                         return
                                                     }catch(e){ console.log(e)}
                                              //  }else{
@@ -65,7 +65,7 @@ export class Tipos_osController{
                                             try{ 
                                                    console.log('cadastrando ',i.CODIGO )
                                               //cadastrar
-                                               await insertTipoOsMobile.insert(databaseMobile, objInsert)
+                                               await insertTipoOsMobile.insertCodigoSistema(databaseMobile, objInsert)
                                              }catch(e){ console.log(e)}
            
                                           } 

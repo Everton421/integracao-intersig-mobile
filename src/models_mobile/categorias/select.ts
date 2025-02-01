@@ -68,4 +68,24 @@ export class Select_Categorias{
     }
 
 
+    async buscaPorCodigo(empresa:string, codigo:any ){
+        return new Promise<ICategoriaMobile[]>( async (resolve, reject)=>{
+
+             let sql = ` SELECT *,
+                DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+                DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro
+             FROM ${empresa}.categorias where codigo = '${codigo}'`
+ 
+            await conn_mobie.query( sql  ,(err, result )=>{
+                if(err){
+                    console.log(` erro ao buscar categoria id ${codigo}`,err)
+                    reject(err);
+
+                }else{
+                    resolve(result);
+                }
+            })
+        })
+    }
+
 }

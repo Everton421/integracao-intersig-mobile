@@ -28,7 +28,7 @@ export class categoriasController{
                          for(let i of categoriasSistema ){
                              let validCategoriaMobile:ICategoriaMobile[];
 
-                             validCategoriaMobile = await selectCategoriasMobile.buscaPorId(databaseMobile, i.CODIGO);
+                             validCategoriaMobile = await selectCategoriasMobile.buscaPorCodigo(databaseMobile, i.CODIGO);
 
                              let objInsertMobile:any =
                              {
@@ -56,7 +56,7 @@ export class categoriasController{
                                           
                                                 try{ 
                                                       console.log(' atualizando ',i.DATA_RECAD ,'>', categoriaV.data_recadastro )
-                                                        await update_categorias_Mobile.update(databaseMobile, objInsertMobile)
+                                                        await update_categorias_Mobile.updateCodigoSistema(databaseMobile, objInsertMobile)
                                                 }catch(e){ console.log(e)}
                                                  
                                              }else{
@@ -68,7 +68,7 @@ export class categoriasController{
 
                                      try{ 
                                             console.log('cadastrando categoria ', i.CODIGO)
-                                           let aux =  await insertCategoriasMobile.cadastrar(databaseMobile, objInsertMobile)
+                                           let aux =  await insertCategoriasMobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
                                     }catch(e){ console.log(e)}
 
                                         }

@@ -9,6 +9,7 @@ export class UpdateProdutosMobile{
 
             const sql =` update ${empresa}.produtos  
                      set
+                codigo = '${produto.codigo}',
                  id =  '${produto.id}',  
                  estoque =  ${produto.estoque} ,
                  preco =  ${produto.preco} ,
@@ -26,12 +27,12 @@ export class UpdateProdutosMobile{
                  observacoes1 =  '${produto.observacoes1}',
                  observacoes2 =  '${produto.observacoes2}',
                  observacoes3=  '${produto.observacoes3}'  
-                 where id = '${produto.id}'
+                 where codigo = '${produto.codigo}'
                   `
 
             await conn_mobie.query(sql, (err, result )=>{
                 if(err){
-                    console.log(`erro ao atualizar produto ${produto.id}`)
+                    console.log(`erro ao atualizar produto ${produto.codigo}`)
                     console.log(sql)
                     reject(err)
                 }else{

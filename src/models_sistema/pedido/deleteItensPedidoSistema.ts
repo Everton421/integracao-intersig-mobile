@@ -1,6 +1,6 @@
 import { conn_sistema, db_vendas } from "../../database/databaseConfig";
 
-export class DeleteOrcamentoSistema{
+export class DeleteItensPedidoSistema{
     
 
 

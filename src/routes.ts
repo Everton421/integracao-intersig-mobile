@@ -36,10 +36,10 @@ import { pedidosController } from "./controllers/pedidos/pedidosController";
  
     router.get(`/teste`,  
  
-  new pedidosController().select
+  //new ProdutoController().main
       
-       
-     
+  // new ClienteController().main    
+     new VeiculosController().main
      )
 
  

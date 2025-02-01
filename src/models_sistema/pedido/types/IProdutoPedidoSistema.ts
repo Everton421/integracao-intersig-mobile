@@ -1,14 +1,15 @@
 
 
 
-export interface IProdutoPedidoSistema
-{
+export type IProdutoPedidoSistema
+= {
     pedido: number
     desconto: number
     quantidade: number
     preco: number 
     total: number
     id: number
+    codigo: number
 
     just_icms:string
     just_ipi:string
@@ -17,3 +18,5 @@ export interface IProdutoPedidoSistema
     fator_qtde:number
     tabela:number
   }
+
+  
