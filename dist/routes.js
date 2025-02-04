@@ -60,7 +60,7 @@ cron.schedule('0 */2 * * 1-6', async () => {
     let objController = new servicosController_1.ServicoController();
     await objController.main();
 });
-// executa a cada 3 minutos
+// executa a cada 30 minutos
 cron.schedule('*/30 * * * 1-6', async () => {
     let objController = new produtos_1.ProdutoController();
     await objController.main();

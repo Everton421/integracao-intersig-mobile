@@ -66,7 +66,7 @@ import { UsuarioController } from "./controllers/usuarios/usuariosController";
             let objController = new ServicoController();
             await objController.main();
          })
-      // executa a cada 3 minutos
+      // executa a cada 30 minutos
       cron.schedule('*/30 * * * 1-6', async ()=>{
          let objController = new ProdutoController();
          await objController.main();
