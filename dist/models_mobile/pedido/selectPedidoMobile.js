@@ -6,14 +6,14 @@ const date_1 = require("../../services/date");
 const select_1 = require("../cliente/select");
 const selectItemsPedidoMobile_1 = require("./selectItemsPedidoMobile");
 class SelectPedidoMobile {
-    async buscaCompleta(dataAtual) {
+    async buscaCompleta(empresa, dataAtual) {
         let obj = new date_1.DateService();
         let selectOrcamentoMobile = new SelectPedidoMobile();
         let selectClientesMobile = new select_1.Select_clientes_mobile();
         let selectItemsPedidoMobile = new selectItemsPedidoMobile_1.SelectItemsPedidoMobile();
         let orcamentos_registrados = []; // Inicializar como um array vazio
         try {
-            let dados_orcamentos = await selectOrcamentoMobile.buscaPordata(databaseConfig_1.databaseMobile, dataAtual);
+            let dados_orcamentos = await selectOrcamentoMobile.buscaPordata(empresa, dataAtual);
             orcamentos_registrados = await Promise.all(dados_orcamentos.map(async (i) => {
                 let produtos = [];
                 let servicos = [];
@@ -22,7 +22,7 @@ class SelectPedidoMobile {
                 i.data_recadastro = obj.formatarDataHora(i.data_recadastro);
                 i.data_cadastro = obj.formatarData(new Date(i.data_cadastro));
                 try {
-                    const resultCliente = await selectClientesMobile.buscaPorcodigo(databaseConfig_1.databaseMobile, i.cliente);
+                    const resultCliente = await selectClientesMobile.buscaPorcodigo(empresa, i.cliente);
                     if (resultCliente.length > 0) {
                         cliente = resultCliente[0].id;
                     }
@@ -31,7 +31,7 @@ class SelectPedidoMobile {
                     console.log(`erro ao buscar o cliente do pedido ${i.codigo}`);
                 }
                 try {
-                    produtos = await selectItemsPedidoMobile.buscaProdutosDoOrcamento(databaseConfig_1.databaseMobile, i.codigo);
+                    produtos = await selectItemsPedidoMobile.buscaProdutosDoOrcamento(empresa, i.codigo);
                 }
                 catch (e) {
                     console.log(`erro ao buscar os produtos do pedido ${i.codigo}`);
@@ -80,14 +80,9 @@ class SelectPedidoMobile {
         });
     }
     async buscaPordata(empresa, queryData) {
-        let date = new date_1.DateService();
-        let param_data;
-        if (!queryData) {
-            param_data = date.obterDataAtual();
-        }
         return new Promise(async (resolve, reject) => {
-            const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
-                where   co.data_recadastro >= '${param_data}'  
+            const sql = ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
+                WHERE  data_recadastro >= '${queryData}'  
             `;
             await databaseConfig_1.conn_sistema.query(sql, async (err, result) => {
                 if (err) {
