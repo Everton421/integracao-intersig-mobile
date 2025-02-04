@@ -13,7 +13,7 @@ import { SelectItemsPedidoMobile } from "./selectItemsPedidoMobile";
 export class SelectPedidoMobile {
 
     
-  async buscaCompleta( dataAtual: string   ): Promise<IPedidoMobile[]> {
+  async buscaCompleta( empresa:string ,dataAtual: string   ): Promise<IPedidoMobile[]> {
     let obj = new DateService();
 
     let selectOrcamentoMobile = new SelectPedidoMobile();
@@ -26,7 +26,7 @@ export class SelectPedidoMobile {
 
 
     try {
-        let  dados_orcamentos:any  = await selectOrcamentoMobile.buscaPordata( databaseMobile, dataAtual   );
+        let  dados_orcamentos:any  = await selectOrcamentoMobile.buscaPordata( empresa, dataAtual   );
 
       orcamentos_registrados = await Promise.all(
         dados_orcamentos.map(async (i:IPedidoMobile) => {
@@ -39,7 +39,7 @@ export class SelectPedidoMobile {
           i.data_cadastro = obj.formatarData(new Date(i.data_cadastro));
 
           try {
-            const resultCliente:IClienteMobile[] = await selectClientesMobile.buscaPorcodigo(  databaseMobile,  i.cliente);
+            const resultCliente:IClienteMobile[] = await selectClientesMobile.buscaPorcodigo(  empresa,  i.cliente);
 
             if(resultCliente.length > 0   ){
                 cliente =   resultCliente[0].id
@@ -50,7 +50,7 @@ export class SelectPedidoMobile {
           }
 
           try {
-            produtos = await selectItemsPedidoMobile.buscaProdutosDoOrcamento( databaseMobile,  i.codigo  );
+            produtos = await selectItemsPedidoMobile.buscaProdutosDoOrcamento( empresa,  i.codigo  );
 
           } catch (e) {
             console.log(`erro ao buscar os produtos do pedido ${i.codigo}`);
@@ -108,16 +108,14 @@ export class SelectPedidoMobile {
   }
 
   async buscaPordata(empresa: any, queryData: any ) {
-    let date = new DateService();
-
-    let param_data: any;
-    if (!queryData) {
-      param_data = date.obterDataAtual();
-    }
+ 
 
     return new Promise<IPedidoMobile[]>(async (resolve, reject) => {
-      const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
-                where   co.data_recadastro >= '${param_data}'  
+ console.log( ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
+                WHERE  data_recadastro >= '${queryData}' `   )
+      const sql = 
+      ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
+                WHERE  data_recadastro >= '${queryData}'  
             `;
       await conn_sistema.query(sql, async (err: any, result: any) => {
         if (err) {

@@ -36,7 +36,7 @@ export class pedidosController{
         console.log(dataAtual)
 
         if(dataAtual === undefined || dataAtual === '')  return
-        orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(dataAtual  )
+        orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(databaseMobile, dataAtual)
 
         console.log(dataAtual)
     }catch(e){ console.log('erro ao Consultar os orcamentos Mobile')}
