@@ -32,6 +32,7 @@ export class categoriasController{
 
                              let objInsertMobile:any =
                              {
+                                codigo:i.CODIGO,
                                 id:i.CODIGO,
                                 data_cadastro:i.DATA_CADASTRO,
                                 data_recadastro:i.DATA_RECAD,

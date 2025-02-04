@@ -9,7 +9,7 @@ import { Insert_clientes_Mobile } from "../../models_mobile/cliente/insert";
 import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
     export class ClienteController{
 
-        async main(req:Request , res:Response ){   
+        async main(){   
             let select_clientes_mobile =  new Select_clientes_mobile();
             let select_clientes_sistema = new Select_clientes_sistema();
             let  insert_clientes_mobile = new Insert_clientes_Mobile();
@@ -25,7 +25,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                          for(let i of clientesSistema ){
                              let validClienteMobile:IClienteMobile[];
 
-                             validClienteMobile = await select_clientes_mobile.buscaPorId(databaseMobile, i.CODIGO);
+                             validClienteMobile = await select_clientes_mobile.buscaPorcodigo(databaseMobile, i.CODIGO);
 
                              let objInsertMobile:any =
                              {

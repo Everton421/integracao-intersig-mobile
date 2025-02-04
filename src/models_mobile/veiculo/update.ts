@@ -36,7 +36,7 @@ export class UpdateVeiculosMobile{
         return new Promise ( async(resolve, reject ) =>{
 
             const sql =` update ${empresa}.veiculos   set
-                   codigo = ${veiculo.codigo}  
+                   codigo = ${veiculo.codigo},
                   id = '${veiculo.id}',
                    cliente = '${veiculo.cliente}',
                    placa = '${veiculo.placa}',

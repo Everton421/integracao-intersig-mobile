@@ -13,7 +13,7 @@ import { databaseMobile } from "../../database/databaseConfig";
 
 export class pedidosController{
 
-    async select( req:Request,res:Response){
+    async main(  ){
 
         let objDate = new DateService();
 
@@ -30,7 +30,8 @@ export class pedidosController{
     let orcamentos_registrados:any[] =[];
 
    let dataAtual = objDate.obterDataAtual()+' 00:00:00'
-     
+   
+ 
        try{
         orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(dataAtual  )
     }catch(e){ console.log('erro ao Consultar os orcamentos Mobile')}
@@ -38,7 +39,6 @@ export class pedidosController{
           if(orcamentos_registrados?.length > 0 ){
 
                 for(let i of orcamentos_registrados){
-                        
                                 
                         let validPedidoSistema:any = await selectPedidoSistema.buscaOrcamentosCompleto(i.codigo );
                                 
@@ -49,14 +49,21 @@ export class pedidosController{
                                     // se data de recadastro do pedido mobile for maior atualiza o pedido no sistema 
                                         if(  i.data_recadastro  > pedidoSistema.data_recadastro   ){
                                             console.log(`atualizando pedido ${pedidoSistema.codigo } no sistema ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
-                                                  await updatePedidoSistema.update(i, pedidoSistema.codigo);
+
+                                            await updatePedidoSistema.update(i, pedidoSistema.codigo);
                                         }else {
-                                           if( pedidoSistema.data_recadastro > i.data_recadastro  || i.situacao !== pedidoSistema.situacao  ){
+                                           if( pedidoSistema.data_recadastro > i.data_recadastro     ){
                                             console.log(`atualizando pedido ${pedidoSistema.codigo } no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `)
                                             ///
                                              await updatePedidoMobile.update(databaseMobile, pedidoSistema, i.codigo )
                                           }else{
                                         ///     console.log(`o pedido ${i.codigo} se encontra atualizado`)
+                                                if( i.situacao !== pedidoSistema.situacao  || i.tipo !== pedidoSistema.tipo){
+                                                    console.log( i.situacao !== pedidoSistema.situacao)
+                                                    pedidoSistema.data_recadastro =  objDate.obterDataHoraAtual();
+                                                    await updatePedidoMobile.update(databaseMobile, pedidoSistema, i.codigo )
+
+                                                }
                                            }
                                             }
 

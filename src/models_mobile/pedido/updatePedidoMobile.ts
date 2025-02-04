@@ -3,7 +3,7 @@ import { IProdutoPedidoMobile } from "./types/IProdutoPedidoMobile";
 import { IServicosMobile } from "../servicos/types/IServicosMobile";
 import { IParcelasPedidoMobile } from "./types/IParcelasPedido";
 import { Select_clientes_mobile } from "../cliente/select";
-import { SelectItemsPedidoMobile } from "./SelectItemsPedidoMobile";
+import { SelectItemsPedidoMobile } from "./selectItemsPedidoMobile";
 import { InsertItensPedidoMobile } from "./insertItensPedidoMobile";
 import { DeleteItensPedidoMobile } from "./deleteItensPedidoMobile";
 import { SelectProdutosMobile } from "../produtos/select";
@@ -18,12 +18,6 @@ export class UpdatePedidoMobile{
     
     async  updateTabelaPedido( empresa:any ,orcamento:any, codigo:number ):Promise<number> {
 
-        const  selectFormaPagamentoMobile = new SelectFormaPagamentoMobile();
-
-        let resultForma_pagamento = await selectFormaPagamentoMobile.buscaPorId(databaseMobile, orcamento.forma_pagamento);
-        let forma_pagamento = 0;
-            if( resultForma_pagamento.length > 0 ) forma_pagamento = resultForma_pagamento[0].codigo   
-
         return new Promise(async (resolve, reject) => {
             let sql = `
                 UPDATE ${empresa}.pedidos  
@@ -37,7 +31,7 @@ export class UpdatePedidoMobile{
                 quantidade_parcelas =  ${orcamento.quantidade_parcelas} ,
                 contato             = '${orcamento.contato}',
                 veiculo             =  ${orcamento.veiculo},
-                forma_pagamento     =  ${forma_pagamento},
+                forma_pagamento     =  ${orcamento.forma_pagamento},
                 observacoes         = '${orcamento.observacoes}',
                 data_cadastro       = '${orcamento.data_cadastro}',
                 data_recadastro     = '${orcamento.data_recadastro}',
@@ -61,7 +55,7 @@ export class UpdatePedidoMobile{
        return new Promise ( async (resolve, reject )=>{
                 
                let produtoController = new ProdutoController();
-
+ 
 
                let selectClientesMobile = new Select_clientes_mobile();
 
@@ -89,6 +83,7 @@ export class UpdatePedidoMobile{
 
                             try {
                                 statusAtualizacao = await this.updateTabelaPedido(empresa,orcamento,codigoOrcamento );
+                                console.log('status atualizacao pedido ', statusAtualizacao)
                             } catch (err) {
                                 reject(err)
                                 return;
@@ -107,10 +102,7 @@ export class UpdatePedidoMobile{
                         
                         
                             if (servicos.length > 0) {
-                                    for (let i of servicos){
-                                        let result = await selectServicosMobile.buscaPorId(databaseMobile, i.codigo);
-                                        if( result.length > 0) i.id = result[0].codigo
-                                    }  
+                                   
                                 try {
                                     await insertItensPedidoMobile.cadastraServicosDoPedido(   servicos,codigoOrcamento, empresa )
                                 } catch (e) { 
@@ -132,14 +124,6 @@ export class UpdatePedidoMobile{
                                     }
                                     
                                     if (produtos.length > 0) {
-                                        for (let i of produtos){
-                                            let result = await selectProdutosMobile.buscaPorId(databaseMobile, i.codigo);
-                                           //// se nao encontrar o iten no mobile é feito o envio
-                                            if( result.length > 0){
-                                                i.id = result[0].codigo
-                                            }
-
-                                        }  
                                             try {
                                                 await insertItensPedidoMobile.cadastraProdutosDoPedido(produtos,empresa,codigoOrcamento);
                                             } catch (err) {

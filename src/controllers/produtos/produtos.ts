@@ -28,6 +28,19 @@ export class ProdutoController {
                                               if(i.data_recadastro === null ){
                                                   i.data_recadastro = '0000-00-00 00:00:00';
                                               } 
+
+                                              if( i.data_recadastro_preco === null ){
+                                                i.data_recadastro_preco ='0000-00-00 00:00:00';
+                                              }
+                                              
+                                              let data_ult_atualizacao = '0000-00-00 00:00:00';
+
+                                              if( i.data_recadastro_preco > i.data_recadastro ){
+                                                data_ult_atualizacao = i.data_recadastro_preco
+                                                }else{
+                                                data_ult_atualizacao = i.data_recadastro
+                                              }     
+
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
@@ -44,7 +57,7 @@ export class ProdutoController {
                                           marca :i.marca,
                                           class_fiscal :i.class_fiscal,
                                           data_cadastro :i.data_cadastro,
-                                          data_recadastro :i.data_recadastro,
+                                          data_recadastro :data_ult_atualizacao,
                                           tipo :i.tipo,
                                           observacoes1 :i.observacoes1,
                                           observacoes2 :i.observacoes2,
@@ -56,7 +69,7 @@ export class ProdutoController {
           
                                           if( produtoMobile.length > 0 ){
           
-                                              if( i.data_recadastro >  validProdutoMobile.data_recadastro){
+                                              if( data_ult_atualizacao >  validProdutoMobile.data_recadastro){
                                                 try{
                                                     console.log('atualizando ',i.codigo )
                                                     await  updateProdutosMobile.update(databaseMobile, objInsert)

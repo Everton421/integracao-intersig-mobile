@@ -26,7 +26,7 @@ async cadastraProdutosDoPedido(produtos:any ,empresa:any, codigoPedido:any ){
          
 
          const sql =  ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
-            let dados = [ codigoPedido, id, desconto, quantidade, preco, total ]
+            let dados = [ codigoPedido, codigo, desconto, quantidade, preco, total ]
           await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
                if(error){
                        reject(" erro ao inserir produto do orcamento "+ error);
@@ -82,7 +82,7 @@ async cadastraParcelasDoPedido(parcelas:any,empresa:any, codigoPedido:any){
           let i=1;
           for(let s of servicos){
               let {
-                  id,
+                  codigo,
                   preco,
                   quantidade,
                   desconto,
@@ -97,7 +97,7 @@ async cadastraParcelasDoPedido(parcelas:any,empresa:any, codigoPedido:any){
  
             const sql =  ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
 
-              let dados = [ codigoPedido ,  id ,  desconto ,  quantidade ,  valor ,  total  ]
+              let dados = [ codigoPedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total  ]
             await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
                  if(error){
                   console.log(" erro ao inserir servico do orcamento "+ error)

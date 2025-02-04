@@ -3,15 +3,18 @@ import swaggerUi from 'swagger-ui-express';
 
 import "express-async-errors";
 import cors from 'cors';
-const https = require('https');
-const fs = require('fs');
+const path = require('path')
+var  bodyParser  =  require ( 'body-parser' )
 import 'dotenv/config';
-import swaggerDocs from './swagger.json';
 
 import { router, versao } from './routes';
 import { conn_mobie } from './database/databaseConfig';
 
         const app = express();
+        app.set('view engine', 'ejs')
+        app.use(bodyParser.urlencoded({ extended: true }))
+        app.use(bodyParser.json())
+        app.set('views', path.join(__dirname, 'Views'));
 
         // Configuração do CORS
             const corsOptions = {

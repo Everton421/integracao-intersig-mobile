@@ -16,7 +16,8 @@
     ativo: string,
     class_fiscal: string,
     data_cadastro: string,
-    data_recadastro: string,     
+    data_recadastro: string, 
+    data_recadastro_preco: string,     
     observacoes1: string,
     observacoes2: string,
     observacoes3: string

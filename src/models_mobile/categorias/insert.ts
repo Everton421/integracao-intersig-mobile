@@ -31,7 +31,7 @@ export class Insert_Categorias{
             let sql = `
                     INSERT INTO ${empresa}.categorias ( codigo ,id , data_cadastro, data_recadastro, descricao ) VALUES
                                                       (?,  ? , ? , ? , ? ); `;
-            const values = [  categoria.codigo, categoria.id , categoria.data_cadastro, categoria.data_recadastro, categoria.descricao]
+            const values = [  categoria.codigo, categoria.codigo , categoria.data_cadastro, categoria.data_recadastro, categoria.descricao]
 
             await conn_mobie.query( sql , values,(err:any, result:any )=>{
                 if(err){

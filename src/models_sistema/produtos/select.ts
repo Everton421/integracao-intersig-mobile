@@ -23,7 +23,7 @@ async   buscaGeral(estoque:any, publico:any)   {
         cf.NCM class_fiscal,
         p.ORIGEM origem,
         p.CST cst,
-        
+         DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s') data_recadastro_preco,
         DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d') AS data_cadastro,
         DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS data_recadastro,     
         CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,

@@ -27,6 +27,7 @@ export class UpdatePedidoSistema{
                     total_geral     =  ${orcamento.total_geral} ,
                     total_produtos  =  ${orcamento.total_produtos} ,
                     total_servicos  =  ${orcamento.total_servicos} ,
+                    tipo             =  ${orcamento.tipo},
                     tipo_os         =  ${orcamento.tipo_os},
                     qtde_parcelas   =  ${orcamento.quantidade_parcelas} ,
                     contato         = '${orcamento.contato}',
@@ -129,17 +130,14 @@ export class UpdatePedidoSistema{
                         statusDeletePro_orca = await deleteItensPedidoSistema.deletePro_orca(codigoOrcamento);
                     } catch (err) {
                         console.log(err);
-                    //  return response.status(500).json({ "msg": err });
                     }
                     
                     if (produtos.length > 0) {
-                        if (statusDeletePro_orca) {
                             try {
                                 await insertItensPedidoSistema.cadastraProdutosDoPedido(produtos ,codigoOrcamento);
                             } catch (err) {
                                 console.log(err)
                             }
-                        }
                     }
                 }
 

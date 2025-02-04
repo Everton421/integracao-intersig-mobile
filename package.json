@@ -22,6 +22,7 @@
   "dependencies": {
     "api": "file:",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "crypt": "^0.0.2",
     "dotenv": "^16.4.5",
@@ -29,6 +30,7 @@
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
+    "node-cron": "^3.0.3",
     "swagger-ui-express": "^5.0.1"
   }
 }
