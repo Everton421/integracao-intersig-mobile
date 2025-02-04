@@ -111,8 +111,7 @@ export class SelectPedidoMobile {
  
 
     return new Promise<IPedidoMobile[]>(async (resolve, reject) => {
- console.log( ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
-                WHERE  data_recadastro >= '${queryData}' `   )
+ 
       const sql = 
       ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
                 WHERE  data_recadastro >= '${queryData}'  

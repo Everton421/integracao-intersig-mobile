@@ -38,10 +38,10 @@ export class pedidosController{
         if(dataAtual === undefined || dataAtual === '')  return
         orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(databaseMobile, dataAtual)
 
-        console.log(dataAtual)
+        console.log(orcamentos_registrados)
     }catch(e){ console.log('erro ao Consultar os orcamentos Mobile')}
      
-    /*
+ 
           if(orcamentos_registrados?.length > 0 ){
 
                 for(let i of orcamentos_registrados){
@@ -92,7 +92,7 @@ export class pedidosController{
                     }  
                 
          }   
-   */
+  
     
     }
 
