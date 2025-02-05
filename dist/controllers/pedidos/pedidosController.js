@@ -49,7 +49,7 @@ class pedidosController {
                         else {
                             ///     console.log(`o pedido ${i.codigo} se encontra atualizado`)
                             if (i.situacao !== pedidoSistema.situacao || i.tipo !== pedidoSistema.tipo) {
-                                console.log(i.situacao !== pedidoSistema.situacao);
+                                console.log(`atualizando pedido ${pedidoSistema.codigo} no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `);
                                 pedidoSistema.data_recadastro = objDate.obterDataHoraAtual();
                                 await updatePedidoMobile.update(databaseConfig_1.databaseMobile, pedidoSistema, i.codigo);
                             }
@@ -58,12 +58,12 @@ class pedidosController {
                 }
                 else {
                     try {
+                        console.log(`inserindo pedido ${i.codigo} no sistema `);
                         let aux = await createPedidoSistema.create(i);
                         if (aux > 0) {
                             let data = { codigo_sistema: aux, codigo_mobile: i.codigo, excluido: 'N' };
                             await insertParamPedido.cadastrar(data);
                         }
-                        console.log('resposta insert pedido', aux);
                     }
                     catch (e) {
                         console.log('erro ao tentar cadastrar orcamento', e);

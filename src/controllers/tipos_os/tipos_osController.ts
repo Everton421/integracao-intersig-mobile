@@ -53,7 +53,7 @@ export class Tipos_osController{
                                              //  if( i.DATA_RECAD >  validTipoOSMobile.data_recadastro){
                                                    //update
                                                     try{
-                                                    console.log('atualizando ',i.CODIGO )
+                                                    console.log('atualizando tipo de os codigo: ',i.CODIGO )
                                                       await  updateTipoOsMobile.updateCodigoSistema(databaseMobile, objInsert)
                                                         return
                                                     }catch(e){ console.log(e)}
@@ -63,7 +63,7 @@ export class Tipos_osController{
                                              //  }
                                           }else{
                                             try{ 
-                                                   console.log('cadastrando ',i.CODIGO )
+                                                   console.log('cadastrando tipo de os codigo:',i.CODIGO )
                                               //cadastrar
                                                await insertTipoOsMobile.insertCodigoSistema(databaseMobile, objInsert)
                                              }catch(e){ console.log(e)}

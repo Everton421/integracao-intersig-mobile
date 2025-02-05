@@ -26,7 +26,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                              let validClienteMobile:IClienteMobile[];
 
                              validClienteMobile = await select_clientes_mobile.buscaPorcodigo(databaseMobile, i.CODIGO);
-
+                            if( i.DATA_RECAD === null ) i.DATA_RECAD = '0000-00-00 00:00:00'
                              let objInsertMobile:any =
                              {
                                  codigo:i.CODIGO, 
@@ -40,7 +40,7 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                  cnpj: i.CPF,
                                  cidade:i.CIDADE ,
                                  data_cadastro:i.DATA_CADASTRO ,
-                                 data_recadastro:i.DATA_RECAD ,
+                                 data_recadastro: i.DATA_RECAD,
                                  vendedor:i.VENDEDOR,
                                  bairro:i.BAIRRO,
                                  estado:i.ESTADO
@@ -50,17 +50,18 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                         if( validClienteMobile.length > 0 ){
                                             if( clienteV.data_recadastro !== null &&  i.DATA_RECAD !== null &&  i.DATA_RECAD > clienteV.data_recadastro ){
                                              try{ 
-                                                console.log(' atualizando ',i.DATA_RECAD ,'>', clienteV.data_recadastro )
+                                                console.log(` atualizando cliente : ${i.CODIGO} `,i.DATA_RECAD ,'>', clienteV.data_recadastro )
                                              
                                                    await update_clientes_mobile.updateCodigoSistema(databaseMobile, objInsertMobile)
                                               }catch(e){ console.log(e)}
                                                 
                                             }else{
-                                                console.log('continuando ', i.DATA_RECAD > clienteV.data_recadastro)
+                                                console.log(`O cliente codigo: ${i.CODIGO} se encontra atualizado `, i.DATA_RECAD > clienteV.data_recadastro)
                                                 continue
                                             }
                                         }else{
                                             try{ 
+                                                console.log(` Cadastrando cliente : ${i.CODIGO} `  )
                                               let aux =  await insert_clientes_mobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
                                                console.log(aux)
                                         }catch(e){ console.log(e)}

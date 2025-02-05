@@ -46,17 +46,17 @@ import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagament
                                     if( i.DATA_RECAD >  validFpgtMobile.data_recadastro){
                                         try{ 
                                         //update
-                                                console.log('atualizando ',i.CODIGO )
+                                                console.log(`atualizando forma de pagamento codigo :${i.CODIGO} `  )
                                              await  updateFormaPagamentoSistema.updateCodigoSistema(databaseMobile, objInsert)
                                        }catch(e){ console.log(e)}
 
                                     }else{
-                                        console.log(i.DATA_RECAD ,' > ',  validFpgtMobile.data_recadastro)
+                                        console.log(` forma de pagamento codigo: ${i.CODIGO} se encontra atualizada `,i.DATA_RECAD ,' > ',  validFpgtMobile.data_recadastro)
                                         continue;
                                     }
                                }else{
                                 try{ 
-                                        console.log('cadastrando ',i.CODIGO )
+                                        console.log('cadastrando forma de pagamento codigo: ',i.CODIGO )
                                //cadastrar
                                 await insertFormaPagamentoMobile.cadastrarCodigoSistema(databaseMobile, objInsert)
                             }catch(e){ console.log(e)}

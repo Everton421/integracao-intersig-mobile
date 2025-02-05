@@ -39,7 +39,7 @@ class ClienteController {
                 if (validClienteMobile.length > 0) {
                     if (clienteV.data_recadastro !== null && i.DATA_RECAD !== null && i.DATA_RECAD > clienteV.data_recadastro) {
                         try {
-                            console.log(' atualizando ', i.DATA_RECAD, '>', clienteV.data_recadastro);
+                            console.log(` atualizando cliente : ${i.CODIGO} `, i.DATA_RECAD, '>', clienteV.data_recadastro);
                             await update_clientes_mobile.updateCodigoSistema(databaseConfig_1.databaseMobile, objInsertMobile);
                         }
                         catch (e) {
@@ -47,12 +47,13 @@ class ClienteController {
                         }
                     }
                     else {
-                        console.log('continuando ', i.DATA_RECAD > clienteV.data_recadastro);
+                        console.log(`O cliente codigo: ${i.CODIGO} se encontra atualizado `, i.DATA_RECAD > clienteV.data_recadastro);
                         continue;
                     }
                 }
                 else {
                     try {
+                        console.log(` Cadastrando cliente : ${i.CODIGO} `);
                         let aux = await insert_clientes_mobile.cadastrarCodigoSistema(databaseConfig_1.databaseMobile, objInsertMobile);
                         console.log(aux);
                     }

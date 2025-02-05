@@ -52,18 +52,18 @@ export class VeiculosController{
            
                                             //    if( i.DATA_RECAD >  validVeicMobile.data_recadastro){
                                                    //update
-                                                    try{
-                                                    console.log('atualizando ',i.CODIGO )
-                                                      await  updateVeiculosMobile.updateCodigoSistema(databaseMobile, objInsert)
-                                                        return
-                                                    }catch(e){ console.log(e)}
+                                                 //   try{
+                                                 //   console.log('atualizando veiculo codigo:',i.CODIGO )
+                                                 //     await  updateVeiculosMobile.updateCodigoSistema(databaseMobile, objInsert)
+                                                 //       return
+                                                 //   }catch(e){ console.log(e)}
                                                // }else{
                                                //    console.log(i.DATA_RECAD ,' > ',  validVeicMobile.data_recadastro)
                                              //      continue;
                                              //  }
                                           }else{
                                             try{ 
-                                                   console.log('cadastrando ',i.CODIGO )
+                                                   console.log('cadastrando veiculo codigo:',i.CODIGO )
                                               //cadastrar
                                                await inserVeiculosMobile.insertCodigoSistema(databaseMobile, objInsert)
                                              }catch(e){ console.log(e)} 

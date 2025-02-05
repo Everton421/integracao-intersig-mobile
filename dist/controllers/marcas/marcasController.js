@@ -31,7 +31,7 @@ class marcasController {
                     if (i.DATA_RECAD > validMarcaMobile.data_recadastro) {
                         try {
                             //update
-                            console.log('atualizando ', i.CODIGO);
+                            console.log('atualizando marca codigo: ', i.CODIGO);
                             await updateMarcasMobile.updateCodigoSistema(databaseConfig_1.databaseMobile, objInsert);
                         }
                         catch (e) {
@@ -39,13 +39,14 @@ class marcasController {
                         }
                     }
                     else {
+                        console.log(' marca codigo: ', i.CODIGO, 'se encontra atualizada');
                         console.log(i.DATA_RECAD, ' > ', validMarcaMobile.data_recadastro);
                         continue;
                     }
                 }
                 else {
                     try {
-                        console.log('cadastrando ', i.CODIGO);
+                        console.log('cadastrando marca codigo: ', i.CODIGO);
                         //cadastrar
                         await insert_MarcasMobile.cadastrarCodigoSistema(databaseConfig_1.databaseMobile, objInsert);
                     }

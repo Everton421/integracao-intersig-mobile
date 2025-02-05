@@ -17,7 +17,7 @@ class ProdutoController {
         let produtosSistema = await selectProdutosSistema.buscaGeral(databaseConfig_1.db_estoque, databaseConfig_1.db_publico);
         if (produtosSistema.length > 0) {
             for (let i of produtosSistema) {
-                let produtoMobile = await selectProdutosMobile.buscaPorId(databaseConfig_1.databaseMobile, i.codigo);
+                let produtoMobile = await selectProdutosMobile.buscaPorCodigo(databaseConfig_1.databaseMobile, i.codigo);
                 let validProdutoMobile = produtoMobile[0];
                 if (i.data_recadastro === null) {
                     i.data_recadastro = '0000-00-00 00:00:00';
@@ -58,23 +58,21 @@ class ProdutoController {
                 if (produtoMobile.length > 0) {
                     if (data_ult_atualizacao > validProdutoMobile.data_recadastro) {
                         try {
-                            console.log('atualizando ', i.codigo);
+                            console.log('atualizando produto codigo: ', i.codigo);
                             await updateProdutosMobile.update(databaseConfig_1.databaseMobile, objInsert);
                         }
                         catch (e) {
                             console.log(e);
                         }
-                        //update
                     }
                     else {
-                        console.log(i.data_recadastro, ' > ', validProdutoMobile.data_recadastro);
+                        console.log('o produto codigo: ', i.codigo, ' se encontra atualizado', i.data_recadastro, ' > ', validProdutoMobile.data_recadastro);
                         continue;
                     }
                 }
                 else {
                     try {
-                        console.log('cadastrando ', i.codigo);
-                        //cadastrar
+                        console.log('cadastrando produto codigo: ', i.codigo);
                         await insertProdutosMobile.insertProdutoCodigoSistema(databaseConfig_1.databaseMobile, objInsert);
                     }
                     catch (e) {

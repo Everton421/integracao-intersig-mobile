@@ -75,7 +75,7 @@ export class UpdatePedidoMobile{
                         let statusDeletePro_orca: any;
                         let statusDeletePar_orca: any;
                         
-                        const validCliente = await selectClientesMobile.buscaPorId(databaseMobile, orcamento.cliente.codigo)
+                        const validCliente = await selectClientesMobile.buscaPorcodigo(databaseMobile, orcamento.cliente.codigo)
                     
                             if( validCliente.length > 0 ){
                                 orcamento.cliente = validCliente[0]
@@ -83,7 +83,7 @@ export class UpdatePedidoMobile{
 
                             try {
                                 statusAtualizacao = await this.updateTabelaPedido(empresa,orcamento,codigoOrcamento );
-                                console.log('status atualizacao pedido ', statusAtualizacao)
+                                console.log('status atualizacao tabela pedido  ', statusAtualizacao)
                             } catch (err) {
                                 reject(err)
                                 return;

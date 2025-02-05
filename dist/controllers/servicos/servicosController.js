@@ -40,7 +40,7 @@ class ServicoController {
                     if (i.DATA_RECAD > validServicoMobile.data_recadastro) {
                         //update
                         try {
-                            console.log('atualizando ', i.CODIGO);
+                            console.log('atualizando servico: ', i.CODIGO);
                             await updateServicoMobile.updateCodigoSistema(databaseConfig_1.databaseMobile, objInsert);
                         }
                         catch (e) {
@@ -48,12 +48,12 @@ class ServicoController {
                         }
                     }
                     else {
-                        console.log(i.DATA_RECADASTRO, ' > ', validServicoMobile.data_recadastro);
+                        console.log('o produto codigo: ', i.CODIGO, ' se encontra atualizado', i.DATA_RECADASTRO, ' > ', validServicoMobile.data_recadastro);
                         continue;
                     }
                 }
                 else {
-                    console.log('cadastrando ', i.CODIGO);
+                    console.log('cadastrando servico: ', i.CODIGO);
                     //cadastrar
                     try {
                         await insertServicoMobile.insertCodigoSistema(databaseConfig_1.databaseMobile, objInsert);

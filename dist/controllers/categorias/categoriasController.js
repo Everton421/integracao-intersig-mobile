@@ -38,7 +38,7 @@ class categoriasController {
                     }
                     if (i.DATA_RECAD > categoriaV.data_recadastro) {
                         try {
-                            console.log(' atualizando ', i.DATA_RECAD, '>', categoriaV.data_recadastro);
+                            console.log(` atualizando categoria ${objInsertMobile.codigo}  `, i.DATA_RECAD, '>', categoriaV.data_recadastro);
                             await update_categorias_Mobile.updateCodigoSistema(databaseConfig_1.databaseMobile, objInsertMobile);
                         }
                         catch (e) {
@@ -46,13 +46,13 @@ class categoriasController {
                         }
                     }
                     else {
-                        console.log('continuando categoria ', i.CODIGO, ' ', i.DATA_RECAD, ' > ', categoriaV.data_recadastro);
+                        console.log(' categoria ', i.CODIGO, ' se encontra atualizada ', i.DATA_RECAD, ' > ', categoriaV.data_recadastro);
                         continue;
                     }
                 }
                 else {
                     try {
-                        console.log('cadastrando categoria ', i.CODIGO);
+                        console.log('cadastrando categoria codigo:', i.CODIGO, ' ', i.NOME);
                         let aux = await insertCategoriasMobile.cadastrarCodigoSistema(databaseConfig_1.databaseMobile, objInsertMobile);
                     }
                     catch (e) {

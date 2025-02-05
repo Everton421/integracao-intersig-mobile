@@ -122,24 +122,23 @@ export class UpdatePedidoSistema{
                /// return response.status(500).json({ "msg": err });
             }
 
-            if (statusAtualizacao) {
-                
                 const validaProdutos:any = await selectItensPedidoSistema.buscaProdutosDoOrcamento( codigoOrcamento )
                 if( validaProdutos.length > 0 ){
                     try {
                         statusDeletePro_orca = await deleteItensPedidoSistema.deletePro_orca(codigoOrcamento);
                     } catch (err) {
                         console.log(err);
-                    }
+                }
+            }
                     
                     if (produtos.length > 0) {
+
                             try {
                                 await insertItensPedidoSistema.cadastraProdutosDoPedido(produtos ,codigoOrcamento);
                             } catch (err) {
-                                console.log(err)
+                                console.log(`erro ao inserir produto do pedido ${codigoOrcamento}`,err)
                             }
                     }
-                }
 
 
 
@@ -188,9 +187,7 @@ export class UpdatePedidoSistema{
           //          "msg": ` orcamento ${codigoDoOrcamento} atualizado com sucesso!`,
           //          "codigo": `${codigoDoOrcamento}`
           //      });
-        } else {
-            console.log('nao foi encontrado orcamento com este codigo')
-        }
+       
 
 
     }

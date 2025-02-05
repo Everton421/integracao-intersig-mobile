@@ -8,6 +8,8 @@ export class InsertItensPedidoSistema{
 
     async cadastraProdutosDoPedido(produtos:IProdutoPedidoSistema[] , codigoPedido:any ){
 		return new Promise( async (resolve, reject )=>{
+          
+         if( produtos.length > 0 ){
 
 			let i=1;
 			for(let p of produtos){
@@ -58,10 +60,12 @@ export class InsertItensPedidoSistema{
 
 			  await conn_sistema.query( sql, (error:any, resultado:any)=>{
 				   if(error){
-						   reject(" erro ao inserir produto do orcamento "+ error);
+                    console.log(" erro ao inserir produto do orcamento ", error)
+						   reject( error);
 				   }else{
+					   console.log(`produto  inserido com sucesso`,resultado);
+
 					resolve(resultado)
-					   console.log(`produto  inserido com sucesso`);
 				   }
 				})
 
@@ -70,6 +74,10 @@ export class InsertItensPedidoSistema{
 				}
 				i++;
 			}
+			}else{
+                console.log('nenhum produto informado')
+            }
+
 		})
     }
 

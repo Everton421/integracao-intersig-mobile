@@ -74,10 +74,10 @@ import { UsuarioController } from "./controllers/usuarios/usuariosController";
 
 
       // executa a cada 3 minutos
-      cron.schedule('*/3 * * * 1-6', async ()=>{
-            let objController = new pedidosController();
-            await objController.main();
-         })
+       cron.schedule('*/3 * * * 1-6', async ()=>{
+             let objController = new pedidosController();
+             await objController.main();
+          })
 
 
     export {router} 

@@ -21,7 +21,7 @@ export class ProdutoController {
     if(produtosSistema.length > 0 ){
 
         for( let i of produtosSistema ){
-                  let produtoMobile = await selectProdutosMobile.buscaPorId(databaseMobile, i.codigo) 
+                  let produtoMobile = await selectProdutosMobile.buscaPorCodigo(databaseMobile, i.codigo) 
           
                                               let validProdutoMobile = produtoMobile[0];
                                          
@@ -71,22 +71,20 @@ export class ProdutoController {
           
                                               if( data_ult_atualizacao >  validProdutoMobile.data_recadastro){
                                                 try{
-                                                    console.log('atualizando ',i.codigo )
+                                                    console.log('atualizando produto codigo: ',i.codigo  )
                                                     await  updateProdutosMobile.update(databaseMobile, objInsert)
                                                 }catch(e){
                                                     console.log(e)
                                                 }
-                                                  //update
                                               
                                               }else{
-                                                  console.log(i.data_recadastro ,' > ',  validProdutoMobile.data_recadastro)
+                                                  console.log('o produto codigo: ',i.codigo, ' se encontra atualizado',  i.data_recadastro ,' > ',  validProdutoMobile.data_recadastro )
                                                   continue;
                                               }
                                          }else{
                                             try{
 
-                                                  console.log('cadastrando ',i.codigo )
-                                         //cadastrar
+                                                  console.log('cadastrando produto codigo: ',i.codigo )
                                           await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
                                                 
                                              }catch(e){ console.log(e)
