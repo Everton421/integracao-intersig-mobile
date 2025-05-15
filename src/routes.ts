@@ -19,7 +19,9 @@ import { UsuarioController } from "./controllers/usuarios/usuariosController";
   export const versao = '/v1' 
  
  
- 
+  router.get('/', (req,res )=>{
+    res.render('index')
+  })
   router.get('/clientes', new ClienteController().main)
   router.get('/produtos', new ProdutoController().main)
   router.get('/servicos', new ServicoController().main)
@@ -32,52 +34,52 @@ import { UsuarioController } from "./controllers/usuarios/usuariosController";
   router.get('/usuarios', new UsuarioController().main)
     
    
-         cron.schedule('0 */2 * * 1-6', async ()=>{
-           let objController = new Tipos_osController();
-           await objController.main();
-        })
+          cron.schedule('0 */2 * * 1-6', async ()=>{
+            let objController = new Tipos_osController();
+            await objController.main();
+         })
 
-         cron.schedule('0 15 * * 1-6', async ()=>{
-           let objController = new VeiculosController();
-           await objController.main();
-         })
-//
-           cron.schedule('0 12 * * 1-6', async ()=>{
-             let objController = new marcasController();
-             await objController.main();
-           })
-//
-          cron.schedule('0 */2 * * 1-6 ', async ()=>{
-           let objController = new formaPagamentoController();
-           await objController.main();
-         })
-//
-         cron.schedule('0 */3 * * 1-6', async ()=>{
-           let objController = new categoriasController();
-           await objController.main();
-         })
-//
-        cron.schedule('0 */4 * * 1-6', async ()=>{
-            let objController = new ClienteController();
+          cron.schedule('0 15 * * 1-6', async ()=>{
+            let objController = new VeiculosController();
             await objController.main();
           })
-
-          cron.schedule('0 */2 * * 1-6', async ()=>{
-            let objController = new ServicoController();
+//
+             cron.schedule('0 12 * * 1-6', async ()=>{
+              let objController = new marcasController();
+              await objController.main();
+            })
+//
+           cron.schedule('0 */2 * * 1-6 ', async ()=>{
+            let objController = new formaPagamentoController();
             await objController.main();
-         })
+          })
+//
+          cron.schedule('0 */3 * * 1-6', async ()=>{
+            let objController = new categoriasController();
+            await objController.main();
+          })
+//
+         cron.schedule('0 */4 * * 1-6', async ()=>{
+             let objController = new ClienteController();
+             await objController.main();
+           })
+
+           cron.schedule('0 */2 * * 1-6', async ()=>{
+             let objController = new ServicoController();
+             await objController.main();
+          })
       // executa a cada 30 minutos
-      cron.schedule('*/30 * * * 1-6', async ()=>{
-         let objController = new ProdutoController();
-         await objController.main();
-      })
+       cron.schedule('*/30 * * * 1-6', async ()=>{
+          let objController = new ProdutoController();
+          await objController.main();
+       })
 
 
       // executa a cada 3 minutos
-       cron.schedule('*/3 * * * 1-6', async ()=>{
-             let objController = new pedidosController();
-             await objController.main();
-          })
+        cron.schedule('*/3 * * * 1-6', async ()=>{
+              let objController = new pedidosController();
+              await objController.main();
+           })
 
 
     export {router} 

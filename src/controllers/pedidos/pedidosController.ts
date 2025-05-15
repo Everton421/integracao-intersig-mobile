@@ -14,7 +14,7 @@ import { databaseMobile } from "../../database/databaseConfig";
 export class pedidosController{
 
     async main(  ){
-
+console.log(" Atualizando pedidos ...")
         let objDate = new DateService();
 
     let selectPedidoMobile = new SelectPedidoMobile();
@@ -86,7 +86,7 @@ export class pedidosController{
                                                 if(aux > 0 ){
             
                                                 let data:paramPedido = {codigo_sistema: aux, codigo_mobile: i.codigo , excluido: 'N'}
-                                                await insertParamPedido.cadastrar(data)
+                                              //  await insertParamPedido.cadastrar(data)
                                         }
                                         } catch(e){
                                                 console.log('erro ao tentar cadastrar orcamento', e)

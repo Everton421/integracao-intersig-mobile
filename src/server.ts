@@ -46,7 +46,7 @@ import { conn_mobie } from './database/databaseConfig';
                     })
                 })
 
-                const PORT_API = process.env.PORT_API; // Porta padrão para HTTPS
+                const PORT_API = process.env.PORT_API || 3000; // Porta padrão para HTTPS
 
 
 

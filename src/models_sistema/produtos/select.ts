@@ -40,8 +40,10 @@ async   buscaGeral(estoque:any, publico:any)   {
             WHERE 
             -- s.padrao_venda = 'X' 
             -- and
+
             tp.padrao = 'S'
             and p.ativo = 'S'
+            and p.no_site = 'S'
         `
         await conn_mobie.query(sql,  (err:any, result:IProdutoSistema[] )=>{
             if (err){
