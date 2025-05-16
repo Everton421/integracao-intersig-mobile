@@ -25,7 +25,7 @@ class Select_clientes_sistema {
            DATE_FORMAT(DATA_CADASTRO, '%Y-%m-%d') AS DATA_CADASTRO,
           DATE_FORMAT(DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS DATA_RECAD 
           from ${db_publico}.cad_clie c
-          WHERE c.ativo = 'S'   `;
+          WHERE c.ativo = 'S'  and c.no_site ='S' `;
             await databaseConfig_1.conn_sistema.query(sql, (err, result) => {
                 if (err)
                     reject(err);

@@ -22,17 +22,45 @@ import { UsuarioController } from "./controllers/usuarios/usuariosController";
   router.get('/', (req,res )=>{
     res.render('index')
   })
-  router.get('/clientes', new ClienteController().main)
-  router.get('/produtos', new ProdutoController().main)
-  router.get('/servicos', new ServicoController().main)
-  router.get('/tipos_os', new Tipos_osController().main)
-  router.get('/veiculos', new VeiculosController().main)
-  router.get('/marcas', new marcasController().main)
-  router.get('/formasPagamento', new formaPagamentoController().main)
-  router.get('/categorias', new categoriasController().main)
-  router.get('/pedidos', new pedidosController().main)
-  router.get('/usuarios', new UsuarioController().main)
-    
+  router.get('/clientes/trigger', new ClienteController().main)
+  router.get('/produtos/trigger', new ProdutoController().main)
+  router.get('/servicos/trigger', new ServicoController().main)
+  router.get('/tipos_os/trigger', new Tipos_osController().main)
+  router.get('/veiculos/trigger', new VeiculosController().main)
+  router.get('/marcas/trigger', new marcasController().main)
+  router.get('/formasPagamento/trigger', new formaPagamentoController().main)
+  router.get('/categorias/trigger', new categoriasController().main)
+  router.get('/pedidos/trigger', new pedidosController().main)
+  router.get('/usuarios/trigger', new UsuarioController().main)
+
+    router.get('/produtos', async ( req,res )=>{
+        let aux = new ProdutoController()
+        let data = await aux.produtosSincronizados()
+      return res.render('produtos', { "produtos":  data})
+    })
+      router.get('/clientes', async ( req,res )=>{
+      let aux = new ClienteController()
+      let data = await aux.clientesSincronizados()
+    return res.render('clientes', { "clientes":  data})
+  })
+
+  router.get('/servicos', async ( req,res)=>{
+      let aux = new ServicoController()
+    let data = await aux.servicosSincronizados();
+      return res.render('servicos',{'servicos':data})
+  })
+
+    router.get('/categorias', async ( req,res)=>{
+      let aux = new categoriasController()
+    let data = await aux.categoriasSincronizadas();
+      return res.render('categorias',{'categorias':data})
+  })
+       
+    router.get('/pedidos', async ( req,res)=>{
+      let aux = new pedidosController()
+    let data = await aux.buscaSincronizados();
+      return res.render('pedidos',{'pedidos':data})
+  })
    
           cron.schedule('0 */2 * * 1-6', async ()=>{
             let objController = new Tipos_osController();

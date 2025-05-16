@@ -18,6 +18,9 @@ const cron = require('node-cron');
 const router = (0, express_1.Router)();
 exports.router = router;
 exports.versao = '/v1';
+router.get('/', (req, res) => {
+    res.render('index');
+});
 router.get('/clientes', new clienteController_1.ClienteController().main);
 router.get('/produtos', new produtos_1.ProdutoController().main);
 router.get('/servicos', new servicosController_1.ServicoController().main);

@@ -1,4 +1,6 @@
 import { databaseMobile, db_publico } from "../../database/databaseConfig";
+import { InsertServicoIntegracao } from "../../models_integracao/servico/insert";
+import { SelectServicoIntegracao } from "../../models_integracao/servico/select";
 import { InsertServicoMobile } from "../../models_mobile/servicos/insert";
 import { SelectServicosMobile } from "../../models_mobile/servicos/select";
 import { IServicosMobile } from "../../models_mobile/servicos/types/IServicosMobile";
@@ -13,7 +15,7 @@ export class ServicoController{
             const updateServicoMobile = new UpdateServicosMobile();
             const insertServicoMobile = new InsertServicoMobile();
             const objTiraAspas        = new TiraCaracteres();
-
+        const insertServicosApi = new InsertServicoIntegracao();
 
                 let servicosSistema = await selectServicoSistema.busca(db_publico);
 
@@ -59,12 +61,29 @@ export class ServicoController{
                                                    console.log('cadastrando servico: ',i.CODIGO )
                                           //cadastrar
                                           try{
-                                           await insertServicoMobile.insertCodigoSistema(databaseMobile, objInsert)
+                                            let resultDbMobile:any =   await insertServicoMobile.insertCodigoSistema(databaseMobile, objInsert)
+                                            let objApi = { codigo_sistema:i.CODIGO, codigo_mobile: resultDbMobile.insertId, excluido:i.ATIVO }
+                                                 await insertServicosApi.cadastrar(objApi)
+
                                         }catch(e){ console.log(e)}
            
                                           } 
                         }
 
                     }
+    }
+
+
+     async servicosSincronizados(){
+            const selectServicoSistema = new SelectServicoIntegracao();
+
+     let result 
+      try{
+        result = await selectServicoSistema.findAll();
+    
+      }catch(e){
+          throw e;
+      }
+      return { "servicos" :result}
     }
 }

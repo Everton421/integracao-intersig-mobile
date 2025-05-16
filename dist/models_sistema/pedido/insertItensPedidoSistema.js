@@ -5,30 +5,31 @@ const databaseConfig_1 = require("../../database/databaseConfig");
 class InsertItensPedidoSistema {
     async cadastraProdutosDoPedido(produtos, codigoPedido) {
         return new Promise(async (resolve, reject) => {
-            let i = 1;
-            for (let p of produtos) {
-                let { id, codigo, preco, quantidade, desconto, just_icms, just_ipi, just_subst, total, fator_val, fator_qtde, tabela, } = p;
-                if (!preco)
-                    preco = 0;
-                if (!quantidade)
-                    quantidade = 0;
-                if (!desconto)
-                    desconto = 0;
-                if (!just_icms)
-                    just_icms = '';
-                if (!just_ipi)
-                    just_ipi = '';
-                if (!just_subst)
-                    just_subst = '';
-                if (!total)
-                    total = 0;
-                if (!fator_val)
-                    fator_val = 1;
-                if (!fator_qtde)
-                    fator_qtde = 1;
-                if (!tabela)
-                    tabela = 1;
-                const sql = `INSERT INTO ${databaseConfig_1.db_vendas}.pro_orca (orcamento, sequencia, produto, fator_val, fator_qtde, unitario, quantidade, preco_tabela, desconto, tabela,  just_ipi, just_icms, just_subst, total_liq, unit_orig)
+            if (produtos.length > 0) {
+                let i = 1;
+                for (let p of produtos) {
+                    let { id, codigo, preco, quantidade, desconto, just_icms, just_ipi, just_subst, total, fator_val, fator_qtde, tabela, } = p;
+                    if (!preco)
+                        preco = 0;
+                    if (!quantidade)
+                        quantidade = 0;
+                    if (!desconto)
+                        desconto = 0;
+                    if (!just_icms)
+                        just_icms = '';
+                    if (!just_ipi)
+                        just_ipi = '';
+                    if (!just_subst)
+                        just_subst = '';
+                    if (!total)
+                        total = 0;
+                    if (!fator_val)
+                        fator_val = 1;
+                    if (!fator_qtde)
+                        fator_qtde = 1;
+                    if (!tabela)
+                        tabela = 1;
+                    const sql = `INSERT INTO ${databaseConfig_1.db_vendas}.pro_orca (orcamento, sequencia, produto, fator_val, fator_qtde, unitario, quantidade, preco_tabela, desconto, tabela,  just_ipi, just_icms, just_subst, total_liq, unit_orig)
                 VALUES ( 
                     '${codigoPedido}',
                     '${i}',
@@ -46,19 +47,24 @@ class InsertItensPedidoSistema {
                     '${total}',  
                     '${preco}'  
                 ) `;
-                await databaseConfig_1.conn_sistema.query(sql, (error, resultado) => {
-                    if (error) {
-                        reject(" erro ao inserir produto do orcamento " + error);
+                    await databaseConfig_1.conn_sistema.query(sql, (error, resultado) => {
+                        if (error) {
+                            console.log(" erro ao inserir produto do orcamento ", error);
+                            reject(error);
+                        }
+                        else {
+                            console.log(`produto  inserido com sucesso`, resultado);
+                            resolve(resultado);
+                        }
+                    });
+                    if (i === produtos.length) {
+                        return;
                     }
-                    else {
-                        resolve(resultado);
-                        console.log(`produto  inserido com sucesso`);
-                    }
-                });
-                if (i === produtos.length) {
-                    return;
+                    i++;
                 }
-                i++;
+            }
+            else {
+                console.log('nenhum produto informado');
             }
         });
     }

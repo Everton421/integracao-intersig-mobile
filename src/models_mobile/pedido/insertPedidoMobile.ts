@@ -1,4 +1,4 @@
-import { conn_sistema } from "../../database/databaseConfig";
+import { conn_mobie } from "../../database/databaseConfig";
 import { InsertItensPedidoMobile } from "./insertItensPedidoMobile";
 import { IPedidoMobile } from "./types/IPedidoMobile";
 
@@ -86,7 +86,7 @@ export class InsertPedidoMobile {
       ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `
-        await conn_sistema.query(
+        await conn_mobie.query(
           sql,
           [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
           async    (err: any, result: any) => {

@@ -1,5 +1,6 @@
  
 import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { InsertParamPedidosMobile } from "../../models_integracao/pedidos/insert";
 import { InsertItensPedidoSistema } from "./insertItensPedidoSistema";
 import { IPedidoSistema } from "./types/IPedidoSistema";
  
@@ -24,6 +25,8 @@ export class InsertPedidoSistema{
 
     async create(orcamento:IPedidoSistema):Promise<number> {
 
+        let insertParamPedidosMobile = new  InsertParamPedidosMobile()
+        
         let insertItensPedidoSistema = new  InsertItensPedidoSistema();
 
         return new Promise( async(resolve, reject)=>{
@@ -83,7 +86,7 @@ export class InsertPedidoSistema{
             `INSERT INTO ${db_vendas}.cad_orca ` +
             `(cliente, cod_site, veiculo, total_produtos,total_servicos, forma_pagamento, tipo,  tipo_os, DESC_PROD, TOTAL_GERAL, DATA_CADASTRO, SITUACAO,VENDEDOR,CONTATO , DATA_INICIO,DATA_PEDIDO, DATA_APROV, QTDE_PARCELAS, OBSERVACOES,OBSERVACOES2, USUARIO, DATA_RECAD)  
                 VALUES ( ? ,?, ?, ?, ?, ?, ?, ?, ? , ? , ? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [cliente, codigo, veiculo, total_produtos, total_servicos ,forma_pagamento, tipo, tipo_os, descontos, total_geral, data_cadastro, situacao, vendedor, contato, data_cadastro, data_cadastro, data_cadastro, quantidade_parcelas, observacoes, observacoes2, vendedor, data_recadastro],
+            [cliente, 0, veiculo, total_produtos, total_servicos ,forma_pagamento, tipo, tipo_os, descontos, total_geral, data_cadastro, situacao, vendedor, contato, data_cadastro, data_cadastro, data_cadastro, quantidade_parcelas, observacoes, observacoes2, vendedor, data_recadastro],
             async    (err: any, result: any) => {
                 if (err) {
                     console.log(err)

@@ -1,4 +1,6 @@
 import { databaseMobile, db_publico } from "../../database/databaseConfig";
+import { InsertCategoriaIntegracao } from "../../models_integracao/categorias/insert";
+import { SelectCategoriaIntegracao } from "../../models_integracao/categorias/select";
 import { Insert_Categorias } from "../../models_mobile/categorias/insert";
 import { Select_Categorias } from "../../models_mobile/categorias/select";
 import { ICategoriaMobile } from "../../models_mobile/categorias/types/ICategoriaMobile";
@@ -19,6 +21,7 @@ export class categoriasController{
         const update_categorias_Mobile = new Update_categorias_Mobile();
 
         const dateService= new DateService();
+            const insertCategoriaIntegracao = new InsertCategoriaIntegracao();
 
        let categoriasSistema :ICategoriasSistema[];
 
@@ -70,7 +73,9 @@ export class categoriasController{
 
                                      try{ 
                                             console.log('cadastrando categoria codigo:', i.CODIGO,' ', i.NOME )
-                                           let aux =  await insertCategoriasMobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
+                                           let aux:any =  await insertCategoriasMobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
+                                            let objApi = { codigo_sistema:i.CODIGO, codigo_mobile: aux.insertId, excluido:'S' }
+                                        await insertCategoriaIntegracao.cadastrar(objApi)
                                     }catch(e){ console.log(e)}
 
                                         }
@@ -80,5 +85,16 @@ export class categoriasController{
        
 
     }
+     async categoriasSincronizadas(){
+            const selectCategoriaIntegracao = new SelectCategoriaIntegracao();
 
+     let result 
+      try{
+        result = await selectCategoriaIntegracao.findAll();
+    
+      }catch(e){
+          throw e;
+      }
+      return { "categorias" :result}
+    }
 }

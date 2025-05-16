@@ -6,6 +6,8 @@ import { databaseMobile, db_estoque, db_publico } from "../../database/databaseC
 import { IProdutoMobile } from "../../models_mobile/produtos/types/IProdutoMobile";
 import { UpdateProdutosMobile } from "../../models_mobile/produtos/update";
 import { TiraCaracteres } from "../../services/tiraCaracteres";
+import { SelectProdutoIntegracao } from "../../models_integracao/produtos/select";
+import { InsertProdutoIntegracao } from "../../models_integracao/produtos/insert";
 
 export class ProdutoController {
 
@@ -15,6 +17,8 @@ export class ProdutoController {
    const insertProdutosMobile = new InsertProdutosMobile();
    const updateProdutosMobile = new UpdateProdutosMobile();
     const objTiraAspas = new TiraCaracteres();
+
+    const insertProdutosApi = new InsertProdutoIntegracao();
 
     let produtosSistema = await  selectProdutosSistema.buscaGeral(db_estoque, db_publico);
 
@@ -44,27 +48,26 @@ export class ProdutoController {
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
-                                           
-                                          id :i.codigo,
-                                          estoque :i.estoque,
-                                          preco :i.preco,
-                                          grupo :i.grupo,
-                                          origem :i.origem,
-                                          descricao :i.descricao,
-                                          num_fabricante :i.num_fabricante,
-                                          num_original :i.num_original,
-                                          sku :i.sku,
-                                          marca :i.marca,
-                                          class_fiscal :i.class_fiscal,
-                                          data_cadastro :i.data_cadastro,
-                                          data_recadastro :data_ult_atualizacao,
-                                          tipo :i.tipo,
-                                          observacoes1 :i.observacoes1,
-                                          observacoes2 :i.observacoes2,
-                                          observacoes3 :i.observacoes3,
-                                          ativo:i.ativo,
-                                          codigo:i.codigo,
-                                          cst:i.cst
+                                                id :i.codigo,
+                                                estoque :i.estoque,
+                                                preco :i.preco,
+                                                grupo :i.grupo,
+                                                origem :i.origem,
+                                                descricao :i.descricao,
+                                                num_fabricante :i.num_fabricante,
+                                                num_original :i.num_original,
+                                                sku :i.sku,
+                                                marca :i.marca,
+                                                class_fiscal :i.class_fiscal,
+                                                data_cadastro :i.data_cadastro,
+                                                data_recadastro :data_ult_atualizacao,
+                                                tipo :i.tipo,
+                                                observacoes1 :i.observacoes1,
+                                                observacoes2 :i.observacoes2,
+                                                observacoes3 :i.observacoes3,
+                                                ativo:i.ativo,
+                                                codigo:i.codigo,
+                                                cst:i.cst
                                          }
           
                                           if( produtoMobile.length > 0 ){
@@ -85,8 +88,10 @@ export class ProdutoController {
                                             try{
 
                                                   console.log('cadastrando produto codigo: ',i.codigo )
-                                          await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
-                                                
+                                                 let resultDbMobile:any =  await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
+                                               let objApi = { codigo_sistema:i.codigo, codigo_mobile: resultDbMobile.insertId, excluido:i.ativo }
+                                                 await insertProdutosApi.cadastrar(objApi)
+
                                              }catch(e){ console.log(e)
 
                                              }
@@ -96,6 +101,19 @@ export class ProdutoController {
 
 
  }
+
+ async produtosSincronizados(){
+  const select = new SelectProdutoIntegracao()
+ let result 
+  try{
+    result = await select.findAll();
+
+  }catch(e){
+      throw e;
+  }
+  return { "produtos" :result}
+}
+
  }
 
  

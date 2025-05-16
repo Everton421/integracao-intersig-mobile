@@ -1,4 +1,4 @@
-import { conn_mobie, conn_sistema, databaseMobile } from "../../database/databaseConfig";
+import { conn_mobie,   databaseMobile } from "../../database/databaseConfig";
 import { DateService } from "../../services/date";
 import { IPedidoMobile } from "./types/IPedidoMobile";
 import { IProdutoPedidoMobile } from "./types/IProdutoPedidoMobile";
@@ -76,7 +76,7 @@ export class SelectItemsPedidoMobile
     return new Promise(async (resolve, reject) => {
       const code = codigo;
       const sql = ` select * from ${empresa}.pedidos where codigo =  ?  `;
-      conn_sistema.query(sql, [code], (err: any, result: any) => {
+      conn_mobie.query(sql, [code], (err: any, result: any) => {
         if (err) {
           console.log(err);
           reject(err);
@@ -101,7 +101,7 @@ export class SelectItemsPedidoMobile
       const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
                 where   co.data_recadastro >= '${param_data}' and co.vendedor = ${vendedor}
             `;
-      await conn_sistema.query(sql, async (err: any, result: any) => {
+      await conn_mobie.query(sql, async (err: any, result: any) => {
         if (err) {
           console.log(err);
           reject(err);
@@ -115,7 +115,7 @@ export class SelectItemsPedidoMobile
   async buscaTodosPedidos(empresa: any) {
     return new Promise(async (resolve, reject) => {
       const sql = ` select * from ${empresa}.pedidos  `;
-      conn_sistema.query(sql, (err: any, result: any) => {
+      conn_mobie.query(sql, (err: any, result: any) => {
         if (err) {
           console.log(err);
           reject(err);

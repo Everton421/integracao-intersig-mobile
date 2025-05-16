@@ -11,6 +11,7 @@ const updatePedidoSistema_1 = require("../../models_sistema/pedido/updatePedidoS
 const databaseConfig_1 = require("../../database/databaseConfig");
 class pedidosController {
     async main() {
+        console.log(" Atualizando pedidos ...");
         let objDate = new date_1.DateService();
         let selectPedidoMobile = new selectPedidoMobile_1.SelectPedidoMobile();
         let updatePedidoMobile = new updatePedidoMobile_1.UpdatePedidoMobile();
@@ -20,18 +21,21 @@ class pedidosController {
         let updatePedidoSistema = new updatePedidoSistema_1.UpdatePedidoSistema();
         let orcamentos_registrados = [];
         let dataAtual = objDate.obterDataAtual() + ' 00:00:00';
+        let dataHoraAtual = objDate.obterDataHoraAtual();
         try {
             console.log(dataAtual);
             if (dataAtual === undefined || dataAtual === '')
                 return;
             orcamentos_registrados = await selectPedidoMobile.buscaCompleta(databaseConfig_1.databaseMobile, dataAtual);
-            console.log(orcamentos_registrados);
         }
         catch (e) {
             console.log('erro ao Consultar os orcamentos Mobile');
         }
         if (orcamentos_registrados?.length > 0) {
             for (let i of orcamentos_registrados) {
+                //console.log(i)
+                //console.log('')
+                //console.log('')
                 let validPedidoSistema = await selectPedidoSistema.buscaOrcamentosCompleto(i.codigo);
                 if (validPedidoSistema.length) {
                     let pedidoSistema = validPedidoSistema[0];
@@ -43,16 +47,19 @@ class pedidosController {
                     else {
                         if (pedidoSistema.data_recadastro > i.data_recadastro) {
                             console.log(`atualizando pedido ${pedidoSistema.codigo} no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `);
-                            ///
                             await updatePedidoMobile.update(databaseConfig_1.databaseMobile, pedidoSistema, i.codigo);
                         }
                         else {
-                            ///     console.log(`o pedido ${i.codigo} se encontra atualizado`)
-                            if (i.situacao !== pedidoSistema.situacao || i.tipo !== pedidoSistema.tipo) {
-                                console.log(`atualizando pedido ${pedidoSistema.codigo} no mobile ${i.data_recadastro}  > ${pedidoSistema.data_recadastro} `);
-                                pedidoSistema.data_recadastro = objDate.obterDataHoraAtual();
-                                await updatePedidoMobile.update(databaseConfig_1.databaseMobile, pedidoSistema, i.codigo);
+                            if (pedidoSistema.situacao != i.situacao || pedidoSistema.tipo != i.tipo) {
+                                console.log(pedidoSistema.situacao, ' !== ', i.situacao, ' ', pedidoSistema.tipo, ' !== ', i.tipo);
+                                // atualiza somente a tabela dos dados do orcamento
+                                // tipo, situacao etc ..
+                                console.log(`atualizando situacao do pedido ${i.codigo} no mobile `);
+                                await updatePedidoMobile.updateTabelaPedido(databaseConfig_1.databaseMobile, pedidoSistema, i.codigo);
                             }
+                            else {
+                            }
+                            console.log(`o pedido ${i.codigo} se encontra atualizado`);
                         }
                     }
                 }
@@ -62,7 +69,7 @@ class pedidosController {
                         let aux = await createPedidoSistema.create(i);
                         if (aux > 0) {
                             let data = { codigo_sistema: aux, codigo_mobile: i.codigo, excluido: 'N' };
-                            await insertParamPedido.cadastrar(data);
+                            //  await insertParamPedido.cadastrar(data)
                         }
                     }
                     catch (e) {

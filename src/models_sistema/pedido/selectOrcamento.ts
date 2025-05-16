@@ -1,4 +1,4 @@
-import { conn_sistema, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { conn_sistema, db_vendas, db_estoque, db_publico, db_integracao_mobile } from "../../database/databaseConfig";
 import { DateService } from "../../services/date";
 import { SelectItemsPedidoSistema } from "./selectItensPedidoSistema";
 
@@ -31,7 +31,7 @@ export class SelectOrcamentoSistema{
                co.tipo
              from ${db_vendas}.cad_orca co
                            left join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
-                           where co.COD_SITE = ${codigo}
+                          where co.cod_site  = ${codigo}
                             ;
                         `;
 

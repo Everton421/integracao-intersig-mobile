@@ -30,8 +30,9 @@ class categoriasController {
                 let categoriaV = validCategoriaMobile[0];
                 let dataHoraAtual = dateService.obterDataHoraAtual();
                 if (validCategoriaMobile.length > 0) {
-                    if (i.DATA_RECAD === null) {
+                    if (i.DATA_RECAD === null || !i.DATA_RECAD) {
                         i.DATA_RECAD = '0000-00-00';
+                        objInsertMobile.data_recadastro = '0000-00-00 00:00:00';
                     }
                     if (categoriaV.data_recadastro === null) {
                         categoriaV.data_recadastro = dateService.obterDataHoraAtual();

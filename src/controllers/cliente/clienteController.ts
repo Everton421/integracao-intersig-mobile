@@ -7,6 +7,8 @@ import { IClienteMobile } from "../../models_mobile/cliente/types/IClienteMobile
  
 import { Insert_clientes_Mobile } from "../../models_mobile/cliente/insert";
 import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
+import { SelectClienteIntegracao } from "../../models_integracao/clientes/select";
+import { InsertClienteIntegracao } from "../../models_integracao/clientes/insert";
     export class ClienteController{
 
         async main(){   
@@ -15,7 +17,8 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
             let  insert_clientes_mobile = new Insert_clientes_Mobile();
             let update_clientes_mobile = new Updata_clientes_Mobile();
 
-               
+            let insertClienteIntegracao = new InsertClienteIntegracao();
+
 
                 let clientesSistema:IClienteSistema[];
 
@@ -43,7 +46,8 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                  data_recadastro: i.DATA_RECAD,
                                  vendedor:i.VENDEDOR,
                                  bairro:i.BAIRRO,
-                                 estado:i.ESTADO
+                                 estado:i.ESTADO,
+                                 ativo:i.ATIVO
                              }
                              let clienteV:any = validClienteMobile[0]
 
@@ -62,8 +66,12 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                                         }else{
                                             try{ 
                                                 console.log(` Cadastrando cliente : ${i.CODIGO} `  )
-                                              let aux =  await insert_clientes_mobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
-                                               console.log(aux)
+                                              let aux:any =  await insert_clientes_mobile.cadastrarCodigoSistema(databaseMobile, objInsertMobile)
+                                                if( aux.insertId > 0 ){
+                                                    let objApi = { codigo_sistema: i.CODIGO, codigo_mobile:aux.insertId , ativo:i.ATIVO}
+                                                    await insertClienteIntegracao.cadastrar(objApi)
+                                                }
+
                                         }catch(e){ console.log(e)}
 
                                         }
@@ -74,5 +82,15 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
         }
 
 
+async clientesSincronizados(){
+  const select = new SelectClienteIntegracao()
+ let result 
+  try{
+    result = await select.findAll();
 
+  }catch(e){
+      throw e;
+  }
+  return { "clientes" :result}
+}
     } 
