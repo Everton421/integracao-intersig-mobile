@@ -17,7 +17,7 @@ async   buscaGeral(estoque:any, publico:any)   {
         p.NUM_FABRICANTE num_fabricante,
         p.NUM_ORIGINAL num_original,
         p.OUTRO_COD sku,
-        p.MARCA marca,
+         COALESCE( p.MARCA, 0) as marca,
         p.ATIVO ativo,
         p.TIPO tipo,
         cf.NCM class_fiscal,
@@ -44,6 +44,8 @@ async   buscaGeral(estoque:any, publico:any)   {
             tp.padrao = 'S'
             and p.ativo = 'S'
             and p.no_site = 'S'
+            group by  p.CODIGO
+            order by p.CODIGO
         `
         await conn_mobie.query(sql,  (err:any, result:IProdutoSistema[] )=>{
             if (err){
