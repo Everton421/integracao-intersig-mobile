@@ -3,7 +3,7 @@ import 'dotenv/config';
 import mysql from 'mysql';
 
 /**----------------------------------------------------------------------- */
-        export const db_mobile = process.env.DB_MOBILE;     
+   
         const hostname = process.env.HOST_MOBILE ;
         const portdb = process.env.PORT_DB_MOBILE;
         const username = process.env.USER_MOBILE;
@@ -12,12 +12,6 @@ import mysql from 'mysql';
 
        export let databaseMobile = `\`${process.env.DB_MOBILE}\``;
 
-     
-
-      //  export const db_publico = process.env.DB_PUBLICO;
-      //  export const db_vendas = process.env.DB_VENDAS;
-      //  export const db_estoque = process.env.DB_ESTOQUE;
-      //  export const db_financeiro = process.env.DB_FINANCEIRO;
 
         let port:any | undefined;
 
@@ -35,8 +29,6 @@ import mysql from 'mysql';
 
 /*---------------------------------------------------------------------*/ 
         // conexao sistema
-
-
 
  
           const userSistema    = process.env.USER_SISTEMA;
