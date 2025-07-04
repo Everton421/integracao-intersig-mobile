@@ -11,7 +11,7 @@ class UpdateUsuarioMobile {
                             nome='${usuario.nome}',
                             email='${usuario.email}',
                             senha='${usuario.senha}',
-                            cnpj='${databaseConfig_1.db_mobile}' 
+                            cnpj='${empresa}' 
                          where codigo = '${usuario.codigo}'
                    `;
             await databaseConfig_1.conn_mobie.query(sql, (err, result) => {

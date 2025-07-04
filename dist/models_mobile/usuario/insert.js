@@ -16,7 +16,7 @@ class InsertUsuarioMobile {
                     responsavel
                     ) VALUES
                     ( ?, ?, ?, ?, ?, ?); `;
-            const values = [usuario.codigo, usuario.nome, usuario.senha, usuario.email, databaseConfig_1.db_mobile, 'S'];
+            const values = [usuario.codigo, usuario.nome, usuario.senha, usuario.email, empresa, 'S'];
             await databaseConfig_1.conn_mobie.query(sql, values, (err, result) => {
                 if (err) {
                     console.log(' erro ao cadastrar usuario no banco mobile ', err);

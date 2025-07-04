@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { SelectFormaPagamentoMobile } from "../../models_mobile/formas_pagamento/select";
 import { InsertFormaPagamentoMobile } from "../../models_mobile/formas_pagamento/insert";
 import { SelectFormaPagamentoSistema } from "../../models_sistema/formaDePagamento/select";
-import { databaseMobile, db_mobile, db_publico } from "../../database/databaseConfig";
+import { databaseMobile,   db_publico } from "../../database/databaseConfig";
 import { IFormaPagamentoSistema } from "../../models_sistema/formaDePagamento/types/IFormaPagamentoSistema";
 import { IFormaPagamentoMobile } from "../../models_mobile/formas_pagamento/types/IFormas_pagamento";
 import { Update_formaPagamentoMobile } from "../../models_mobile/formas_pagamento/update";
