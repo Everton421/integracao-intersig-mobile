@@ -91,6 +91,7 @@ export class UpdatePedidoSistema{
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
         const produtos = orcamento.produtos;
+        contato = 'APP';
 
         if (!situacao)  situacao = 'EA';
         if (!quantidade_parcelas)  quantidade_parcelas = 0;
@@ -99,7 +100,6 @@ export class UpdatePedidoSistema{
         if (!veiculo)  veiculo = 0;
         if (!data_cadastro)   data_cadastro = dataAtual;
         if (!data_recadastro)  data_recadastro = objDate.obterDataHoraAtual();
-        if (!contato)  contato = '';
         if (!observacoes)   observacoes = '';
         if (!observacoes2)  observacoes2 = '';
         if (!just_ipi)   just_ipi = '';

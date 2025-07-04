@@ -55,7 +55,7 @@ export class InsertPedidoSistema{
             just_subst,
              
         } = orcamento;
-
+    contato = 'APP'
 
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
@@ -68,7 +68,7 @@ export class InsertPedidoSistema{
         if (!data_cadastro)   data_cadastro = dataAtual;
         if (!data_recadastro)  data_recadastro = dataAtual;
         if (!total_servicos)   total_servicos = 0;
-        if (!contato)   contato = '';
+         
         if (!observacoes)   observacoes = '';
         if (!observacoes2)  observacoes2 = '';
         if (!just_ipi)  just_ipi = '';

@@ -1,4 +1,4 @@
-import { conn_sistema } from "../../database/databaseConfig";
+import { conn_mobie } from "../../database/databaseConfig";
 
 export class InsertItensPedidoMobile{
 
@@ -27,7 +27,7 @@ async cadastraProdutosDoPedido(produtos:any ,empresa:any, codigoPedido:any ){
 
          const sql =  ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
             let dados = [ codigoPedido, codigo, desconto, quantidade, preco, total ]
-          await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
+          await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
                if(error){
                        reject(" erro ao inserir produto do orcamento "+ error);
                }else{
@@ -57,7 +57,7 @@ async cadastraParcelasDoPedido(parcelas:any,empresa:any, codigoPedido:any){
       let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
 
 
-        await   conn_sistema.query( sql,  dados , (err: any, resultParcelas:any) => {
+        await   conn_mobie.query( sql,  dados , (err: any, resultParcelas:any) => {
                 if (err) {
                     console.log("erro ao inserir parcelas !" + err)
                     
@@ -98,7 +98,7 @@ async cadastraParcelasDoPedido(parcelas:any,empresa:any, codigoPedido:any){
             const sql =  ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
 
               let dados = [ codigoPedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total  ]
-            await conn_sistema.query( sql,dados ,(error:any, resultado:any)=>{
+            await conn_mobie.query( sql,dados ,(error:any, resultado:any)=>{
                  if(error){
                   console.log(" erro ao inserir servico do orcamento "+ error)
                          reject(" erro ao inserir servico do orcamento "+ error);
