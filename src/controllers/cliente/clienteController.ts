@@ -26,6 +26,8 @@ import { Updata_clientes_Mobile } from "../../models_mobile/cliente/update";
                              let validClienteMobile:IClienteMobile[];
 
                              validClienteMobile = await select_clientes_mobile.buscaPorcodigo(databaseMobile, i.CODIGO);
+                            if( i.DATA_CADASTRO === null ) i.DATA_CADASTRO = '0000-00-00'
+
                             if( i.DATA_RECAD === null ) i.DATA_RECAD = '0000-00-00 00:00:00'
                              let objInsertMobile:any =
                              {
