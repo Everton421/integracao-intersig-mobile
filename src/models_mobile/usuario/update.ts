@@ -1,4 +1,4 @@
-import { conn_mobie, db_mobile } from "../../database/databaseConfig"
+import { conn_mobie  } from "../../database/databaseConfig"
 import { IUsuario } from "../../models_sistema/usuarios/types/IUsuario"
  
 
@@ -13,7 +13,7 @@ export class UpdateUsuarioMobile{
                             nome='${usuario.nome}',
                             email='${usuario.email}',
                             senha='${usuario.senha}',
-                            cnpj='${db_mobile}' 
+                            cnpj='${empresa}' 
                          where codigo = '${usuario.codigo}'
                    `
  

@@ -67,7 +67,7 @@ class SelectPedidoMobile {
         return new Promise(async (resolve, reject) => {
             const code = codigo;
             const sql = ` select * from ${empresa}.pedidos where codigo =  ?  `;
-            databaseConfig_1.conn_sistema.query(sql, [code], (err, result) => {
+            databaseConfig_1.conn_mobie.query(sql, [code], (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -84,7 +84,7 @@ class SelectPedidoMobile {
             const sql = ` SELECT *, CONVERT(observacoes USING utf8) AS observacoes FROM ${empresa}.pedidos  
                 WHERE  data_recadastro >= '${queryData}'  
             `;
-            await databaseConfig_1.conn_sistema.query(sql, async (err, result) => {
+            await databaseConfig_1.conn_mobie.query(sql, async (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -98,7 +98,7 @@ class SelectPedidoMobile {
     async buscaTodos(empresa) {
         return new Promise(async (resolve, reject) => {
             const sql = ` select * from ${empresa}.pedidos  `;
-            databaseConfig_1.conn_sistema.query(sql, (err, result) => {
+            databaseConfig_1.conn_mobie.query(sql, (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);

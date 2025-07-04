@@ -33,6 +33,8 @@ class SelectOrcamentoSistema {
              from ${databaseConfig_1.db_vendas}.cad_orca co
                            left join ${databaseConfig_1.db_publico}.cad_clie cli on cli.codigo = co.cliente
                            where co.COD_SITE = ${codigo}
+                group by  co.codigo
+                order by co.codigo
                             ;
                         `;
         return new Promise(async (resolve, reject) => {

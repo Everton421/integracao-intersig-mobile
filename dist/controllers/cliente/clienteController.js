@@ -18,6 +18,10 @@ class ClienteController {
             for (let i of clientesSistema) {
                 let validClienteMobile;
                 validClienteMobile = await select_clientes_mobile.buscaPorcodigo(databaseConfig_1.databaseMobile, i.CODIGO);
+                if (i.DATA_CADASTRO === null)
+                    i.DATA_CADASTRO = '0000-00-00';
+                if (i.DATA_RECAD === null)
+                    i.DATA_RECAD = '0000-00-00 00:00:00';
                 let objInsertMobile = {
                     codigo: i.CODIGO,
                     id: i.CODIGO,

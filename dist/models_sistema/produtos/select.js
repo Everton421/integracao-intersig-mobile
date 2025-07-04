@@ -15,7 +15,7 @@ class SelectProdutosSistema {
         p.NUM_FABRICANTE num_fabricante,
         p.NUM_ORIGINAL num_original,
         p.OUTRO_COD sku,
-        p.MARCA marca,
+         COALESCE( p.MARCA, 0) as marca,
         p.ATIVO ativo,
         p.TIPO tipo,
         cf.NCM class_fiscal,
@@ -38,10 +38,14 @@ class SelectProdutosSistema {
             WHERE 
             -- s.padrao_venda = 'X' 
             -- and
+
             tp.padrao = 'S'
             and p.ativo = 'S'
+            and p.no_site = 'S'
+            group by  p.CODIGO
+            order by p.CODIGO
         `;
-            await databaseConfig_1.conn_mobie.query(sql, (err, result) => {
+            await databaseConfig_1.conn_sistema.query(sql, (err, result) => {
                 if (err) {
                     console.log('erro ao inserir produto ', err);
                     console.log(sql);

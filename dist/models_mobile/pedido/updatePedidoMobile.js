@@ -60,13 +60,13 @@ class UpdatePedidoMobile {
             let statusAtualizacao;
             let statusDeletePro_orca;
             let statusDeletePar_orca;
-            const validCliente = await selectClientesMobile.buscaPorId(databaseConfig_1.databaseMobile, orcamento.cliente.codigo);
+            const validCliente = await selectClientesMobile.buscaPorcodigo(databaseConfig_1.databaseMobile, orcamento.cliente.codigo);
             if (validCliente.length > 0) {
                 orcamento.cliente = validCliente[0];
             }
             try {
                 statusAtualizacao = await this.updateTabelaPedido(empresa, orcamento, codigoOrcamento);
-                console.log('status atualizacao pedido ', statusAtualizacao);
+                console.log('status atualizacao tabela pedido  ', statusAtualizacao);
             }
             catch (err) {
                 reject(err);

@@ -37,5 +37,5 @@ app.use((err, req, res, next) => {
         messsage: 'internal server error.'
     });
 });
-const PORT_API = process.env.PORT_API; // Porta padrão para HTTPS
+const PORT_API = process.env.PORT_API || 3000; // Porta padrão para HTTPS
 app.listen(PORT_API, () => { console.log(`app rodando porta ${PORT_API}  `); });

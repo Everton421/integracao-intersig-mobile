@@ -1,4 +1,4 @@
-import { conn_mobie, db_mobile } from "../../database/databaseConfig";
+import { conn_mobie   } from "../../database/databaseConfig";
 import { IUsuario } from "../../models_sistema/usuarios/types/IUsuario";
 
     
@@ -20,7 +20,7 @@ import { IUsuario } from "../../models_sistema/usuarios/types/IUsuario";
                     ) VALUES
                     ( ?, ?, ?, ?, ?, ?); `;
 
-            const values = [usuario.codigo, usuario.nome,usuario.senha, usuario.email, db_mobile , 'S']
+            const values = [usuario.codigo, usuario.nome,usuario.senha, usuario.email, empresa , 'S']
 
             await conn_mobie.query( sql , values,(err:any, result:any )=>{
                 if(err){

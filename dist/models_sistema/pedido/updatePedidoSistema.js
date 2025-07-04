@@ -54,6 +54,7 @@ class UpdatePedidoSistema {
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
         const produtos = orcamento.produtos;
+        contato = 'APP';
         if (!situacao)
             situacao = 'EA';
         if (!quantidade_parcelas)
@@ -68,8 +69,6 @@ class UpdatePedidoSistema {
             data_cadastro = dataAtual;
         if (!data_recadastro)
             data_recadastro = objDate.obterDataHoraAtual();
-        if (!contato)
-            contato = '';
         if (!observacoes)
             observacoes = '';
         if (!observacoes2)
@@ -97,70 +96,65 @@ class UpdatePedidoSistema {
             console.log(err);
             /// return response.status(500).json({ "msg": err });
         }
-        if (statusAtualizacao) {
-            const validaProdutos = await selectItensPedidoSistema.buscaProdutosDoOrcamento(codigoOrcamento);
-            if (validaProdutos.length > 0) {
+        const validaProdutos = await selectItensPedidoSistema.buscaProdutosDoOrcamento(codigoOrcamento);
+        if (validaProdutos.length > 0) {
+            try {
+                statusDeletePro_orca = await deleteItensPedidoSistema.deletePro_orca(codigoOrcamento);
+            }
+            catch (err) {
+                console.log(err);
+            }
+        }
+        if (produtos.length > 0) {
+            try {
+                await insertItensPedidoSistema.cadastraProdutosDoPedido(produtos, codigoOrcamento);
+            }
+            catch (err) {
+                console.log(`erro ao inserir produto do pedido ${codigoOrcamento}`, err);
+            }
+        }
+        const validaServicos = await selectItensPedidoSistema.buscaServicosDoOrcamento(codigoOrcamento);
+        if (validaServicos.length > 0) {
+            try {
+                await deleteItensPedidoSistema.deleteSer_orca(codigoOrcamento);
+            }
+            catch (e) {
+                console.log(e);
+            }
+            if (servicos.length > 0) {
                 try {
-                    statusDeletePro_orca = await deleteItensPedidoSistema.deletePro_orca(codigoOrcamento);
+                    await insertItensPedidoSistema.cadastraServicosDoPedido(servicos, codigoOrcamento);
+                }
+                catch (e) {
+                    console.log(` erro ao inserir os servicos`, e);
+                }
+            }
+        }
+        const validaParcelas = await selectItensPedidoSistema.buscaParcelasDoOrcamento(codigoOrcamento);
+        if (validaParcelas.length > 0) {
+            if (statusAtualizacao) {
+                try {
+                    statusDeletePar_orca = await deleteItensPedidoSistema.deletePar_orca(codigoOrcamento);
                 }
                 catch (err) {
                     console.log(err);
-                }
-                if (produtos.length > 0) {
-                    try {
-                        await insertItensPedidoSistema.cadastraProdutosDoPedido(produtos, codigoOrcamento);
-                    }
-                    catch (err) {
-                        console.log(err);
-                    }
+                    return express_1.response.status(500).json({ "msg": err });
                 }
             }
-            const validaServicos = await selectItensPedidoSistema.buscaServicosDoOrcamento(codigoOrcamento);
-            if (validaServicos.length > 0) {
+            if (statusDeletePar_orca) {
                 try {
-                    await deleteItensPedidoSistema.deleteSer_orca(codigoOrcamento);
+                    await insertItensPedidoSistema.cadastraParcelasDoPeidido(parcelas, codigoOrcamento);
                 }
-                catch (e) {
-                    console.log(e);
-                }
-                if (servicos.length > 0) {
-                    try {
-                        await insertItensPedidoSistema.cadastraServicosDoPedido(servicos, codigoOrcamento);
-                    }
-                    catch (e) {
-                        console.log(` erro ao inserir os servicos`, e);
-                    }
+                catch (err) {
+                    console.log(err);
+                    return express_1.response.status(500).json({ "msg": err });
                 }
             }
-            const validaParcelas = await selectItensPedidoSistema.buscaParcelasDoOrcamento(codigoOrcamento);
-            if (validaParcelas.length > 0) {
-                if (statusAtualizacao) {
-                    try {
-                        statusDeletePar_orca = await deleteItensPedidoSistema.deletePar_orca(codigoOrcamento);
-                    }
-                    catch (err) {
-                        console.log(err);
-                        return express_1.response.status(500).json({ "msg": err });
-                    }
-                }
-                if (statusDeletePar_orca) {
-                    try {
-                        await insertItensPedidoSistema.cadastraParcelasDoPeidido(parcelas, codigoOrcamento);
-                    }
-                    catch (err) {
-                        console.log(err);
-                        return express_1.response.status(500).json({ "msg": err });
-                    }
-                }
-            }
-            //      {
-            //          "msg": ` orcamento ${codigoDoOrcamento} atualizado com sucesso!`,
-            //          "codigo": `${codigoDoOrcamento}`
-            //      });
         }
-        else {
-            console.log('nao foi encontrado orcamento com este codigo');
-        }
+        //      {
+        //          "msg": ` orcamento ${codigoDoOrcamento} atualizado com sucesso!`,
+        //          "codigo": `${codigoDoOrcamento}`
+        //      });
     }
 }
 exports.UpdatePedidoSistema = UpdatePedidoSistema;

@@ -21,6 +21,7 @@ class InsertPedidoSistema {
             const dataAtual = this.obterDataAtual();
             let codigo_pedido;
             let { codigo, forma_pagamento, cliente, descontos, observacoes, observacoes2, quantidade_parcelas, total_geral, total_produtos, total_servicos, situacao, tipo, vendedor, data_cadastro, data_recadastro, veiculo, tipo_os, contato, just_ipi, just_icms, just_subst, } = orcamento;
+            contato = 'APP';
             const servicos = orcamento.servicos;
             const parcelas = orcamento.parcelas;
             const produtos = orcamento.produtos;
@@ -38,8 +39,6 @@ class InsertPedidoSistema {
                 data_recadastro = dataAtual;
             if (!total_servicos)
                 total_servicos = 0;
-            if (!contato)
-                contato = '';
             if (!observacoes)
                 observacoes = '';
             if (!observacoes2)

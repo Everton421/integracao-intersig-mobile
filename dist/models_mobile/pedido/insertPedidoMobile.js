@@ -68,7 +68,7 @@ class InsertPedidoMobile {
       ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `;
-            await databaseConfig_1.conn_sistema.query(sql, [codigo, id, vendedor, situacao, contato, descontos, forma_pagamento, quantidade_parcelas, total_geral, total_produtos, total_servicos, cliente, veiculo, data_cadastro, data_recadastro, tipo_os, enviado, tipo, observacoes], async (err, result) => {
+            await databaseConfig_1.conn_mobie.query(sql, [codigo, id, vendedor, situacao, contato, descontos, forma_pagamento, quantidade_parcelas, total_geral, total_produtos, total_servicos, cliente, veiculo, data_cadastro, data_recadastro, tipo_os, enviado, tipo, observacoes], async (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);

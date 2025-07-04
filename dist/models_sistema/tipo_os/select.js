@@ -7,7 +7,7 @@ class SelectTiposOsSistema {
         return new Promise(async (resolve, reject) => {
             let sql = ` select *
         from ${empresa}.tipos_os`;
-            await databaseConfig_1.conn_mobie.query(sql, (err, result) => {
+            await databaseConfig_1.conn_sistema.query(sql, (err, result) => {
                 if (err)
                     reject(err);
                 resolve(result);

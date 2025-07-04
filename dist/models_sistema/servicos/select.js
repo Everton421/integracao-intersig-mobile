@@ -9,7 +9,7 @@ class SelectServicosSistema {
                                 *,
                                      DATE_FORMAT(DATA_CADASTRO, '%Y-%m-%d') AS DATA_CADASTRO 
                  -- DATE_FORMAT(DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS DATA_RECAD
-                     FROM ${publico}.cad_serv WHERE ATIVO = 'S';`;
+                     FROM ${publico}.cad_serv WHERE ATIVO = 'S' AND NO_SITE = 'S';`;
             await databaseConfig_1.conn_sistema.query(sql, (err, result) => {
                 if (err) {
                     console.log(err);

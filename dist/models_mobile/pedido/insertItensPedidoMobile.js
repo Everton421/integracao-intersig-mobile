@@ -18,7 +18,7 @@ class InsertItensPedidoMobile {
                     total = 0;
                 const sql = ` INSERT INTO ${empresa}.produtos_pedido ( pedido ,  codigo ,  desconto ,  quantidade ,  preco ,  total ) VALUES (? , ?, ?, ?, ?, ?) `;
                 let dados = [codigoPedido, codigo, desconto, quantidade, preco, total];
-                await databaseConfig_1.conn_sistema.query(sql, dados, (error, resultado) => {
+                await databaseConfig_1.conn_mobie.query(sql, dados, (error, resultado) => {
                     if (error) {
                         reject(" erro ao inserir produto do orcamento " + error);
                     }
@@ -40,7 +40,7 @@ class InsertItensPedidoMobile {
                 let { pedido, parcela, valor, vencimento } = p;
                 let sql = `  INSERT INTO ${empresa}.parcelas ( pedido ,  parcela ,  valor, vencimento ) VALUES ( ?  , ?,  ?, ?  )`;
                 let dados = [codigoPedido, parcela, valor, vencimento];
-                await databaseConfig_1.conn_sistema.query(sql, dados, (err, resultParcelas) => {
+                await databaseConfig_1.conn_mobie.query(sql, dados, (err, resultParcelas) => {
                     if (err) {
                         console.log("erro ao inserir parcelas !" + err);
                     }
@@ -68,7 +68,7 @@ class InsertItensPedidoMobile {
                         total = 0;
                     const sql = ` INSERT INTO    ${empresa}.servicos_pedido  ( pedido ,  codigo ,  desconto ,  quantidade ,  valor ,  total ) VALUES ( ?, ?, ?, ?, ?, ?)   `;
                     let dados = [codigoPedido, codigo, desconto, quantidade, valor, total];
-                    await databaseConfig_1.conn_sistema.query(sql, dados, (error, resultado) => {
+                    await databaseConfig_1.conn_mobie.query(sql, dados, (error, resultado) => {
                         if (error) {
                             console.log(" erro ao inserir servico do orcamento " + error);
                             reject(" erro ao inserir servico do orcamento " + error);
