@@ -31,7 +31,6 @@ console.log(" Atualizando pedidos ...")
    let dataAtual = objDate.obterDataAtual()+' 00:00:00'
    let dataHoraAtual = objDate.obterDataHoraAtual();
    
- 
        try{
         console.log(dataAtual)
 
