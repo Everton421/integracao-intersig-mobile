@@ -60,7 +60,7 @@ export class InsertPedidoMobile {
        const cliente = orcamento.cliente;
         
 
-      if (!id)   id = 0;
+      if (!id) id = '0';
 
       if (!situacao)   situacao = 'EA';
       if (!vendedor)   vendedor = 1;
