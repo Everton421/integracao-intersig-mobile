@@ -8,6 +8,8 @@ export interface IPedidoSistema
 {
     codigo:number
     id:number
+    id_externo:number
+
     vendedor:number
     situacao: string
     contato: string

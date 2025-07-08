@@ -81,12 +81,14 @@ console.log(" Atualizando pedidos ...")
                                     }else{
                                         try{
                                             console.log(`inserindo pedido ${i.codigo} no sistema `)
+                                            i.data_recadastro = dataHoraAtual
                                             let aux:number =  await createPedidoSistema.create(i);
                                                 if(aux > 0 ){
             
                                                 let data:paramPedido = {codigo_sistema: aux, codigo_mobile: i.codigo , excluido: 'N'}
-                                              //  await insertParamPedido.cadastrar(data)
-                                        }
+                                             //  await insertParamPedido.cadastrar(data)
+                                               await updatePedidoMobile.newUpdate( databaseMobile, i.codigo, {  id_externo:  aux, data_recadastro: i.data_recadastro} )
+                                            }
                                         } catch(e){
                                                 console.log('erro ao tentar cadastrar orcamento', e)
                                             }

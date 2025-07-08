@@ -65,6 +65,7 @@ export class UpdatePedidoSistema{
 
 
         let {
+            id,
             forma_pagamento,
             descontos,
             observacoes,
@@ -91,7 +92,7 @@ export class UpdatePedidoSistema{
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
         const produtos = orcamento.produtos;
-        contato = 'APP';
+    
 
         if (!situacao)  situacao = 'EA';
         if (!quantidade_parcelas)  quantidade_parcelas = 0;
@@ -114,6 +115,7 @@ export class UpdatePedidoSistema{
         let statusDeletePro_orca: any;
         let statusDeletePar_orca: any;
 
+      orcamento.contato = 'APP /'+ id 
       
             try {
                 statusAtualizacao = await updateCad_orca(orcamento,codigoOrcamento );

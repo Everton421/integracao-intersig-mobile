@@ -6,7 +6,7 @@ import { IProdutoPedidoMobile } from "./IProdutoPedidoMobile"
 export interface IPedidoMobile
 {
     codigo:number
-    id:number
+    id:string
     vendedor:number
     situacao: string
     contato: string
