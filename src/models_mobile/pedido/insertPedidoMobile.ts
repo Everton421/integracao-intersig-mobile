@@ -94,7 +94,6 @@ export class InsertPedidoMobile {
                   console.log(err)
                    reject(err)
               } else {
-
                  
                   let status = null;
                   if(servicos.length > 0 ){

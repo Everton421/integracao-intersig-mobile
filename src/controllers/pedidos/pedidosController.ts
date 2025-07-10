@@ -68,7 +68,10 @@ console.log(" Atualizando pedidos ...")
                                                         // atualiza somente a tabela dos dados do orcamento
                                                         // tipo, situacao etc ..
                                                         console.log(`atualizando situacao do pedido ${i.codigo} no mobile `)
-                                                        await updatePedidoMobile.updateTabelaPedido(databaseMobile,pedidoSistema ,i.codigo)
+                                                        await updatePedidoMobile.newUpdate(databaseMobile, i.codigo, 
+                                                            {
+                                                                situacao:pedidoSistema.situacao,
+                                                            })
                                                     }else{
     
                                                     }

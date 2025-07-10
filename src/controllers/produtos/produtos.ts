@@ -28,19 +28,31 @@ export class ProdutoController {
                                               if(i.data_recadastro === null ){
                                                   i.data_recadastro = '0000-00-00 00:00:00';
                                               } 
-
+                                             if( i.data_recadastro_estoque === null ){
+                                                i.data_recadastro_estoque ='0000-00-00 00:00:00';
+                                              }
                                               if( i.data_recadastro_preco === null ){
                                                 i.data_recadastro_preco ='0000-00-00 00:00:00';
                                               }
                                               
-                                              let data_ult_atualizacao = '0000-00-00 00:00:00';
+                                              let data_ult_atualizacao = i.data_recadastro
 
-                                              if( i.data_recadastro_preco > i.data_recadastro ){
-                                                data_ult_atualizacao = i.data_recadastro_preco
-                                                }else{
-                                                data_ult_atualizacao = i.data_recadastro
-                                              }     
+                                              
 
+                                                if( new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
+                                                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
+                                                    i.estoque = arrEstoque[0].ESTOQUE;
+                                                  }
+                                                  
+
+                                                  if(  new Date(i.data_recadastro_estoque) > new Date(i.data_recadastro_preco)){
+                                                    data_ult_atualizacao = i.data_recadastro_estoque
+                                                  }else{
+                                                    if(  new Date( i.data_recadastro_preco) > new Date(i.data_recadastro_estoque) ){
+                                                    data_ult_atualizacao = i.data_recadastro_preco
+                                                  }
+                                                }
+                                                 
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
@@ -68,7 +80,7 @@ export class ProdutoController {
                                          }
           
                                           if( produtoMobile.length > 0 ){
-          
+
                                               if( data_ult_atualizacao >  validProdutoMobile.data_recadastro){
                                                 try{
                                                     console.log('atualizando produto codigo: ',i.codigo  )
@@ -78,7 +90,7 @@ export class ProdutoController {
                                                 }
                                               
                                               }else{
-                                                  console.log('o produto codigo: ',i.codigo, ' se encontra atualizado',  i.data_recadastro ,' > ',  validProdutoMobile.data_recadastro )
+                                                  console.log('o produto codigo: ',i.codigo, ' se encontra atualizado',  data_ult_atualizacao ,' > ',  validProdutoMobile.data_recadastro )
                                                   continue;
                                               }
                                          }else{
