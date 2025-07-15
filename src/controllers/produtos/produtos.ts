@@ -17,7 +17,7 @@ export class ProdutoController {
     const objTiraAspas = new TiraCaracteres();
 
     let produtosSistema = await  selectProdutosSistema.buscaGeral(db_estoque, db_publico);
-
+    console.log(produtosSistema)
     if(produtosSistema.length > 0 ){
 
         for( let i of produtosSistema ){
@@ -105,7 +105,6 @@ export class ProdutoController {
         }
     }
   } 
-
 
  }
  }
