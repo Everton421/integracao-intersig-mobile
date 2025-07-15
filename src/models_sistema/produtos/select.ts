@@ -23,13 +23,12 @@ async   buscaGeral(estoque:any, publico:any)   {
         cf.NCM class_fiscal,
         p.ORIGEM origem,
         p.CST cst,
-        DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d') AS data_cadastro,
-          DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s') data_recadastro_preco,
-          DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS data_recadastro,
-          DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS data_recadastro_estoque,      
-        CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
-        CONVERT( p.OBSERVACOES2 USING utf8) as observacoes2,
-        CONVERT( p.OBSERVACOES3 USING utf8) as observacoes3
+       coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'0000-00-00 00:00:00') AS data_cadastro,
+       coalesce(DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s'),'0000-00-00 00:00:00') data_recadastro_preco,
+       coalesce(DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00') AS data_recadastro,
+       coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00')  AS data_recadastro_estoque,     CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
+        CONVERT(p.OBSERVACOES2 USING utf8) as observacoes2,
+        CONVERT(p.OBSERVACOES3 USING utf8) as observacoes3
         
             FROM   ${publico}.cad_prod p 
                 left join  ${estoque}.prod_setor ps on ps.produto = p.codigo
