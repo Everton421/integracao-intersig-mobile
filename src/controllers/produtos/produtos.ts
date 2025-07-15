@@ -42,10 +42,10 @@ export class ProdutoController {
 
                                                 if( validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
                                                     let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
-                                                    i.estoque = arrEstoque[0].ESTOQUE;
+                                                    i.estoque = arrEstoque[0].ESTOQUE ? arrEstoque[0].ESTOQUE  : 0;
                                                   }else{
                                                       let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
-                                                    i.estoque = arrEstoque[0].ESTOQUE;
+                                                      i.estoque = arrEstoque[0].ESTOQUE ? arrEstoque[0].ESTOQUE  : 0;
                                                   }
                                           
                                                   
