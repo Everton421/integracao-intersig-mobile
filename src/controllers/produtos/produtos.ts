@@ -17,12 +17,12 @@ export class ProdutoController {
     const objTiraAspas = new TiraCaracteres();
 
     let produtosSistema = await  selectProdutosSistema.buscaGeral(db_estoque, db_publico);
-    console.log(produtosSistema)
+
     if(produtosSistema.length > 0 ){
 
         for( let i of produtosSistema ){
                   let produtoMobile = await selectProdutosMobile.buscaPorCodigo(databaseMobile, i.codigo) 
-          
+            
                                               let validProdutoMobile = produtoMobile[0];
                                          
                                               if(i.data_recadastro === null ){
@@ -37,15 +37,20 @@ export class ProdutoController {
                                               
                                               let data_ult_atualizacao = i.data_recadastro
 
-                                              
+                        
+                                           
 
-                                                if( new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
+                                                if( validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
                                                     let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
                                                     i.estoque = arrEstoque[0].ESTOQUE;
+                                                  }else{
+                                                      let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
+                                                    i.estoque = arrEstoque[0].ESTOQUE;
                                                   }
+                                          
                                                   
-
-                                                  if(  new Date(i.data_recadastro_estoque) > new Date(i.data_recadastro_preco)){
+                    
+                                                  if(  validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(i.data_recadastro_preco)){
                                                     data_ult_atualizacao = i.data_recadastro_estoque
                                                   }else{
                                                     if(  new Date( i.data_recadastro_preco) > new Date(i.data_recadastro_estoque) ){
@@ -95,16 +100,16 @@ export class ProdutoController {
                                               }
                                          }else{
                                             try{
-
                                                   console.log('cadastrando produto codigo: ',i.codigo )
                                           await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
                                                 
                                              }catch(e){ console.log(e)
-
-                                             }
-        }
+                                  }  
+                    }
+       
     }
   } 
+
 
  }
  }
