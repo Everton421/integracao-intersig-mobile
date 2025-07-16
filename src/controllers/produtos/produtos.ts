@@ -9,6 +9,8 @@ import { TiraCaracteres } from "../../services/tiraCaracteres";
 
 export class ProdutoController {
 
+    private codigoSetor = 1 ; 
+
   async main(){
    const selectProdutosSistema = new SelectProdutosSistema();
    const selectProdutosMobile = new SelectProdutosMobile();
@@ -41,13 +43,22 @@ export class ProdutoController {
                                            
 
                                                 if( validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
-                                                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
-                                                    i.estoque = arrEstoque[0].ESTOQUE ? arrEstoque[0].ESTOQUE  : 0;
+                                                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, this.codigoSetor )
+                                                    if(arrEstoque.length > 0 ){
+                                                       i.estoque = arrEstoque[0].ESTOQUE  
+                                                    }else{
+                                                      console.log(`nao foi encontrado o produto ${i.codigo} no setor codigo: ${this.codigoSetor} `)
+                                                        i.estoque = 0 
+                                                    }
                                                   }else{
                                                       let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
-                                                      i.estoque = arrEstoque[0].ESTOQUE ? arrEstoque[0].ESTOQUE  : 0;
+                                                     if(arrEstoque.length > 0 ){
+                                                           i.estoque = arrEstoque[0].ESTOQUE  
+                                                      }else{
+                                                         console.log(`nao foi encontrado o produto ${i.codigo} no setor codigo: ${this.codigoSetor} `)
+                                                         i.estoque = 0 
+                                                      }
                                                   }
-                                          
                                                   
                     
                                                   if(  validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(i.data_recadastro_preco)){
