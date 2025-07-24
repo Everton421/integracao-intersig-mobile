@@ -19,6 +19,7 @@
     data_recadastro: string, 
     data_recadastro_preco: string,     
     data_recadastro_estoque: string,
+    data_ultima_alteracao: string,
     observacoes1: string,
     observacoes2: string,
     observacoes3: string

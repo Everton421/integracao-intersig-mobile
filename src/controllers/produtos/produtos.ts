@@ -9,9 +9,10 @@ import { TiraCaracteres } from "../../services/tiraCaracteres";
 
 export class ProdutoController {
 
-    private codigoSetor = 1 ; 
 
   async main(){
+      const codigoSetor = 1 ; 
+
    const selectProdutosSistema = new SelectProdutosSistema();
    const selectProdutosMobile = new SelectProdutosMobile();
    const insertProdutosMobile = new InsertProdutosMobile();
@@ -27,48 +28,17 @@ export class ProdutoController {
             
                                               let validProdutoMobile = produtoMobile[0];
                                          
-                                              if(i.data_recadastro === null ){
-                                                  i.data_recadastro = '0000-00-00 00:00:00';
-                                              } 
-                                             if( i.data_recadastro_estoque === null ){
-                                                i.data_recadastro_estoque ='0000-00-00 00:00:00';
-                                              }
-                                              if( i.data_recadastro_preco === null ){
-                                                i.data_recadastro_preco ='0000-00-00 00:00:00';
-                                              }
-                                              
-                                              let data_ult_atualizacao = i.data_recadastro
+                                             
+                                              let data_ult_atualizacao = i.data_ultima_alteracao
 
-                        
-                                           
-
-                                                if( validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(validProdutoMobile.data_recadastro) ){
-                                                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, this.codigoSetor )
+                                                if( validProdutoMobile && new Date(i.data_ultima_alteracao) > new Date(validProdutoMobile.data_recadastro) ){
+                                                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo,  codigoSetor )
                                                     if(arrEstoque.length > 0 ){
                                                        i.estoque = arrEstoque[0].ESTOQUE  
-                                                    }else{
-                                                      console.log(`nao foi encontrado o produto ${i.codigo} no setor codigo: ${this.codigoSetor} `)
-                                                        i.estoque = 0 
-                                                    }
-                                                  }else{
-                                                      let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo, 1  )
-                                                     if(arrEstoque.length > 0 ){
-                                                           i.estoque = arrEstoque[0].ESTOQUE  
-                                                      }else{
-                                                         console.log(`nao foi encontrado o produto ${i.codigo} no setor codigo: ${this.codigoSetor} `)
-                                                         i.estoque = 0 
-                                                      }
-                                                  }
+                                                    } 
+                                                  } 
                                                   
-                    
-                                                  if(  validProdutoMobile && new Date(i.data_recadastro_estoque) > new Date(i.data_recadastro_preco)){
-                                                    data_ult_atualizacao = i.data_recadastro_estoque
-                                                  }else{
-                                                    if(  new Date( i.data_recadastro_preco) > new Date(i.data_recadastro_estoque) ){
-                                                    data_ult_atualizacao = i.data_recadastro_preco
-                                                  }
-                                                }
-                                                 
+                     
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
@@ -117,8 +87,7 @@ export class ProdutoController {
                                              }catch(e){ console.log(e)
                                   }  
                     }
-       
-    }
+      }
   } 
 
 

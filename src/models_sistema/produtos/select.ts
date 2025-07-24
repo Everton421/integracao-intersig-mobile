@@ -26,7 +26,16 @@ async   buscaGeral(estoque:any, publico:any)   {
        coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'0000-00-00 00:00:00') AS data_cadastro,
        coalesce(DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s'),'0000-00-00 00:00:00') data_recadastro_preco,
        coalesce(DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00') AS data_recadastro,
-       coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00')  AS data_recadastro_estoque,     CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
+       coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00')  AS data_recadastro_estoque,
+              DATE_FORMAT(
+        GREATEST(
+            COALESCE(p.DATA_RECAD, '0000-01-01'),  -- Data de atualização do produto
+            COALESCE(pp.DATA_RECAD, '0000-01-01'), -- Data de atualização do preço
+            COALESCE(ps.DATA_RECAD, '0000-01-01')  -- Data de atualização do estoque
+        ), 
+        '%Y-%m-%d %H:%i:%s'
+    ) AS data_ultima_alteracao,
+        CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
         CONVERT(p.OBSERVACOES2 USING utf8) as observacoes2,
         CONVERT(p.OBSERVACOES3 USING utf8) as observacoes3
         
@@ -88,7 +97,7 @@ async   buscaGeral(estoque:any, publico:any)   {
     await conn_sistema.query( sql ,(err:any , result:any)=>{
         if(err){
           reject(err)
-          console.log('erro ao obter o saldo de estoque')
+          console.log('erro ao obter o saldo de estoque do produto: ', codigo)
         }else{
             resolve(result);
         }
