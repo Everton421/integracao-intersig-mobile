@@ -32,9 +32,9 @@ export class UpdateConfigIntegracao{
                             conditions.push(' importar_estoque = ? ');
                             values.push(`${config.importar_estoque}`)
                            }
-                           if( config.ultima_verificacao_precos){
-                            conditions.push(' ultima_verificacao_precos = ? ');
-                            values.push(`${config.ultima_verificacao_precos}`)
+                           if( config.ultima_verificacao_preco){
+                            conditions.push(' ultima_verificacao_preco = ? ');
+                            values.push(`${config.ultima_verificacao_preco}`)
                            }
                            if( config.ultima_verificacao_pedidos){
                             conditions.push(' ultima_verificacao_pedidos = ? ');

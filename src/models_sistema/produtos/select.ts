@@ -30,7 +30,70 @@ export type ISelectProdSistem = {
 
 export class SelectProdutosSistema{
 
-async   buscaGeral(estoque:any, publico:any)   {
+  async   buscaGeral(estoque:any, publico:any)   {
+      return new Promise <ISelectProdSistem[]> ( async ( resolve , reject ) =>{
+    let sql = ` 
+        SELECT  
+          p.CODIGO codigo,  
+          COALESCE(  ps.ESTOQUE,0 ) AS  estoque,
+          COALESCE(   ROUND(pp.preco,2 ),  0.00 ) as preco,
+          COALESCE( p.GRUPO, 0) as grupo, 
+          coalesce(und.SIGLA,'UND') as unidade_medida,
+          p.DESCRICAO descricao, 
+          p.NUM_FABRICANTE num_fabricante,
+          p.NUM_ORIGINAL num_original,
+          p.OUTRO_COD sku,
+          COALESCE( p.MARCA, 0) as marca,
+          p.ATIVO ativo,
+          p.TIPO tipo,
+          cf.NCM class_fiscal,
+          p.ORIGEM origem,
+          p.CST cst,
+        coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'0000-00-00 00:00:00') AS data_cadastro,
+        coalesce(DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s'),'0000-00-00 00:00:00') data_recadastro_preco,
+        coalesce(DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00') AS data_recadastro,
+        coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00')  AS data_recadastro_estoque,
+                DATE_FORMAT(
+          GREATEST(
+              COALESCE(p.DATA_RECAD, '0000-01-01'),  -- Data de atualização do produto
+              COALESCE(pp.DATA_RECAD, '0000-01-01'), -- Data de atualização do preço
+              COALESCE(ps.DATA_RECAD, '0000-01-01')  -- Data de atualização do estoque
+          ), 
+          '%Y-%m-%d %H:%i:%s'
+      ) AS data_ultima_alteracao,
+          CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
+          CONVERT(p.OBSERVACOES2 USING utf8) as observacoes2,
+          CONVERT(p.OBSERVACOES3 USING utf8) as observacoes3
+          
+              FROM   ${publico}.cad_prod p 
+                  left join  ${estoque}.prod_setor ps on ps.produto = p.codigo
+                  left join  ${estoque}.setores s on ps.setor = s.codigo
+                  left join  ${publico}.prod_tabprecos pp on pp.produto = p.codigo
+                  left join  ${publico}.tab_precos tp on tp.codigo = pp.tabela
+                  left join  ${publico}.class_fiscal cf on cf.codigo = p.class_fiscal
+                  left join  ${publico}.unid_prod und on und.produto = p.CODIGO and und.PADR_SAI = 'S' AND und.PADR_SEP= 'S' 
+
+              WHERE 
+              tp.padrao = 'S'
+              and p.ativo = 'S'
+              and p.no_site = 'S'
+              group by  p.CODIGO
+              order by p.CODIGO
+          `
+          console.log(sql)
+          await conn_sistema.query(sql,  (err:any, result:ISelectProdSistem[] )=>{
+              if (err){
+                  console.log('erro ao buscar produto ', err)
+                  console.log(sql)
+                  reject(err);
+              } else{ 
+                  resolve(result)
+              } 
+          })
+      })
+  }
+
+  async findByLastUpdated(estoque:any, publico:any, data:string)   {
     return new Promise <ISelectProdSistem[]> ( async ( resolve , reject ) =>{
    let sql = ` 
       SELECT  
@@ -74,19 +137,18 @@ async   buscaGeral(estoque:any, publico:any)   {
                 left join  ${publico}.unid_prod und on und.produto = p.CODIGO and und.PADR_SAI = 'S' AND und.PADR_SEP= 'S' 
 
             WHERE 
-            -- s.padrao_venda = 'X' 
-            -- and
-
             tp.padrao = 'S'
             and p.ativo = 'S'
-            and p.no_site = 'S'
+            and p.no_site = 'S' AND
+              p.DATA_RECAD >  '${data}' OR 
+               pp.DATA_RECAD >  '${data}' OR
+               ps.DATA_RECAD > '${data}'
             group by  p.CODIGO
             order by p.CODIGO
         `
         await conn_sistema.query(sql,  (err:any, result:ISelectProdSistem[] )=>{
             if (err){
-                console.log('erro ao inserir produto ', err)
-                console.log(sql)
+                console.log('erro ao buscar produto ', err)
                 reject(err);
             } else{ 
                 resolve(result)
@@ -94,6 +156,7 @@ async   buscaGeral(estoque:any, publico:any)   {
         })
      })
 }
+
      async buscaEstoqueRealPorSetor(codigo:number, setor:number ):Promise<[{CODIGO:number, ESTOQUE:number, DATA_RECAD:string }]>{
       return new Promise( async (resolve, reject)=>{
                             

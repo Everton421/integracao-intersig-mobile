@@ -10,7 +10,7 @@ import { TiraCaracteres } from "../../services/tiraCaracteres";
 export class ProdutoController {
 
 
-  async main(){
+  async main(data:string){
       const codigoSetor = 1 ; 
 
    const selectProdutosSistema = new SelectProdutosSistema();
@@ -19,7 +19,7 @@ export class ProdutoController {
    const updateProdutosMobile = new UpdateProdutosMobile();
     const objTiraAspas = new TiraCaracteres();
 
-    let produtosSistema = await  selectProdutosSistema.buscaGeral(db_estoque, db_publico);
+    let produtosSistema = await  selectProdutosSistema.findByLastUpdated(db_estoque, db_publico, data);
 
     if(produtosSistema.length > 0 ){
 

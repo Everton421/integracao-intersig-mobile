@@ -48,9 +48,9 @@ import { SetoresController } from "./controllers/setor/setor-controller";
   router.get('/estoque', async  ( req, res )=>{
   let movimentosController =  new MovimentosController()  
   let configIntegracao = new SelectConfig();
-  let verifyConfig = await   configIntegracao.selectConfig();
   let prodSetorController =  new ProdSetorController()  
   let setorController = new SetoresController();
+  let verifyConfig = await   configIntegracao.selectConfig();
 
   let updateConfig = new UpdateConfigIntegracao();
 
@@ -82,7 +82,7 @@ import { SetoresController } from "./controllers/setor/setor-controller";
               
 
    router.get('/clientes', new ClienteController().main)
-   router.get('/produtos', new ProdutoController().main)
+   
    router.get('/servicos', new ServicoController().main)
    router.get('/tipos_os', new Tipos_osController().main)
    router.get('/veiculos', new VeiculosController().main)
@@ -93,10 +93,53 @@ import { SetoresController } from "./controllers/setor/setor-controller";
    router.get('/usuarios', new UsuarioController().main)
      
 
+   router.get('/produtos', async (req,res)=>{
+       let configIntegracao = new SelectConfig();
+       let verifyConfig = await   configIntegracao.selectConfig();
+          let updateConfig = new UpdateConfigIntegracao();
+           let dateService= new DateService();
+
+             let objController = new ProdutoController();
+             if(verifyConfig.length > 0   ){
+                await objController.main( dateService.formatarDataHora(verifyConfig[0].ultima_verificacao_preco));
+                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_preco: dateService.obterDataHoraAtual()})
+               if( resultUpdateConfig.affectedRows > 0 ){
+             console.log({ok:true, msg:"fim da validacao"})
+          }
+        }else{
+               console.log("Nenhuma configuração encontrada")
+             }
+         res.status(200).json({ok:true, msg:"fim da validacao"})
+
+   })
 
 
+      const configProdutos = String(process.env.CONFIG_PRODUTOS)
 
-   
+      if( configProdutos && configProdutos != ''){
+      
+        let configIntegracao = new SelectConfig();
+
+        cron.schedule(configProdutos, async ()=>{
+           let verifyConfig = await   configIntegracao.selectConfig();
+           let updateConfig = new UpdateConfigIntegracao();
+           let dateService= new DateService();
+
+             let objController = new ProdutoController();
+             if(verifyConfig.length > 0   ){
+                await objController.main(  dateService.formatarDataHora(verifyConfig[0].ultima_verificacao_preco));
+                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_preco: dateService.obterDataHoraAtual()})
+               if( resultUpdateConfig.affectedRows > 0 ){
+                 console.log({ok:true, msg:"fim da validacao dos produtos"})
+             }
+        }else{
+               console.log("Nenhuma configuração encontrada")
+             }
+          })
+        }else{
+          console.log('Nao foi encontrado configuração de envio dos produtos no arquivo .env')
+      }
+
 
      let configEnvEstoque = String(process.env.CONFIG_ESTOQUE)
         if( configEnvEstoque && configEnvEstoque != ''){
@@ -212,15 +255,7 @@ import { SetoresController } from "./controllers/setor/setor-controller";
       }
        
 
-      const configProdutos = String(process.env.CONFIG_PRODUTOS)
-      if( configProdutos && configProdutos != ''){
-          cron.schedule(configProdutos, async ()=>{
-             let objController = new ProdutoController();
-             await objController.main();
-          })
-      }else{
-          console.log('Nao foi encontrado configuração de envio dos produtos no arquivo .env')
-      }
+
 
       const configPedidos = process.env.CONFIG_PEDIDOS
       if(configPedidos  && configPedidos !=''){

@@ -6,6 +6,7 @@ import { SelectMovimentosIntegracao } from "../../models_integracao/movimentos/s
 import { SelectMovimentosProdutosMobile } from "../../models_mobile/movimentos-produtos/select"
 import { InsertAceHist } from "../../models_sistema/ace_hist/insert";
 import { SelectAceHist } from "../../models_sistema/ace_hist/select";
+import { InsertLogSistema } from "../../models_sistema/log/insert";
 import { InsertMvtoProdutosSistema } from "../../models_sistema/mvto-produtos/insert";
 import { DateService } from "../../services/date";
 
@@ -21,6 +22,8 @@ export class MovimentosController{
         
         const insertAcehist = new InsertAceHist();
         const selectCodeAceHist = new SelectAceHist();
+        const insertLog = new InsertLogSistema();
+
           
         const insertMovIntegracao = new InsertMovimentosIntegracao()
 
@@ -53,6 +56,11 @@ export class MovimentosController{
                                                }catch(e){
                                                 return console.log("ocorreu um erro ao tentar registrar o acerto na tabela ace_hist", e )
                                                } 
+                                               try{
+                                                    await insertLog.insert({ APELIDO:"MOBILE", ACAO:1, HISTORICO:` ACERTO DE ESTOQUE -  Produto: ${i.produto}; Quantidade: ${i.quantidade}`, COMPUTADOR:"SERVIDOR", 
+                                                        DATA:dateService.obterDataAtual(), HORA: dateService.obterHoraAtual(),IP_CPU:''})
+                                               }catch(e){ console.log(`Erro ao tentar inserir o log no sistema `, e ) }
+
                                              
                                            if( resultInserAceHist && resultInserAceHist.affectedRows > 0 ){
                                                    console.log(` registrando movimento ${i.id} no sistema ...   `)
@@ -80,8 +88,8 @@ export class MovimentosController{
                                                                                 }
                                                                             )
                                                                             if( resultInsertMvtoSistema.affectedRows > 0  ){
-                                                                                await insertMovIntegracao.insert( { codigo_sistema:itemAceHist, id_mobile:i.id})
-                                                                                console.log(`   movimento ${i.id} registrado com sucesso no sistema ...   `)  
+                                                                                await insertMovIntegracao.insert( { codigo_sistema:itemAceHist, id_mobile:i.codigo})
+                                                                                console.log(`   movimento ${i.codigo} registrado com sucesso no sistema ...   `)  
                                                                             }
                                                             }catch( e ){
                                                                 console.log("Ocorreu um erro ao tentar registrar o movimento no sistema ", e)
