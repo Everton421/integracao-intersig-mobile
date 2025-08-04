@@ -14,7 +14,7 @@ import { DateService } from "../../services/date";
 export class ProdSetorController{
 
 
-      async main ( configIntegracao:IConfig ){
+      async main ( config:{ dataEstoque:string, importar_estoque:'S'| 'N'} ){
 
         const selectProdSetorSistema = new SelectProdSetorSistema();
         const updateProdSetorSistema = new UpdateProdSetorSistema();
@@ -26,10 +26,10 @@ export class ProdSetorController{
         const dateService = new DateService();
 
             try{    
-                if( configIntegracao.importar_estoque === 'S'){
+                if( config.importar_estoque === 'S'){
              
 
-                let resultLastItens = await selectProdutoSetorMobile.findLastUpdate(databaseMobile,configIntegracao.ultima_verificacao_estoque )
+                let resultLastItens = await selectProdutoSetorMobile.findLastUpdate(databaseMobile,config.dataEstoque )
                   if(resultLastItens.length > 0 ){
                         console.log('Verificando produtos do  setor no mobile  ')
 
@@ -52,7 +52,7 @@ export class ProdSetorController{
                         }
                     }
 
-                    let resultLasItensSistema = await selectProdSetorSistema.findLastUpdated(configIntegracao.ultima_verificacao_estoque )
+                    let resultLasItensSistema = await selectProdSetorSistema.findLastUpdated(config.dataEstoque )
 
                     
                        if(resultLasItensSistema.length > 0 ){
@@ -87,7 +87,7 @@ export class ProdSetorController{
                          
 
                 }else{
-                    if( configIntegracao.importar_estoque === 'N'){
+                    if( config.importar_estoque === 'N'){
                           console.log('a integracao nao esta configurada para enviar os movimentos/produtos nos setores')
                     }else{
                      console.log('Não foi encontrado configurações de envio da integracao')

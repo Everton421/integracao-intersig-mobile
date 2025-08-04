@@ -12,7 +12,7 @@ import { DateService } from "../../services/date";
 
 export class MovimentosController{
     
-    async main( configIntegracao:IConfig ){
+    async main( config:{ dataEstoque:string, importar_estoque:'S'| 'N'} ){
         const dateService = new DateService();
 
         const selectMovMobile = new SelectMovimentosProdutosMobile();
@@ -28,8 +28,8 @@ export class MovimentosController{
         const insertMovIntegracao = new InsertMovimentosIntegracao()
 
         try{
-                if( configIntegracao.importar_estoque === 'S'){
-                        let resultMovMobile = await selectMovMobile.findLastUpdate(databaseMobile, configIntegracao.ultima_verificacao_estoque)
+                if( config.importar_estoque === 'S'){
+                        let resultMovMobile = await selectMovMobile.findLastUpdate(databaseMobile, config.dataEstoque)
                       if(resultMovMobile.length > 0 ){
 
                             for(let i of resultMovMobile ){
@@ -38,7 +38,8 @@ export class MovimentosController{
                                     continue;
                                 }
                                 let verifyMovIntegration = await selectMovIntegracao.findByIdMobile(String(i.id));
-                                        if(verifyMovIntegration.length > 0 ){
+                                  
+                                if(verifyMovIntegration.length > 0 ){
                                             console.log(` o movimento ${i.id} ja foi registrado no sistema ! `)
                                         }else{
                                             let lastCodeAceHist = await selectCodeAceHist.fynLastCode();
@@ -88,7 +89,7 @@ export class MovimentosController{
                                                                                 }
                                                                             )
                                                                             if( resultInsertMvtoSistema.affectedRows > 0  ){
-                                                                                await insertMovIntegracao.insert( { codigo_sistema:itemAceHist, id_mobile:i.codigo})
+                                                                                await insertMovIntegracao.insert( { codigo_sistema:itemAceHist, id_mobile:i.id})
                                                                                 console.log(`   movimento ${i.codigo} registrado com sucesso no sistema ...   `)  
                                                                             }
                                                             }catch( e ){
@@ -96,10 +97,11 @@ export class MovimentosController{
                                                             } 
                                             }    
                                      }
+                                   
                               }
                            }
                 }else{
-                    if( configIntegracao.importar_estoque === 'N'){
+                    if( config.importar_estoque === 'N'){
                           console.log('a integracao nao esta configurada para enviar os movimentos')
                     }else{
                      console.log('Não foi encontrado configurações de envio da integracao')

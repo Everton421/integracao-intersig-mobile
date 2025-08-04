@@ -38,6 +38,7 @@ export class pedidosController{
        try{
         console.log(objDate.formatarDataHora(dataAtual))
 
+     
         if(dataAtual === undefined || dataAtual === '')  return
         orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(databaseMobile,  objDate.formatarDataHora(dataAtual))
 

@@ -56,15 +56,15 @@ import { SetoresController } from "./controllers/setor/setor-controller";
 
    if(verifyConfig.length > 0   ){
      if(verifyConfig[0].importar_estoque === 'S'){
-      if( verifyConfig[0].ultima_verificacao_estoque === null || !verifyConfig[0].ultima_verificacao_estoque   ) {
-        verifyConfig[0].ultima_verificacao_estoque = '2000-01-01 13:00:00'
-      }
-       await prodSetorController.main(verifyConfig[0] )
-        await movimentosController.main( verifyConfig[0])
+    
+           let dateService= new DateService();
+
+        let date = dateService.obterDataAtual()+'00:00:00';
+
+       await prodSetorController.main( {dataEstoque:date, importar_estoque:verifyConfig[0].importar_estoque })
+        await movimentosController.main( {dataEstoque:date, importar_estoque:verifyConfig[0].importar_estoque })
       await setorController.main();
       
-       let dateService= new DateService();
-         
        let resultUpdateConfig =   await updateConfig.update({ ultima_verificacao_estoque: dateService.obterDataHoraAtual()})
        if( resultUpdateConfig.affectedRows > 0 ){
          console.log({ok:true, msg:"fim da validacao"})
@@ -89,10 +89,9 @@ import { SetoresController } from "./controllers/setor/setor-controller";
    router.get('/marcas', new marcasController().main)
    router.get('/formasPagamento', new formaPagamentoController().main)
    router.get('/categorias', new categoriasController().main)
-   router.get('/pedidos', new pedidosController().main)
    router.get('/usuarios', new UsuarioController().main)
      
-
+////////////////////////
    router.get('/produtos', async (req,res)=>{
        let configIntegracao = new SelectConfig();
        let verifyConfig = await   configIntegracao.selectConfig();
@@ -112,8 +111,17 @@ import { SetoresController } from "./controllers/setor/setor-controller";
          res.status(200).json({ok:true, msg:"fim da validacao"})
 
    })
+////////////////////////
 
-   const configPedidos = process.env.CONFIG_PEDIDOS
+   router.get('/pedidos', ( req, res)=>{
+               let dateService= new DateService();
+        let aux = new pedidosController().main( dateService.obterDataAtual()+' 00:00:00');
+
+   })
+
+////////////////////////
+
+        const configPedidos = process.env.CONFIG_PEDIDOS
           let updateConfig = new UpdateConfigIntegracao();
 
       if(configPedidos  && configPedidos !=''){
@@ -127,7 +135,10 @@ import { SetoresController } from "./controllers/setor/setor-controller";
                if(verifyConfig[0].importar_pedidos === "S" && verifyConfig[0].ultima_verificacao_pedidos !== null  ){
                     console.log("Executando tarefa, recebendo pedidos ... ")
 
-                    await objController.main(verifyConfig[0].ultima_verificacao_pedidos);
+                      let data = dateService.obterDataAtual() + ' 00:00:00'
+                      console.log(data)
+                      await objController.main(data);
+
                     let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_pedidos: dateService.obterDataHoraAtual()})
 
                  }else{
@@ -182,14 +193,16 @@ import { SetoresController } from "./controllers/setor/setor-controller";
                   if(verifyConfig.length > 0   ){
  
                     if(verifyConfig[0].importar_estoque === 'S'){
-                     if( verifyConfig[0].ultima_verificacao_estoque === null || !verifyConfig[0].ultima_verificacao_estoque   ) {
-                     verifyConfig[0].ultima_verificacao_estoque = '2000-01-01 13:00:00'
-                   }
+
                     console.log("Executando tarefa | estoque ")
-                      await prodSetorController.main(verifyConfig[0] )
-                      await movimentosController.main( verifyConfig[0])
+                    let dateService= new DateService();
+
+                      let data = dateService.obterDataAtual() + ' 00:00:00'
+
+                      await prodSetorController.main( { dataEstoque: data, importar_estoque:verifyConfig[0].importar_estoque} )
+
+                      await movimentosController.main( { dataEstoque: data, importar_estoque:verifyConfig[0].importar_estoque} )
                       await setorController.main();
-                      let dateService= new DateService();
                     let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_estoque: dateService.obterDataHoraAtual()})
                 if( resultUpdateConfig.affectedRows > 0 ){
                       console.log({ok:true, msg:"fim da validacao"})
