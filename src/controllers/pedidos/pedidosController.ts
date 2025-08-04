@@ -13,8 +13,13 @@ import { databaseMobile } from "../../database/databaseConfig";
 
 export class pedidosController{
 
+
+    private replaceCodeOrder(str:string){
+        return str.replace(/^0+/,'');
+    }
+
     async main( dataAtual:string ){
-console.log(" Atualizando pedidos ...")
+    console.log(" Atualizando pedidos ...")
         let objDate = new DateService();
 
     let selectPedidoMobile = new SelectPedidoMobile();
@@ -31,10 +36,10 @@ console.log(" Atualizando pedidos ...")
    let dataHoraAtual = objDate.obterDataHoraAtual();
    
        try{
-        console.log(dataAtual)
+        console.log(objDate.formatarDataHora(dataAtual))
 
         if(dataAtual === undefined || dataAtual === '')  return
-        orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(databaseMobile, dataAtual)
+        orcamentos_registrados  = await selectPedidoMobile.buscaCompleta(databaseMobile,  objDate.formatarDataHora(dataAtual))
 
     }catch(e){ console.log('erro ao Consultar os orcamentos Mobile')}
      
@@ -45,6 +50,8 @@ console.log(" Atualizando pedidos ...")
                     //console.log(i)
                     //console.log('')
                     //console.log('')
+                    i.id = this.replaceCodeOrder(i.id);
+
                         let validPedidoSistema:any = await selectPedidoSistema.buscaOrcamentosCompleto(i.codigo );
                                 
                                 if(validPedidoSistema.length){

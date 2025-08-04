@@ -113,6 +113,34 @@ import { SetoresController } from "./controllers/setor/setor-controller";
 
    })
 
+   const configPedidos = process.env.CONFIG_PEDIDOS
+          let updateConfig = new UpdateConfigIntegracao();
+
+      if(configPedidos  && configPedidos !=''){
+         cron.schedule(configPedidos, async ()=>{
+               let configIntegracao = new SelectConfig(); 
+               let verifyConfig = await   configIntegracao.selectConfig();
+               let objController = new pedidosController();
+               let dateService= new DateService();
+
+             if(verifyConfig.length > 0   ){
+               if(verifyConfig[0].importar_pedidos === "S" && verifyConfig[0].ultima_verificacao_pedidos !== null  ){
+                    console.log("Executando tarefa, recebendo pedidos ... ")
+
+                    await objController.main(verifyConfig[0].ultima_verificacao_pedidos);
+                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_pedidos: dateService.obterDataHoraAtual()})
+
+                 }else{
+                      console.log("A integracao nao esta configurada para receber pedidos")
+                    }
+             }else{
+               console.log("Nenhuma configuração encontrada")
+             }
+            })
+     }else{
+          console.log('Nao foi encontrado configuração de recebimento dos pedidos  no arquivo .env')
+      }
+
 
       const configProdutos = String(process.env.CONFIG_PRODUTOS)
 
@@ -257,27 +285,6 @@ import { SetoresController } from "./controllers/setor/setor-controller";
 
 
 
-      const configPedidos = process.env.CONFIG_PEDIDOS
-      if(configPedidos  && configPedidos !=''){
-         cron.schedule(configPedidos, async ()=>{
-       let configIntegracao = new SelectConfig();
-              let verifyConfig = await   configIntegracao.selectConfig();
-               let objController = new pedidosController();
-             if(verifyConfig.length > 0   ){
-               if(verifyConfig[0].importar_pedidos === "S" && verifyConfig[0].ultima_verificacao_pedidos !== null  ){
-                    console.log("Executando tarefa, recebendo pedidos ... ")
-                 await objController.main(verifyConfig[0].ultima_verificacao_pedidos);
-                 }else{
-                      console.log("A integracao nao esta configurada para receber pedidos")
-                    }
-             }else{
-               console.log("Nenhuma configuração encontrada")
-             }
-            })
-     }else{
-          console.log('Nao foi encontrado configuração de recebimento dos pedidos  no arquivo .env')
-      }
-
-
+   
 
     export {router} 
