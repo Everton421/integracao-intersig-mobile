@@ -50,11 +50,10 @@ class UpdatePedidoSistema {
         const objDate = new date_1.DateService();
         let objData = new date_1.DateService();
         const dataAtual = objData.obterDataAtual();
-        let { forma_pagamento, descontos, observacoes, observacoes2, quantidade_parcelas, total_geral, total_produtos, totalSemDesconto, situacao, tipo, vendedor, data_cadastro, data_recadastro, veiculo, tipo_os, contato, just_ipi, just_icms, just_subst, codigo_cliente, descontos_produto } = orcamento;
+        let { id, forma_pagamento, descontos, observacoes, observacoes2, quantidade_parcelas, total_geral, total_produtos, totalSemDesconto, situacao, tipo, vendedor, data_cadastro, data_recadastro, veiculo, tipo_os, contato, just_ipi, just_icms, just_subst, codigo_cliente, descontos_produto } = orcamento;
         const servicos = orcamento.servicos;
         const parcelas = orcamento.parcelas;
         const produtos = orcamento.produtos;
-        contato = 'APP';
         if (!situacao)
             situacao = 'EA';
         if (!quantidade_parcelas)
@@ -89,6 +88,7 @@ class UpdatePedidoSistema {
         let statusAtualizacao;
         let statusDeletePro_orca;
         let statusDeletePar_orca;
+        orcamento.contato = 'APP /' + id;
         try {
             statusAtualizacao = await updateCad_orca(orcamento, codigoOrcamento);
         }

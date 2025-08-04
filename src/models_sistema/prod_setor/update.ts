@@ -18,10 +18,6 @@ export class UpdateProdSetorSistema{
     
     async update(prod_setor:IProdutoSetorMobile):Promise<OkPacket>{
            return new Promise ( async(resolve, reject ) =>{
-        
-                const {
-                    
-                } = prod_setor;
 
                     const sql =` update ${db_estoque}.prod_setor  
                              set

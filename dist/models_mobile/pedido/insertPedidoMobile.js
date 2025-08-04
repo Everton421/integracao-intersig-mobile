@@ -28,7 +28,7 @@ class InsertPedidoMobile {
             const produtos = orcamento.produtos;
             const cliente = orcamento.cliente;
             if (!id)
-                id = 0;
+                id = '0';
             if (!situacao)
                 situacao = 'EA';
             if (!vendedor)

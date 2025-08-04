@@ -8,37 +8,33 @@ const databaseConfig_1 = require("../../database/databaseConfig");
 const update_1 = require("../../models_mobile/produtos/update");
 const tiraCaracteres_1 = require("../../services/tiraCaracteres");
 class ProdutoController {
-    async main() {
+    async main(data) {
+        const codigoSetor = 1;
         const selectProdutosSistema = new select_1.SelectProdutosSistema();
         const selectProdutosMobile = new select_2.SelectProdutosMobile();
         const insertProdutosMobile = new insert_1.InsertProdutosMobile();
         const updateProdutosMobile = new update_1.UpdateProdutosMobile();
         const objTiraAspas = new tiraCaracteres_1.TiraCaracteres();
-        let produtosSistema = await selectProdutosSistema.buscaGeral(databaseConfig_1.db_estoque, databaseConfig_1.db_publico);
+        let produtosSistema = await selectProdutosSistema.findByLastUpdated(databaseConfig_1.db_estoque, databaseConfig_1.db_publico, data);
         if (produtosSistema.length > 0) {
             for (let i of produtosSistema) {
                 let produtoMobile = await selectProdutosMobile.buscaPorCodigo(databaseConfig_1.databaseMobile, i.codigo);
                 let validProdutoMobile = produtoMobile[0];
-                if (i.data_recadastro === null) {
-                    i.data_recadastro = '0000-00-00 00:00:00';
-                }
-                if (i.data_recadastro_preco === null) {
-                    i.data_recadastro_preco = '0000-00-00 00:00:00';
-                }
-                let data_ult_atualizacao = '0000-00-00 00:00:00';
-                if (i.data_recadastro_preco > i.data_recadastro) {
-                    data_ult_atualizacao = i.data_recadastro_preco;
-                }
-                else {
-                    data_ult_atualizacao = i.data_recadastro;
+                let data_ult_atualizacao = i.data_ultima_alteracao;
+                if (validProdutoMobile && new Date(i.data_ultima_alteracao) > new Date(validProdutoMobile.data_recadastro)) {
+                    let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor(i.codigo, codigoSetor);
+                    if (arrEstoque.length > 0) {
+                        i.estoque = arrEstoque[0].ESTOQUE;
+                    }
                 }
                 i.descricao = objTiraAspas.normalizeString(i.descricao);
                 let objInsert = {
                     id: i.codigo,
                     estoque: i.estoque,
                     preco: i.preco,
+                    unidade_medida: i.unidade_medida,
                     grupo: i.grupo,
-                    origem: i.origem,
+                    origem: Number(i.origem),
                     descricao: i.descricao,
                     num_fabricante: i.num_fabricante,
                     num_original: i.num_original,
@@ -53,7 +49,7 @@ class ProdutoController {
                     observacoes3: i.observacoes3,
                     ativo: i.ativo,
                     codigo: i.codigo,
-                    cst: i.cst
+                    cst: Number(i.cst)
                 };
                 if (produtoMobile.length > 0) {
                     if (data_ult_atualizacao > validProdutoMobile.data_recadastro) {
@@ -66,7 +62,7 @@ class ProdutoController {
                         }
                     }
                     else {
-                        console.log('o produto codigo: ', i.codigo, ' se encontra atualizado', i.data_recadastro, ' > ', validProdutoMobile.data_recadastro);
+                        console.log('o produto codigo: ', i.codigo, ' se encontra atualizado', data_ult_atualizacao, ' > ', validProdutoMobile.data_recadastro);
                         continue;
                     }
                 }

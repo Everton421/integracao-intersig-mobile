@@ -1,5 +1,15 @@
 import { conn_sistema, db_vendas } from "../../database/databaseConfig";
-import { ILogSistema } from "./types/IlogSistema";
+      
+        type ILogSistema = {
+        CODIGO:number
+        APELIDO:string
+        COMPUTADOR:string
+        DATA:string
+        HORA:string
+        ACAO:number
+        HISTORICO:string
+        IP_CPU:string
+        }
 
 type log = Omit<ILogSistema, 'CODIGO'> 
 

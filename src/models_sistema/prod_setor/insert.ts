@@ -19,9 +19,6 @@ export class InsertProdSetorSistema{
     async insert(prod_setor:IProdutoSetorMobile):Promise<OkPacket>{
            return new Promise ( async(resolve, reject ) =>{
         
-                const {
-                    
-                } = prod_setor;
 
             const sql =` INSERT INTO ${db_estoque}.prod_setor      
                            (  SETOR,

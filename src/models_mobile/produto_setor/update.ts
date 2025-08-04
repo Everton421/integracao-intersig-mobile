@@ -23,8 +23,8 @@ export class UpdateProdutoSetorMobile{
             
 
                         const sql =` update ${databaseMobile}.produto_setor  set  `
-                          let conditions = [ ] 
-                          let values = [ ]
+                          let conditions:any = [ ] 
+                          let values:any = [ ]
 
                             
                             if(prodSetor.ESTOQUE){

@@ -44,6 +44,100 @@ class UpdatePedidoMobile {
             });
         });
     }
+    async newUpdate(empresa, codigo, query) {
+        return new Promise(async (resolve, reject) => {
+            let sql = `
+                UPDATE ${empresa}.pedidos  set
+                `;
+            let params = [];
+            let values = [];
+            if (query.cliente) {
+                params.push(' cliente = ? ');
+                values.push(query.cliente);
+            }
+            if (query.id_externo) {
+                params.push(' id_externo = ? ');
+                values.push(query.id_externo);
+            }
+            if (query.total_geral) {
+                params.push(' total_geral = ? ');
+                values.push(query.total_geral);
+            }
+            if (query.total_produtos) {
+                params.push(' total_produtos = ? ');
+                values.push(query.total_produtos);
+            }
+            if (query.total_servicos) {
+                params.push(' total_servicos = ? ');
+                values.push(query.total_servicos);
+            }
+            if (query.tipo_os) {
+                params.push(' tipo_os = ? ');
+                values.push(query.tipo_os);
+            }
+            if (query.tipo) {
+                params.push(' tipo = ? ');
+                values.push(query.tipo);
+            }
+            if (query.quantidade_parcelas) {
+                params.push(' quantidade_parcelas = ? ');
+                values.push(query.quantidade_parcelas);
+            }
+            if (query.contato) {
+                params.push(' contato = ? ');
+                values.push(query.contato);
+            }
+            if (query.veiculo) {
+                params.push(' veiculo = ? ');
+                values.push(query.veiculo);
+            }
+            if (query.forma_pagamento) {
+                params.push(' forma_pagamento = ? ');
+                values.push(query.forma_pagamento);
+            }
+            if (query.observacoes) {
+                params.push(' observacoes = ? ');
+                values.push(query.observacoes);
+            }
+            if (query.data_cadastro) {
+                params.push(' data_cadastro = ? ');
+                values.push(query.data_cadastro);
+            }
+            if (query.data_recadastro) {
+                params.push(' data_recadastro = ? ');
+                values.push(query.data_recadastro);
+            }
+            if (query.enviado) {
+                params.push(' enviado = ? ');
+                values.push(query.enviado);
+            }
+            if (query.observacoes) {
+                params.push(' observacoes = ? ');
+                values.push(query.observacoes);
+            }
+            if (query.situacao) {
+                params.push(' situacao = ? ');
+                values.push(query.situacao);
+            }
+            let finalSql = sql;
+            let conditions;
+            let whereClause = ` where codigo =  ? `;
+            values.push(codigo);
+            if (params.length > 0) {
+                finalSql = sql + params.join(' , ') + whereClause;
+            }
+            await databaseConfig_1.conn_mobie.query(finalSql, values, (err, result) => {
+                if (err) {
+                    console.log("Erro ao tentar atualizar o pedido ( newUpdate function) ");
+                    reject(err);
+                }
+                else {
+                    console.log(result.affectedRows);
+                    resolve(result.affectedRows);
+                }
+            });
+        });
+    }
     async update(empresa, orcamento, codigoOrcamento) {
         return new Promise(async (resolve, reject) => {
             let produtoController = new produtos_1.ProdutoController();

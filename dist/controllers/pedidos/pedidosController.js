@@ -10,7 +10,7 @@ const insertPedidoSistema_1 = require("../../models_sistema/pedido/insertPedidoS
 const updatePedidoSistema_1 = require("../../models_sistema/pedido/updatePedidoSistema");
 const databaseConfig_1 = require("../../database/databaseConfig");
 class pedidosController {
-    async main() {
+    async main(dataAtual) {
         console.log(" Atualizando pedidos ...");
         let objDate = new date_1.DateService();
         let selectPedidoMobile = new selectPedidoMobile_1.SelectPedidoMobile();
@@ -20,7 +20,6 @@ class pedidosController {
         let createPedidoSistema = new insertPedidoSistema_1.InsertPedidoSistema();
         let updatePedidoSistema = new updatePedidoSistema_1.UpdatePedidoSistema();
         let orcamentos_registrados = [];
-        let dataAtual = objDate.obterDataAtual() + ' 00:00:00';
         let dataHoraAtual = objDate.obterDataHoraAtual();
         try {
             console.log(dataAtual);
@@ -55,7 +54,9 @@ class pedidosController {
                                 // atualiza somente a tabela dos dados do orcamento
                                 // tipo, situacao etc ..
                                 console.log(`atualizando situacao do pedido ${i.codigo} no mobile `);
-                                await updatePedidoMobile.updateTabelaPedido(databaseConfig_1.databaseMobile, pedidoSistema, i.codigo);
+                                await updatePedidoMobile.newUpdate(databaseConfig_1.databaseMobile, i.codigo, {
+                                    situacao: pedidoSistema.situacao,
+                                });
                             }
                             else {
                             }
@@ -66,10 +67,12 @@ class pedidosController {
                 else {
                     try {
                         console.log(`inserindo pedido ${i.codigo} no sistema `);
+                        i.data_recadastro = dataHoraAtual;
                         let aux = await createPedidoSistema.create(i);
                         if (aux > 0) {
                             let data = { codigo_sistema: aux, codigo_mobile: i.codigo, excluido: 'N' };
                             //  await insertParamPedido.cadastrar(data)
+                            await updatePedidoMobile.newUpdate(databaseConfig_1.databaseMobile, i.codigo, { id_externo: aux, data_recadastro: i.data_recadastro });
                         }
                     }
                     catch (e) {

@@ -17,8 +17,8 @@ export class UpdateConfigIntegracao{
              return new Promise ( async(resolve, reject ) =>{
           
                       const sql =` update ${db_integracao_mobile}.configuracoes  set  `
-                        let conditions = [ ] 
-                        let values = [ ]
+                        let conditions:any = [ ] 
+                        let values:any = [ ]
 
                            if( config.ultima_verificacao_estoque){
                             conditions.push(' ultima_verificacao_estoque = ? ');
