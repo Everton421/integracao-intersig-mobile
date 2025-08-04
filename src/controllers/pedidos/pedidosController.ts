@@ -13,7 +13,7 @@ import { databaseMobile } from "../../database/databaseConfig";
 
 export class pedidosController{
 
-    async main(  ){
+    async main( dataAtual:string ){
 console.log(" Atualizando pedidos ...")
         let objDate = new DateService();
 
@@ -28,7 +28,6 @@ console.log(" Atualizando pedidos ...")
 
     let orcamentos_registrados:any[] =[];
 
-   let dataAtual = objDate.obterDataAtual()+' 00:00:00'
    let dataHoraAtual = objDate.obterDataHoraAtual();
    
        try{

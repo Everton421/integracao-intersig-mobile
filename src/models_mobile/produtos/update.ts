@@ -13,6 +13,7 @@ export class UpdateProdutosMobile{
                  id =  '${produto.id}',  
                  estoque =  ${produto.estoque} ,
                  preco =  ${produto.preco} ,
+                 unidade_medida='${produto.unidade_medida}',
                  grupo =  ${produto.grupo} ,
                  origem =  ${produto.origem} ,
                  descricao =  '${produto.descricao}',

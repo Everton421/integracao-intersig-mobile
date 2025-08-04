@@ -3,13 +3,12 @@ export interface IProdutoMobile{
     id:any,    
     estoque:number,    
     preco:number,    
+    unidade_medida:string
     grupo:number,    
     origem:number,    
     tipo:number,    
     cst:number,    
     marca:number,    
-
-
     descricao:string,
     num_fabricante:string,
     num_original:string,

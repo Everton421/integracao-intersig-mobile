@@ -1,18 +1,44 @@
 import { conn_mobie, conn_sistema, db_estoque, db_publico, db_vendas } from "../../database/databaseConfig"
-import { IProdutoSistema } from "./types/produtoSistema";
+ 
+
+export type ISelectProdSistem = {
+  codigo:number
+  estoque:number
+  preco:number
+  grupo:number
+  unidade_medida:string
+  descricao:string  
+  num_fabricante:string
+  num_original:string
+  sku:string
+  marca:number
+  ativo:string
+  tipo:number
+  class_fiscal:string
+  origem:string
+  cst:string
+  data_cadastro:string
+  data_recadastro_preco:string 
+  data_recadastro_estoque:string 
+  data_ultima_alteracao:string
+  observacoes1:string 
+  observacoes2:string
+  observacoes3:string
+}
+
+
 
 export class SelectProdutosSistema{
 
-
-
 async   buscaGeral(estoque:any, publico:any)   {
-    return new Promise <IProdutoSistema[]> ( async ( resolve , reject ) =>{
+    return new Promise <ISelectProdSistem[]> ( async ( resolve , reject ) =>{
    let sql = ` 
       SELECT  
         p.CODIGO codigo,  
         COALESCE(  ps.ESTOQUE,0 ) AS  estoque,
         COALESCE(   ROUND(pp.preco,2 ),  0.00 ) as preco,
         COALESCE( p.GRUPO, 0) as grupo, 
+        coalesce(und.SIGLA,'UND') as unidade_medida,
         p.DESCRICAO descricao, 
         p.NUM_FABRICANTE num_fabricante,
         p.NUM_ORIGINAL num_original,
@@ -45,6 +71,7 @@ async   buscaGeral(estoque:any, publico:any)   {
                 left join  ${publico}.prod_tabprecos pp on pp.produto = p.codigo
                 left join  ${publico}.tab_precos tp on tp.codigo = pp.tabela
                 left join  ${publico}.class_fiscal cf on cf.codigo = p.class_fiscal
+                left join  ${publico}.unid_prod und on und.produto = p.CODIGO and und.PADR_SAI = 'S' AND und.PADR_SEP= 'S' 
 
             WHERE 
             -- s.padrao_venda = 'X' 
@@ -56,7 +83,7 @@ async   buscaGeral(estoque:any, publico:any)   {
             group by  p.CODIGO
             order by p.CODIGO
         `
-        await conn_sistema.query(sql,  (err:any, result:IProdutoSistema[] )=>{
+        await conn_sistema.query(sql,  (err:any, result:ISelectProdSistem[] )=>{
             if (err){
                 console.log('erro ao inserir produto ', err)
                 console.log(sql)

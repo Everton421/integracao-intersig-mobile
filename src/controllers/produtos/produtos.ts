@@ -46,8 +46,9 @@ export class ProdutoController {
                                           id :i.codigo,
                                           estoque :i.estoque,
                                           preco :i.preco,
+                                          unidade_medida:i.unidade_medida,
                                           grupo :i.grupo,
-                                          origem :i.origem,
+                                          origem :Number(i.origem),
                                           descricao :i.descricao,
                                           num_fabricante :i.num_fabricante,
                                           num_original :i.num_original,
@@ -62,7 +63,7 @@ export class ProdutoController {
                                           observacoes3 :i.observacoes3,
                                           ativo:i.ativo,
                                           codigo:i.codigo,
-                                          cst:i.cst
+                                          cst:Number(i.cst)
                                          }
           
                                           if( produtoMobile.length > 0 ){

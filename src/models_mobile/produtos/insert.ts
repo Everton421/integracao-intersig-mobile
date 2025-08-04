@@ -1,6 +1,15 @@
 import { conn_mobie } from "../../database/databaseConfig"
 import { IProdutoMobile } from "./types/IProdutoMobile";
-
+type OkPacket = {
+  fieldCount: number,
+  affectedRows: number,
+  insertId: number,
+  serverStatus: number,
+  warningCount: number,
+  message: string,
+  protocol41: true,
+  changedRows: number
+} 
 export class InsertProdutosMobile{
  
     // insere o produto com o codigo do sistema
