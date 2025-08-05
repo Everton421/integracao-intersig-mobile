@@ -54,48 +54,7 @@
                 %>
               <form action="/ajusteConfig" method="POST" 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
-                    <div class="col">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title"><span data-feather="package" class="me-2"></span>Produtos</h5>
-                                <h5 class="card-title">  EM DESENVOLVIMENTO !</h5>
-                                
-                                <span> Configurações de envio dos produtos</span>
-
-                                <!-- Formulário para acionar a sincronização -->
-                                 <!---   <div class="form-check">
-                                        <input class="form-check-input"
-                                           type="radio"
-                                            name="enviar_produtos"
-                                            value="S"
-                                            id="vincularProdutos"
-
-                                        <label class="form-check-label" for="vincularProdutos">
-                                            1 - Gerar vínculo dos produtos (Tenho meus produtos registrados no Bling,
-                                            preciso enviar somente o saldo de estoque).
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input
-                                         class="form-check-input"
-                                         type="radio" 
-                                         name="enviar_produtos"
-                                          value="E"
-                                            id="enviarProdutos"
-                                        <!-- 'checked' para deixar uma opção pré-selecionada -->
-
-                                      <!--    <label class="form-check-label" for="enviarProdutos">
-                                            2 - Enviar/Atualizar produtos e saldo de estoque com base no que tenho no
-                                            sistema.
-                                             ( É feito o envio de todos os dados dos produtos do sitema para o bling).
-                                        </label>
-                                    </div>
-                                    -->
-                                
-                            </div>
-                        </div>
-                    </div>
+                  
                     <div class="col">
                         <div class="card h-100">
                             <div class="card-body">
@@ -128,11 +87,13 @@
                                       <% if(     dados.ultima_verificacao_pedidos ){ %> 
                                         
                                         <%= new Date(dados.ultima_verificacao_pedidos).toLocaleString("pt-br", {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour:"numeric",
+                                        "minute":"numeric"
                                     })  %> 
-                                        <%}%>.
+                                        <%}%>
                                     </label>
 
 
@@ -181,9 +142,11 @@
                                       <% if(     dados.ultima_verificacao_estoque ){ %> 
                                         
                                         <%= new Date(dados.ultima_verificacao_estoque).toLocaleString("pt-br", {
-                                    month: "long",
-                                    day: "numeric",
-                                    year: "numeric",
+                                  month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour:"numeric",
+                                        "minute":"numeric"
                                     })  %> 
                                         <%}%>.
                                     </label>
@@ -234,7 +197,48 @@
                     -->
                 </div>
 
+  <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><span data-feather="package" class="me-2"></span>Produtos</h5>
+                                <h5 class="card-title">  EM DESENVOLVIMENTO !</h5>
+                                
+                                <span> Configurações de envio dos produtos</span>
 
+                                <!-- Formulário para acionar a sincronização -->
+                                 <!---   <div class="form-check">
+                                        <input class="form-check-input"
+                                           type="radio"
+                                            name="enviar_produtos"
+                                            value="S"
+                                            id="vincularProdutos"
+
+                                        <label class="form-check-label" for="vincularProdutos">
+                                            1 - Gerar vínculo dos produtos (Tenho meus produtos registrados no Bling,
+                                            preciso enviar somente o saldo de estoque).
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input
+                                         class="form-check-input"
+                                         type="radio" 
+                                         name="enviar_produtos"
+                                          value="E"
+                                            id="enviarProdutos"
+                                        <!-- 'checked' para deixar uma opção pré-selecionada -->
+
+                                      <!--    <label class="form-check-label" for="enviarProdutos">
+                                            2 - Enviar/Atualizar produtos e saldo de estoque com base no que tenho no
+                                            sistema.
+                                             ( É feito o envio de todos os dados dos produtos do sitema para o bling).
+                                        </label>
+                                    </div>
+                                    -->
+                                
+                            </div>
+                        </div>
+                    </div>
              
            
            <button type="submit" class="btn btn-primary ">gravar</button>
