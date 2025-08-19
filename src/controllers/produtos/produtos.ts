@@ -20,7 +20,7 @@ export class ProdutoController {
     const objTiraAspas = new TiraCaracteres();
 
     let produtosSistema = await  selectProdutosSistema.findByLastUpdated(db_estoque, db_publico, data);
-
+ 
     if(produtosSistema.length > 0 ){
 
         for( let i of produtosSistema ){
@@ -68,7 +68,7 @@ export class ProdutoController {
           
                                           if( produtoMobile.length > 0 ){
 
-                                              if( data_ult_atualizacao >  validProdutoMobile.data_recadastro){
+                                              if( new Date( data_ult_atualizacao )  >  new Date(validProdutoMobile.data_recadastro)) {
                                                 try{
                                                     console.log('atualizando produto codigo: ',i.codigo  )
                                                     await  updateProdutosMobile.update(databaseMobile, objInsert)
@@ -90,6 +90,7 @@ export class ProdutoController {
                     }
       }
   } 
+ 
 
 
  }

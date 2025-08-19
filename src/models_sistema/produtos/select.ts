@@ -146,6 +146,7 @@ export class SelectProdutosSistema{
             group by  p.CODIGO
             order by p.CODIGO
         `
+     //   console.log(sql)
         await conn_sistema.query(sql,  (err:any, result:ISelectProdSistem[] )=>{
             if (err){
                 console.log('erro ao buscar produto ', err)
