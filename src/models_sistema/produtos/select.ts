@@ -112,15 +112,15 @@ export class SelectProdutosSistema{
         cf.NCM class_fiscal,
         p.ORIGEM origem,
         p.CST cst,
-       coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'0000-00-00 00:00:00') AS data_cadastro,
-       coalesce(DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s'),'0000-00-00 00:00:00') data_recadastro_preco,
-       coalesce(DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00') AS data_recadastro,
-       coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'0000-00-00 00:00:00')  AS data_recadastro_estoque,
+       coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'2001-01-01 01:00:00') AS data_cadastro,
+       coalesce(DATE_FORMAT(pp.DATA_RECAD, '%Y-%m-%d %H:%i:%s'),'2001-01-01 01:00:00') data_recadastro_preco,
+       coalesce(DATE_FORMAT(p.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'2001-01-01 01:00:00') AS data_recadastro,
+       coalesce(DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') ,'2001-01-01 01:00:00')  AS data_recadastro_estoque,
               DATE_FORMAT(
         GREATEST(
-            COALESCE(p.DATA_RECAD, '0000-01-01'),  -- Data de atualização do produto
-            COALESCE(pp.DATA_RECAD, '0000-01-01'), -- Data de atualização do preço
-            COALESCE(ps.DATA_RECAD, '0000-01-01')  -- Data de atualização do estoque
+            COALESCE(p.DATA_RECAD, '2001-01-01'),  -- Data de atualização do produto
+            COALESCE(pp.DATA_RECAD, '2001-01-01'), -- Data de atualização do preço
+            COALESCE(ps.DATA_RECAD, '2001-01-01')  -- Data de atualização do estoque
         ), 
         '%Y-%m-%d %H:%i:%s'
     ) AS data_ultima_alteracao,
