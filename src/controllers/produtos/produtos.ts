@@ -35,6 +35,8 @@ export class ProdutoController {
                                                     let arrEstoque = await selectProdutosSistema.buscaEstoqueRealPorSetor( i.codigo,  codigoSetor )
                                                     if(arrEstoque.length > 0 ){
                                                        i.estoque = arrEstoque[0].ESTOQUE  
+                                                    }else{
+                                                      console.log(`produto ${i.codigo} não possui registro de estoque  `)
                                                     } 
                                                   } 
                                                   
@@ -69,12 +71,8 @@ export class ProdutoController {
                                           if( produtoMobile.length > 0 ){
 
                                               if( new Date( data_ult_atualizacao )  >  new Date(validProdutoMobile.data_recadastro)) {
-                                                try{
                                                     console.log('atualizando produto codigo: ',i.codigo  )
                                                     await  updateProdutosMobile.update(databaseMobile, objInsert)
-                                                }catch(e){
-                                                    console.log(e)
-                                                }
                                               
                                               }else{
                                                   console.log('o produto codigo: ',i.codigo, ' se encontra atualizado',  data_ult_atualizacao ,' > ',  validProdutoMobile.data_recadastro )
@@ -85,7 +83,7 @@ export class ProdutoController {
                                                   console.log('cadastrando produto codigo: ',i.codigo )
                                           await insertProdutosMobile.insertProdutoCodigoSistema(databaseMobile, objInsert)
                                                 
-                                             }catch(e){ console.log(e)
+                                             }catch(e){ console.log(`Erro ao tentar registrar o produto ${i.codigo} no banco de dados mobile  `, e)
                                   }  
                     }
       }
