@@ -16,6 +16,7 @@ import { SelectConfig } from "./models_integracao/configuracoes/select";
 import { UpdateConfigIntegracao } from "./models_integracao/configuracoes/update";
 import { DateService } from "./services/date";
 import { SetoresController } from "./controllers/setor/setor-controller";
+import { InsertConfig } from "./models_integracao/configuracoes/insert";
 
   const cron = require('node-cron')
 
@@ -24,12 +25,28 @@ import { SetoresController } from "./controllers/setor/setor-controller";
  
  
   router.get('/', async (req,res )=>{
+                
     const selectConfig = new SelectConfig()
     let config = await selectConfig.selectConfig();
+    const insertConfig = new InsertConfig();
+
     if(config.length > 0 ){
-    res.render('configuracoes',{ dados:config[0]})
-    }else{
-    res.send('Você precisa verificar a tabela de configurações da integracao')
+
+      res.render('configuracoes',{ dados:config[0]})
+    
+      }else{
+        await insertConfig.insert({ 
+          codigo:1,
+          importar_estoque:'N',
+          importar_pedidos:'N',
+          ultima_verificacao_estoque:'2000-01-01 00:00:01',
+          ultima_verificacao_pedidos:'2000-01-01 00:00:01',
+          ultima_verificacao_preco:'2000-01-01 00:00:01'
+        })
+    let config = await selectConfig.selectConfig();
+
+      res.render('configuracoes',{ dados:config[0]})
+
     }
   })
 
@@ -78,7 +95,6 @@ import { SetoresController } from "./controllers/setor/setor-controller";
  
   }
 )
-
               
 
    router.get('/clientes', new ClienteController().main)
@@ -118,184 +134,7 @@ import { SetoresController } from "./controllers/setor/setor-controller";
         let aux = new pedidosController().main( dateService.obterDataAtual()+' 00:00:00');
 
    })
-
 ////////////////////////
-
-        const configPedidos = process.env.CONFIG_PEDIDOS
-          let updateConfig = new UpdateConfigIntegracao();
-
-      if(configPedidos  && configPedidos !=''){
-         cron.schedule(configPedidos, async ()=>{
-               let configIntegracao = new SelectConfig(); 
-               let verifyConfig = await   configIntegracao.selectConfig();
-               let objController = new pedidosController();
-               let dateService= new DateService();
-
-             if(verifyConfig.length > 0   ){
-               if(verifyConfig[0].importar_pedidos === "S" && verifyConfig[0].ultima_verificacao_pedidos !== null  ){
-                    console.log("Executando tarefa, recebendo pedidos ... ")
-
-                      let data = dateService.obterDataAtual() + ' 00:00:00'
-                      console.log(data)
-                      await objController.main(data);
-
-                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_pedidos: dateService.obterDataHoraAtual()})
-
-                 }else{
-                      console.log("A integracao nao esta configurada para receber pedidos")
-                    }
-             }else{
-               console.log("Nenhuma configuração encontrada")
-             }
-            })
-     }else{
-          console.log('Nao foi encontrado configuração de recebimento dos pedidos  no arquivo .env')
-      }
-
-
-      const configProdutos = String(process.env.CONFIG_PRODUTOS)
-
-      if( configProdutos && configProdutos != ''){
-      
-        let configIntegracao = new SelectConfig();
-
-        cron.schedule(configProdutos, async ()=>{
-           let verifyConfig = await   configIntegracao.selectConfig();
-           let updateConfig = new UpdateConfigIntegracao();
-           let dateService= new DateService();
-
-             let objController = new ProdutoController();
-             if(verifyConfig.length > 0   ){
-                await objController.main(  dateService.formatarDataHora(verifyConfig[0].ultima_verificacao_preco));
-                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_preco: dateService.obterDataHoraAtual()})
-               if( resultUpdateConfig.affectedRows > 0 ){
-                 console.log({ok:true, msg:"fim da validacao dos produtos"})
-             }
-        }else{
-               console.log("Nenhuma configuração encontrada")
-             }
-          })
-        }else{
-          console.log('Nao foi encontrado configuração de envio dos produtos no arquivo .env')
-      }
-
-
-     let configEnvEstoque = String(process.env.CONFIG_ESTOQUE)
-        if( configEnvEstoque && configEnvEstoque != ''){
-
-        cron.schedule( configEnvEstoque, async ()=>{
-               let movimentosController =  new MovimentosController()  
-               let prodSetorController =  new ProdSetorController()  
-               let setorController = new SetoresController();
-              let configIntegracao = new SelectConfig();
-              let verifyConfig = await   configIntegracao.selectConfig();
-              let updateConfig = new UpdateConfigIntegracao();
-                  if(verifyConfig.length > 0   ){
- 
-                    if(verifyConfig[0].importar_estoque === 'S'){
-
-                    console.log("Executando tarefa | estoque ")
-                    let dateService= new DateService();
-
-                      let data = dateService.obterDataAtual() + ' 00:00:00'
-
-                      await prodSetorController.main( { dataEstoque: data, importar_estoque:verifyConfig[0].importar_estoque} )
-
-                      await movimentosController.main( { dataEstoque: data, importar_estoque:verifyConfig[0].importar_estoque} )
-                      await setorController.main();
-                    let resultUpdateConfig =  await updateConfig.update({ ultima_verificacao_estoque: dateService.obterDataHoraAtual()})
-                if( resultUpdateConfig.affectedRows > 0 ){
-                      console.log({ok:true, msg:"fim da validacao"})
-                    }
-                    }else{
-                      console.log("A integracao nao esta configurada para enviar saldo de estoque ")
-                    }
-              }
-              })
-      }else{
-        console.log('Nao foi encontrado configuração de envio de estoque no arquivo .env')
-      }
-
-
-   let configEnvTipoOs = String(process.env.CONFIG_TIPO_OS)
-      if(  configEnvTipoOs && configEnvTipoOs != ''){
-       cron.schedule(configEnvTipoOs, async ()=>{
-              let objController = new Tipos_osController();
-              await objController.main();
-           })
-      }else{
-        console.log('Nao foi encontrado configuração de envio dos tipos de os  no arquivo .env')
-      }
-          
-   
-    let configEnvVeiculos = String(process.env.CONFIG_VEICULOS)
-    if(configEnvVeiculos && configEnvVeiculos !=''){
-
-            cron.schedule(configEnvVeiculos, async ()=>{
-              let objController = new VeiculosController();
-              await objController.main();
-            })
-    }else{
-          console.log('Nao foi encontrado configuração de envio dos veiculo no arquivo .env')
-
-    }
-
-   const configMarcas = String(process.env.CONFIG_MARCAS)
-     if(configMarcas &&  configMarcas !=''){
-              cron.schedule(configMarcas, async ()=>{
-               let objController = new marcasController();
-               await objController.main();
-             })
-     }else{
-          console.log('Nao foi encontrado configuração de envio das marcas no arquivo .env')
-     }
-
-   const configEnvFormasPagamento = String(process.env.CONFIG_FORMAS_PAGAMENTO)
- 
-     if(configEnvFormasPagamento && configEnvFormasPagamento !=''){
-    cron.schedule(configEnvFormasPagamento, async ()=>{
-              let objController = new formaPagamentoController();
-              await objController.main();
-            })
-        }else{
-          console.log('Nao foi encontrado configuração de envio das formas de pagamento no arquivo .env')
-     }
-         
-
-  const configCAtegorias = String(process.env.CONFIG_CATEGORIAS)
- 
-     if(configCAtegorias && configCAtegorias !=''){
-           cron.schedule(configCAtegorias, async ()=>{
-             let objController = new categoriasController();
-             await objController.main();
-           })
-              }else{
-          console.log('Nao foi encontrado configuração de envio das categoras no arquivo .env')
-     }
-
-
-
-    const configClientes = String(process.env.CONFIG_CLIENTE)
-    if(configClientes && configClientes != ''){
-      cron.schedule(configClientes, async ()=>{
-              let objController = new ClienteController();
-              await objController.main();
-            })
-    } else{
-          console.log('Nao foi encontrado configuração de envio dos clientes no arquivo .env')
-    }
-    
-      const configservicos = String(process.env.CONFIG_SERVICOS)
-      if( configservicos && configservicos != ''){
-      cron.schedule(configservicos, async ()=>{
-                let objController = new ServicoController();
-                await objController.main();
-            })
-      }else{
-          console.log('Nao foi encontrado configuração de envio dos servicos no arquivo .env')
-      }
-       
-
 
 
    

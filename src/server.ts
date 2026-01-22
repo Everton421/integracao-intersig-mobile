@@ -1,14 +1,13 @@
 import express,{NextFunction, Request,Response} from 'express';
-import swaggerUi from 'swagger-ui-express';
-
 import "express-async-errors";
 import cors from 'cors';
 const path = require('path')
 var  bodyParser  =  require ( 'body-parser' )
 import 'dotenv/config';
-
+ 
 import { router, versao } from './routes';
-import { conn_mobie } from './database/databaseConfig';
+import { MainJob } from './jobs';
+import { seed } from './database/database-structure';
 
         const app = express();
         app.set('view engine', 'ejs')
@@ -26,12 +25,8 @@ import { conn_mobie } from './database/databaseConfig';
 
 
             app.use(cors( corsOptions));
-        
-  //      app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
-        
-        app.use(express.json());    
-        app.use(router)
-
+            app.use(express.json());    
+            app.use(router)
 
         app.use(
                 (err:Error, req:Request, res:Response, next:NextFunction)=>{
@@ -47,6 +42,13 @@ import { conn_mobie } from './database/databaseConfig';
                 })
 
                 const PORT_API = process.env.PORT_API || 3000; // Porta padrão para HTTPS
+                
+                const mainJob = new MainJob();
+                mainJob.job()
+
+                seed()
+                .then( ( r )=> console.log("tabelas verificadas com sucesso ",r )) 
+                .catch(   e => console.log("Erro ao tentar verificar as tabelas ", e)  )
 
 
 

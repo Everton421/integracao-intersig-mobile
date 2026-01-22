@@ -3,7 +3,8 @@ import 'dotenv/config';
 import mysql from 'mysql';
 
 /**----------------------------------------------------------------------- */
-   
+
+ if( !process.env.DB_MOBILE ) throw new Error( " DATABASE_MOBILE não foi configurada")
         const hostname = process.env.HOST_MOBILE ;
         const portdb = process.env.PORT_DB_MOBILE;
         const username = process.env.USER_MOBILE;

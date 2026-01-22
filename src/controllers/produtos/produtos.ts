@@ -27,8 +27,6 @@ export class ProdutoController {
                   let produtoMobile = await selectProdutosMobile.buscaPorCodigo(databaseMobile, i.codigo) 
             
                                               let validProdutoMobile = produtoMobile[0];
-                                         
-                                             
                                               let data_ult_atualizacao = i.data_ultima_alteracao
 
                                                 if( validProdutoMobile && new Date(i.data_ultima_alteracao) > new Date(validProdutoMobile.data_recadastro) ){
@@ -40,7 +38,6 @@ export class ProdutoController {
                                                     } 
                                                   } 
                                                   
-                     
                                                 i.descricao = objTiraAspas.normalizeString(i.descricao);
 
                                          let objInsert:IProdutoMobile = {
